@@ -1,26 +1,31 @@
-import { getAllGrades, getModulesByGrade } from '@/modules/registry';
-import GradeCard from '@/components/GradeCard';
+import { getAllSubjects, getModulesBySubject } from '@/modules/registry';
+import { SUBJECT_LABELS, Subject } from '@/lib/types';
+import ModuleCard from '@/components/ModuleCard';
 import styles from './page.module.css';
 
 export default function HomePage() {
-  const grades = getAllGrades();
+  const subjects = getAllSubjects();
 
   return (
     <>
       <hgroup>
         <h1>Educational Platform</h1>
-        <p>Choose a year group to explore activities</p>
+        <p>Explore activities by subject</p>
       </hgroup>
 
-      <div className={styles.grid}>
-        {grades.map((grade) => (
-          <GradeCard
-            key={grade}
-            grade={grade}
-            moduleCount={getModulesByGrade(grade).length}
-          />
-        ))}
-      </div>
+      {subjects.map((subject) => {
+        const modules = getModulesBySubject(subject);
+        return (
+          <section key={subject}>
+            <h2>{SUBJECT_LABELS[subject as Subject] ?? subject}</h2>
+            <div className={styles.grid}>
+              {modules.map((mod) => (
+                <ModuleCard key={mod.slug} module={mod} showGrades />
+              ))}
+            </div>
+          </section>
+        );
+      })}
     </>
   );
 }

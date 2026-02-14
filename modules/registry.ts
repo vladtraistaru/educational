@@ -27,6 +27,18 @@ const moduleEntries: ModuleEntry[] = [
 
 const modules = moduleEntries.map((e) => e.config);
 
+export function getAllModules(): ModuleConfig[] {
+  return modules;
+}
+
+export function getModulesBySubject(subject: string): ModuleConfig[] {
+  return modules.filter((m) => m.subject === subject);
+}
+
+export function getAllSubjects(): string[] {
+  return [...new Set(modules.map((m) => m.subject))];
+}
+
 export function getModulesByGrade(grade: number): ModuleConfig[] {
   return modules.filter((m) => m.grades.includes(grade));
 }

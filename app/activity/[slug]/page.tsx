@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import { getModuleBySlug } from '@/modules/registry';
-import { GRADE_LABELS } from '@/lib/types';
 import Breadcrumb from '@/components/Breadcrumb';
 import ActivityLoader from './ActivityLoader';
 
@@ -14,15 +13,11 @@ export default async function ActivityPage({ params }: Props) {
 
   if (!mod) return notFound();
 
-  const firstGrade = mod.grades[0];
-  const gradeLabel = GRADE_LABELS[firstGrade] ?? `Year ${firstGrade}`;
-
   return (
     <>
       <Breadcrumb
         crumbs={[
           { label: 'Home', href: '/' },
-          { label: gradeLabel, href: `/${firstGrade}` },
           { label: mod.title },
         ]}
       />
