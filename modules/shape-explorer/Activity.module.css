@@ -1,0 +1,243 @@
+/* Shape Selector */
+.selectorGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.selectorItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 16px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--pico-card-background-color);
+  min-width: 80px;
+}
+
+.selectorItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.selectorItemSelected {
+  composes: selectorItem;
+  border-color: var(--pico-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.selectorThumbnail {
+  width: 48px;
+  height: 48px;
+}
+
+.selectorName {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Shape Display */
+.displayContainer {
+  background: var(--pico-card-background-color);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.shapeName {
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  margin: 0;
+}
+
+.displaySvg {
+  width: 240px;
+  height: 240px;
+}
+
+.countButton {
+  composes: btn from '@/modules/activity.module.css';
+  background: #6c5ce7;
+  font-size: 1.1rem;
+}
+
+.countButton:hover:not(:disabled) {
+  background: #5b4cdb;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+.curvedNote {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  text-align: center;
+}
+
+/* Properties Panel */
+.propertiesPanel {
+  background: var(--pico-card-background-color);
+  border-radius: 24px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.propertyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.propertyItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: var(--pico-card-sectionning-background-color, #f8f9fa);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.propertyValue {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.propertyLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+}
+
+.realWorld {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--pico-card-sectionning-background-color, #f8f9fa);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.realWorldEmoji {
+  font-size: 2rem;
+}
+
+.realWorldText {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.realWorldTextLabel {
+  color: var(--pico-muted-color);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.funFact {
+  padding: 1rem 1.25rem;
+  background: var(--pico-card-sectionning-background-color, #f1f2f6);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.funFactLabel {
+  font-weight: 700;
+  margin-right: 0.25rem;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+  .displayContainer {
+    padding: 1.5rem;
+  }
+
+  .displaySvg {
+    width: 200px;
+    height: 200px;
+  }
+
+  .shapeName {
+    font-size: 1.6rem;
+  }
+
+  .propertiesPanel {
+    padding: 1.25rem 1.25rem;
+  }
+
+  .propertyGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .propertyValue {
+    font-size: 1.5rem;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .selectorGrid {
+    gap: 0.5rem;
+  }
+
+  .selectorItem,
+  .selectorItemSelected {
+    padding: 0.5rem 0.6rem;
+    min-width: 70px;
+    border-radius: 12px;
+  }
+
+  .selectorThumbnail {
+    width: 40px;
+    height: 40px;
+  }
+
+  .selectorName {
+    font-size: 0.7rem;
+  }
+
+  .displayContainer {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .displaySvg {
+    width: 180px;
+    height: 180px;
+  }
+
+  .shapeName {
+    font-size: 1.3rem;
+  }
+
+  .propertiesPanel {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .propertyGrid {
+    gap: 0.75rem;
+  }
+
+  .propertyItem {
+    padding: 0.75rem;
+  }
+
+  .propertyValue {
+    font-size: 1.4rem;
+  }
+}

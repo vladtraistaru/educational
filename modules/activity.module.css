@@ -1,0 +1,162 @@
+/* Shared design tokens and reusable classes for all activity modules */
+
+.activityArea {
+  min-height: 60vh;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: var(--pico-card-background-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.controlsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--pico-card-background-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.controlGroup label {
+  font-weight: 700;
+  color: var(--pico-muted-color);
+}
+
+.controlGroup select {
+  font-weight: 700;
+  padding: 0.6rem 1rem;
+  border: 3px solid var(--pico-muted-border-color);
+  border-radius: 12px;
+  min-height: 48px;
+  margin-bottom: 0;
+}
+
+.controlButtons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Child-friendly buttons */
+.btn {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  color: white;
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  box-shadow: none;
+}
+
+.btnIcon {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.btnPrimary {
+  composes: btn;
+  background: #00b894;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #00a187;
+  box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+}
+
+.btnDanger {
+  composes: btn;
+  background: #e17055;
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: #d35400;
+  box-shadow: 0 4px 15px rgba(225, 112, 85, 0.4);
+}
+
+.btnSecondary {
+  composes: btn;
+  background: #6c5ce7;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background: #5b4cdb;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+.feedbackCorrect {
+  color: #00b894;
+}
+
+.feedbackIncorrect {
+  color: #d63031;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .activityArea {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .controlsBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .controlGroup {
+    justify-content: center;
+  }
+
+  .controlButtons {
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .controlButtons {
+    width: 100%;
+  }
+
+  .btn {
+    flex: 1;
+    justify-content: center;
+    min-height: 50px;
+  }
+}

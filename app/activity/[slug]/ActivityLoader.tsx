@@ -1,6 +1,7 @@
 'use client';
 
-import { getActivityComponent } from '@/modules/components';
+import { getActivityComponent, getModuleBySlug } from '@/modules/registry';
+import ActivityShell from '@/components/ActivityShell';
 
 interface Props {
   slug: string;
@@ -8,10 +9,15 @@ interface Props {
 
 export default function ActivityLoader({ slug }: Props) {
   const Component = getActivityComponent(slug);
+  const mod = getModuleBySlug(slug);
 
   if (!Component) {
     return <p>Activity not found.</p>;
   }
 
-  return <Component />;
+  return (
+    <ActivityShell description={mod?.description}>
+      <Component />
+    </ActivityShell>
+  );
 }

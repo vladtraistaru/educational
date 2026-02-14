@@ -76,64 +76,58 @@ Activity URLs are flat (`/activity/[slug]`) so they stay stable even if a module
 /modules
   /number-scale-explorer/           — one module = one folder
     config.ts                       — metadata: slug, title, description, subject, grades
-    Activity.tsx                    — the React component for this activity
+    Activity.tsx                    — top-level React component (state + composition)
     Activity.module.css             — scoped styles for this activity
-  /shape-sorter/                    — another module (placeholder)
-    config.ts
-    Activity.tsx
-    Activity.module.css
-  registry.ts                       — imports all configs, exports helper functions
-  components.ts                     — maps slugs to lazy-loaded Activity components
+    NumberLine.tsx                  — interactive number line with drag handling
+    Controls.tsx                    — scale selector and action buttons
+    BreakdownPanel.tsx             — segment summary and equation
+  registry.ts                       — imports all configs + components, exports helpers
+  activity.module.css               — shared design tokens and reusable classes for all modules
 ```
 
 Every module has exactly two required files:
 - **`config.ts`** — exports a `ModuleConfig` object with `slug`, `title`, `description`, `subject`, and `grades[]`
-- **`Activity.tsx`** — exports the default React component that IS the activity
+- **`Activity.tsx`** — exports the default React component that IS the activity (accepts `ActivityProps`)
 
-**`registry.ts`** imports all module configs and provides helper functions: `getAllGrades()`, `getModulesByGrade()`, `getModulesByGradeAndSubject()`, `getModuleBySlug()`. The pages use these to build navigation.
+Modules can have additional sub-components (like `NumberLine.tsx`, `Controls.tsx`) to keep files under 200 lines.
 
-**`components.ts`** maps each slug to a `dynamic(() => import(...))` call so activity components are lazy-loaded — the homepage never bundles heavy activity code.
+**`registry.ts`** is the single registration file. It imports each module's config and lazy-loads its component via `dynamic()`. It exports helper functions: `getAllGrades()`, `getModulesByGrade()`, `getModulesByGradeAndSubject()`, `getModuleBySlug()`, `getActivityComponent()`.
+
+**`activity.module.css`** provides shared design tokens and reusable CSS classes (buttons, controls bar, feedback colors, activity area) that all modules import for visual consistency.
 
 ### `/components` — Shared UI
 
 ```
 /components
+  ActivityShell.tsx                 — wraps every activity with consistent layout
+  ActivityShell.module.css          — shell styles
   GradeCard.tsx                     — card linking to a grade page
   ModuleCard.tsx                    — card linking to an activity
   Breadcrumb.tsx                    — breadcrumb navigation
 ```
 
-These are used across multiple pages. Keep module-specific components inside the module folder instead.
+**`ActivityShell`** is applied automatically by `ActivityLoader` — it wraps every activity component with a consistent container, optional description, and standard spacing. Individual modules do not need to use it directly.
 
 ### `/lib` — Types and Utilities
 
 ```
 /lib
-  types.ts                          — ModuleConfig interface, Subject type, label maps
+  types.ts                          — ModuleConfig, ActivityProps, Subject type, label maps
 ```
 
-`types.ts` defines the `Subject` union type (`mathematics | science | literacy | ...`), the `ModuleConfig` interface, and lookup maps for grade/subject display labels.
-
-### `/public` — Static Files
-
-```
-/public
-  /modules/number-scale-explorer/   — vanilla HTML/CSS/JS served as static files
-    index.html
-    app.js
-    styles.css
-    translations.js
-```
-
-Modules built with vanilla HTML/JS (not React) live here and are loaded via iframe in their `Activity.tsx`. This is how the original Number Scale Explorer works — zero rewrite, just embedded.
+- `Subject` — union type of subjects
+- `ModuleConfig` — metadata for each module (slug, title, description, subject, grades, optional icon and estimatedMinutes)
+- `ActivityProps` — standard props interface for all activity components (empty for now, extensible)
+- `SUBJECT_LABELS`, `GRADE_LABELS` — human-readable display labels
 
 ### Adding a New Module
 
-1. Create `/modules/my-activity/config.ts` — export a `ModuleConfig` with slug, title, description, subject, grades
-2. Create `/modules/my-activity/Activity.tsx` — export a default React component
-3. Add one import line in `/modules/registry.ts` and add the config to the `modules` array
-4. Add one entry in `/modules/components.ts` mapping the slug to a `dynamic()` import
-5. Done — it auto-appears on the homepage under the correct grade and subject
+1. Create `/modules/my-activity/config.ts` — export a `ModuleConfig`
+2. Create `/modules/my-activity/Activity.tsx` — export a default component accepting `ActivityProps`
+3. Add one entry in `/modules/registry.ts` (import config + add `{ config, component: dynamic(...) }` to the array)
+4. Done — it auto-appears on the homepage under the correct grade and subject
+
+Use shared styles from `activity.module.css` for buttons, controls, and layout to maintain visual consistency across modules.
 
 ### Navigation URLs
 

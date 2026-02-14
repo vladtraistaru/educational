@@ -1,6 +1,373 @@
-.frame {
-  width: 100%;
-  height: 80vh;
-  border: none;
+/* Segment colors */
+.segment1 { background: #ff6b6b; }
+.segment2 { background: #4ecdc4; }
+.segment3 { background: #ffe66d; }
+.segment4 { background: #a55eea; }
+.segment5 { background: #26de81; }
+.segment6 { background: #fd9644; }
+
+/* Number Line */
+.numberLineContainer {
+  background: var(--pico-card-background-color);
+  border-radius: 24px;
+  padding: 50px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.numberLineWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.scaleLabel {
+  font-size: 1.8rem;
+  font-weight: 800;
+  min-width: 45px;
+  text-align: center;
+}
+
+.scaleLabelStart {
+  composes: scaleLabel;
+  text-align: right;
+}
+
+.scaleLabelEnd {
+  composes: scaleLabel;
+  text-align: left;
+}
+
+.numberLine {
+  flex: 1;
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: var(--pico-muted-border-color);
+  border-radius: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Segments */
+.segments {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+}
+
+.segment {
+  height: 100%;
+  transition: width 0.05s ease-out;
+}
+
+/* Tick marks */
+.tickMarks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 30px;
+  pointer-events: none;
+}
+
+.tick {
+  position: absolute;
+  width: 2px;
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateX(-50%);
+}
+
+.tickMajor {
+  composes: tick;
+  height: 28px;
+  top: -6px;
+  width: 3px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.tickMinor {
+  composes: tick;
+  height: 16px;
+  top: 0;
+}
+
+.tickLabel {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Cursors */
+.cursors {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 56px;
+}
+
+.cursor {
+  position: absolute;
+  width: 24px;
+  height: 56px;
+  background: linear-gradient(135deg, #6c5ce7, #a55eea);
   border-radius: 12px;
+  transform: translate(-50%, 0);
+  cursor: grab;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s, width 0.1s;
+  z-index: 10;
+  user-select: none;
+  touch-action: none;
+  border: 3px solid white;
+}
+
+.cursor::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.cursor:hover {
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+  width: 28px;
+}
+
+.cursorDragging {
+  cursor: grabbing;
+  box-shadow: 0 8px 30px rgba(108, 92, 231, 0.6);
+  transform: translate(-50%, 0) scale(1.1);
+  z-index: 20;
+  width: 28px;
+}
+
+.cursorValue {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pico-color);
+  color: var(--pico-background-color);
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cursorValue::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: var(--pico-color);
+}
+
+/* Breakdown Panel */
+.breakdownPanel {
+  background: var(--pico-card-background-color);
+  border-radius: 24px;
+  padding: 25px 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.breakdownTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.segmentsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.segmentItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--pico-card-sectionning-background-color, #f8f9fa);
+  padding: 12px 18px;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.segmentItem:hover {
+  transform: translateY(-2px);
+}
+
+.segmentColor {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.segmentLabel {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+}
+
+.segmentNumber {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.totalEquation {
+  background: var(--pico-card-sectionning-background-color, #f1f2f6);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--pico-muted-color);
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+  .numberLineContainer {
+    padding: 40px 12px;
+  }
+
+  .numberLineWrapper {
+    gap: 10px;
+  }
+
+  .scaleLabel {
+    font-size: 1.4rem;
+    min-width: 35px;
+  }
+
+  .cursorValue {
+    font-size: 0.95rem;
+    padding: 5px 10px;
+  }
+
+  .segmentsList {
+    gap: 10px;
+  }
+
+  .segmentItem {
+    padding: 10px 14px;
+  }
+
+  .segmentNumber {
+    font-size: 1.5rem;
+  }
+
+  .totalEquation {
+    font-size: 1rem;
+    padding: 12px 16px;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .numberLineContainer {
+    padding: 35px 8px;
+    border-radius: 16px;
+  }
+
+  .numberLineWrapper {
+    gap: 6px;
+  }
+
+  .scaleLabel {
+    font-size: 1.2rem;
+    min-width: 30px;
+  }
+
+  .cursor {
+    width: 28px;
+    height: 64px;
+  }
+
+  .cursor:hover,
+  .cursorDragging {
+    width: 32px;
+  }
+
+  .cursors {
+    height: 64px;
+  }
+
+  .breakdownPanel {
+    padding: 20px 15px;
+    border-radius: 16px;
+  }
+
+  .breakdownTitle {
+    font-size: 1.2rem;
+  }
+
+  .segmentItem {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .segmentLabel {
+    font-size: 1rem;
+  }
+
+  .segmentNumber {
+    font-size: 1.4rem;
+  }
+
+  .tickLabel {
+    font-size: 0.7rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .cursor {
+    width: 30px;
+    height: 70px;
+  }
+
+  .cursor:hover {
+    width: 30px;
+  }
+
+  .cursorDragging {
+    width: 34px;
+  }
+
+  .cursors {
+    height: 70px;
+  }
+
+  .segmentItem:hover {
+    transform: none;
+  }
 }

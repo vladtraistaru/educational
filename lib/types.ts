@@ -12,7 +12,11 @@ export interface ModuleConfig {
   description: string;
   subject: Subject;
   grades: number[]; // 1 = Year 1, 2 = Year 2, etc. 0 = Reception
+  icon?: string;
+  estimatedMinutes?: number;
 }
+
+export interface ActivityProps {}
 
 export const SUBJECT_LABELS: Record<Subject, string> = {
   mathematics: 'Mathematics',
