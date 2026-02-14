@@ -1,0 +1,15 @@
+@import '@picocss/pico/css/pico.min.css';
+
+:root {
+  --brand-gradient: linear-gradient(135deg, #6c5ce7, #00b894);
+}
+
+body {
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
