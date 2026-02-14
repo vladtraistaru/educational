@@ -1,16 +1,8 @@
 import { ModuleConfig } from '@/lib/types';
 import { config as numberScaleExplorer } from './number-scale-explorer/config';
-import { config as shapeSorter } from './shape-sorter/config';
-import { config as animalHabitats } from './animal-habitats/config';
-import { config as wordBuilder } from './word-builder/config';
-import { config as timesTableChallenge } from './times-table-challenge/config';
 
 export const modules: ModuleConfig[] = [
   numberScaleExplorer,
-  shapeSorter,
-  animalHabitats,
-  wordBuilder,
-  timesTableChallenge,
 ];
 
 export function getModulesByGrade(grade: number): ModuleConfig[] {
