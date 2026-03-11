@@ -18,7 +18,7 @@ export interface ModuleConfig {
 
 export interface ActivityProps {}
 
-import type { Language } from './language';
+import type { Language } from './language-config';
 
 export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
   en: {

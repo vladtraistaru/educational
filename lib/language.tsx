@@ -8,16 +8,14 @@ import {
   type ReactNode,
 } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  LANG_COOKIE,
+  DEFAULT_LANGUAGE,
+  type Language,
+} from './language-config';
 
-export type Language = 'en' | 'fr';
-
-export const LANGUAGES: { value: Language; label: string }[] = [
-  { value: 'en', label: 'English' },
-  { value: 'fr', label: 'Français' },
-];
-
-export const DEFAULT_LANGUAGE: Language = 'en';
-export const LANG_COOKIE = 'lang';
+export type { Language } from './language-config';
+export { LANGUAGES, DEFAULT_LANGUAGE, LANG_COOKIE } from './language-config';
 
 interface LanguageContextValue {
   language: Language;
