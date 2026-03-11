@@ -1,0 +1,202 @@
+/* Shape Selector */
+.selector {
+  background: var(--pico-card-background-color);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.selectorScroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.shapeBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  border: 3px solid var(--pico-muted-border-color);
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  min-width: 90px;
+}
+
+.shapeBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.shapeBtn:active {
+  transform: scale(0.96);
+}
+
+.shapeBtnActive {
+  border-width: 3px;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.shapeBtnIcon {
+  font-size: 1.6rem;
+}
+
+.shapeBtnLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 3D Viewer */
+.viewer {
+  height: 350px;
+  background: var(--pico-card-background-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Info Panel */
+.infoPanel {
+  background: var(--pico-card-background-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.infoTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0 0 1.25rem;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--pico-card-sectionning-background-color, #f8f9fa);
+  padding: 1rem 1.5rem;
+  border-radius: 14px;
+  min-width: 90px;
+}
+
+.statNumber {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+}
+
+.example {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: var(--pico-card-sectionning-background-color, #f1f2f6);
+  border-radius: 12px;
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+  .viewer {
+    height: 280px;
+  }
+
+  .statsRow {
+    gap: 0.75rem;
+  }
+
+  .statCard {
+    padding: 0.75rem 1rem;
+    min-width: 75px;
+  }
+
+  .statNumber {
+    font-size: 1.4rem;
+  }
+
+  .infoTitle {
+    font-size: 1.3rem;
+  }
+
+  .shapeBtn {
+    min-width: 80px;
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .viewer {
+    height: 240px;
+    border-radius: 12px;
+  }
+
+  .selector {
+    border-radius: 12px;
+    padding: 0.75rem;
+  }
+
+  .infoPanel {
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .statsRow {
+    gap: 0.5rem;
+  }
+
+  .statCard {
+    padding: 0.6rem 0.75rem;
+    min-width: 65px;
+  }
+
+  .statNumber {
+    font-size: 1.2rem;
+  }
+
+  .statLabel {
+    font-size: 0.8rem;
+  }
+
+  .example {
+    font-size: 1rem;
+  }
+
+  .shapeBtnIcon {
+    font-size: 1.3rem;
+  }
+
+  .shapeBtnLabel {
+    font-size: 0.7rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .shapeBtn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

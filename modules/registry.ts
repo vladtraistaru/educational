@@ -4,6 +4,7 @@ import type { ModuleConfig, ActivityProps } from '@/lib/types';
 import { config as numberScaleExplorer } from './number-scale-explorer/config';
 import { config as euclideanPostulates } from './euclidean-postulates/config';
 import { config as shapeExplorer } from './shape-explorer/config';
+import { config as shapeExplorer3d } from './3d-shape-explorer/config';
 
 interface ModuleEntry {
   config: ModuleConfig;
@@ -22,6 +23,10 @@ const moduleEntries: ModuleEntry[] = [
   {
     config: shapeExplorer,
     component: dynamic(() => import('./shape-explorer/Activity')),
+  },
+  {
+    config: shapeExplorer3d,
+    component: dynamic(() => import('./3d-shape-explorer/Activity')),
   },
 ];
 
