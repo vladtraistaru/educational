@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { LanguageProvider } from '@/lib/language';
+import { getLanguage } from '@/lib/language-server';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -7,15 +9,19 @@ export const metadata: Metadata = {
     'An open-source educational platform for primary school children and beyond.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const lang = await getLanguage();
+
   return (
-    <html lang="en">
+    <html lang={lang}>
       <body>
-        <main className="container">{children}</main>
+        <LanguageProvider initialLanguage={lang}>
+          <main className="container">{children}</main>
+        </LanguageProvider>
       </body>
     </html>
   );

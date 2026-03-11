@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 const DOTS = [
@@ -24,6 +26,8 @@ interface Line {
 }
 
 export default function ConnectDots() {
+  const { language } = useLanguage();
+  const t = translations[language];
   const [selected, setSelected] = useState<number | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [nextKey, setNextKey] = useState(0);
@@ -100,7 +104,7 @@ export default function ConnectDots() {
             fontWeight={700}
             fill="#636e72"
           >
-            Clear
+            {t.clear}
           </text>
         </g>
       </svg>

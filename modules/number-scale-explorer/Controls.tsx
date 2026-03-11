@@ -1,4 +1,6 @@
 import shared from '@/modules/activity.module.css';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 
 const SCALE_OPTIONS = [10, 20, 50, 100, 500, 1000];
 
@@ -23,10 +25,13 @@ export default function Controls({
   onRemoveCursor,
   onReset,
 }: ControlsProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <div className={shared.controlsBar}>
       <div className={shared.controlGroup}>
-        <label htmlFor="scale-select">Scale:</label>
+        <label htmlFor="scale-select">{t.scale}</label>
         <select
           id="scale-select"
           value={scale}
@@ -47,7 +52,7 @@ export default function Controls({
           disabled={cursorCount >= maxCursors}
         >
           <span className={shared.btnIcon}>+</span>
-          <span>Add Marker</span>
+          <span>{t.addMarker}</span>
         </button>
         <button
           className={shared.btnDanger}
@@ -55,11 +60,11 @@ export default function Controls({
           disabled={cursorCount <= minCursors}
         >
           <span className={shared.btnIcon}>−</span>
-          <span>Remove</span>
+          <span>{t.remove}</span>
         </button>
         <button className={shared.btnSecondary} onClick={onReset}>
           <span className={shared.btnIcon}>↺</span>
-          <span>Reset</span>
+          <span>{t.reset}</span>
         </button>
       </div>
     </div>

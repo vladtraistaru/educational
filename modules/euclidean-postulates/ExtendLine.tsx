@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 const LINE_COLOR = '#00b894';
@@ -8,6 +10,8 @@ const INITIAL_LEFT = 220;
 const INITIAL_RIGHT = 420;
 
 export default function ExtendLine() {
+  const { language } = useLanguage();
+  const t = translations[language];
   const [left, setLeft] = useState(INITIAL_LEFT);
   const [right, setRight] = useState(INITIAL_RIGHT);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -122,15 +126,14 @@ export default function ExtendLine() {
           &#x2192;
         </text>
 
-        {/* Hint text */}
         {!extended && (
           <text x={320} y={300} textAnchor="middle" fontSize={16} fill="#b2bec3" fontWeight={600}>
-            Drag the handles to extend the line
+            {t.dragHandles}
           </text>
         )}
         {extended && (
           <text x={320} y={300} textAnchor="middle" fontSize={16} fill={LINE_COLOR} fontWeight={600}>
-            The line keeps going!
+            {t.lineKeepsGoing}
           </text>
         )}
       </svg>

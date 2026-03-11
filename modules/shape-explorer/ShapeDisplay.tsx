@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Shape } from './shapes';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 interface ShapeDisplayProps {
@@ -10,6 +12,9 @@ const HIGHLIGHT_INTERVAL_MS = 650;
 const DONE_PAUSE_MS = 2000;
 
 export default function ShapeDisplay({ shape }: ShapeDisplayProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  const st = t.shapes[shape.id];
   const [highlightCount, setHighlightCount] = useState(0);
   const [isCounting, setIsCounting] = useState(false);
 
@@ -49,7 +54,7 @@ export default function ShapeDisplay({ shape }: ShapeDisplayProps) {
   return (
     <div className={styles.displayContainer}>
       <h2 className={styles.shapeName} style={{ color: shape.color }}>
-        {shape.name}
+        {st?.name ?? shape.name}
       </h2>
 
       <svg viewBox="0 0 200 200" className={styles.displaySvg}>
@@ -126,11 +131,11 @@ export default function ShapeDisplay({ shape }: ShapeDisplayProps) {
           onClick={startCounting}
           disabled={isCounting}
         >
-          {done ? 'Done!' : counting ? 'Counting...' : 'Count the sides!'}
+          {done ? t.done : counting ? t.counting : t.countTheSides}
         </button>
       ) : (
         <p className={styles.curvedNote}>
-          This shape has 1 curved edge and 0 straight sides
+          {t.curvedEdgeNote}
         </p>
       )}
     </div>

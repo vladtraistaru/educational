@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 const LINE_COLOR = '#0984e3';
@@ -10,6 +12,8 @@ const Y_BOTTOM = Y_TOP + GAP;
 const MARKER_COLOR = '#fdcb6e';
 
 export default function ParallelLines() {
+  const { language } = useLanguage();
+  const t = translations[language];
   const [extension, setExtension] = useState(0);
   const animating = useRef(false);
   const frameRef = useRef<number>(0);
@@ -113,9 +117,8 @@ export default function ParallelLines() {
           );
         })}
 
-        {/* Gap label */}
         <text x={320} y={(Y_TOP + Y_BOTTOM) / 2 + 5} textAnchor="middle" fontSize={18} fontWeight={800} fill={MARKER_COLOR}>
-          Same gap everywhere
+          {t.sameGap}
         </text>
 
         {/* Train track cross ties */}
@@ -133,17 +136,16 @@ export default function ParallelLines() {
           );
         })}
 
-        {/* Extend button */}
         <g onClick={animate} style={{ cursor: 'pointer' }}>
           <rect x={255} y={310} width={130} height={38} rx={12} fill={LINE_COLOR} />
           <text x={320} y={335} textAnchor="middle" fontSize={15} fontWeight={700} fill="#fff">
-            Extend!
+            {t.extend}
           </text>
         </g>
 
         {extension > maxExtension * 0.9 && (
           <text x={320} y={370} textAnchor="middle" fontSize={16} fontWeight={700} fill={LINE_COLOR}>
-            They never touch!
+            {t.neverTouch}
           </text>
         )}
       </svg>

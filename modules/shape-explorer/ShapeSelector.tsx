@@ -1,4 +1,6 @@
 import type { Shape } from './shapes';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 interface ShapeSelectorProps {
@@ -34,6 +36,9 @@ export default function ShapeSelector({
   selectedId,
   onSelect,
 }: ShapeSelectorProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <div className={styles.selectorGrid}>
       {shapes.map((shape) => (
@@ -47,7 +52,7 @@ export default function ShapeSelector({
           onClick={() => onSelect(shape.id)}
         >
           <ShapeThumbnail shape={shape} />
-          <span className={styles.selectorName}>{shape.name}</span>
+          <span className={styles.selectorName}>{t.shapes[shape.id]?.name ?? shape.name}</span>
         </button>
       ))}
     </div>

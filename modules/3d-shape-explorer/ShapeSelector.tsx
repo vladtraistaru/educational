@@ -1,4 +1,6 @@
 import { shapes, type Shape3D } from './shapes';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 interface ShapeSelectorProps {
@@ -20,6 +22,9 @@ export default function ShapeSelector({
   selectedId,
   onSelect,
 }: ShapeSelectorProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <div className={styles.selector}>
       <div className={styles.selectorScroll}>
@@ -37,7 +42,7 @@ export default function ShapeSelector({
             <span className={styles.shapeBtnIcon}>
               {SHAPE_ICONS[shape.id]}
             </span>
-            <span className={styles.shapeBtnLabel}>{shape.name}</span>
+            <span className={styles.shapeBtnLabel}>{t.shapes[shape.id]?.name ?? shape.name}</span>
           </button>
         ))}
       </div>

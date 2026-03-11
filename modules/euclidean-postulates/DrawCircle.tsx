@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 const CIRCLE_COLOR = '#6c5ce7';
@@ -15,6 +17,8 @@ interface Circle {
 }
 
 export default function DrawCircle() {
+  const { language } = useLanguage();
+  const t = translations[language];
   const [circles, setCircles] = useState<Circle[]>([]);
   const [drawing, setDrawing] = useState<{ cx: number; cy: number } | null>(null);
   const [currentRadius, setCurrentRadius] = useState(0);
@@ -163,15 +167,14 @@ export default function DrawCircle() {
           >
             <rect x={540} y={10} width={90} height={36} rx={10} fill="#dfe6e9" />
             <text x={585} y={34} textAnchor="middle" fontSize={14} fontWeight={700} fill="#636e72">
-              Clear
+              {t.clear}
             </text>
           </g>
         )}
 
-        {/* Hint */}
         {circles.length === 0 && !drawing && (
           <text x={320} y={370} textAnchor="middle" fontSize={16} fill="#b2bec3" fontWeight={600}>
-            Click and drag to draw a circle
+            {t.clickAndDrag}
           </text>
         )}
       </svg>

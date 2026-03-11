@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 import styles from './Activity.module.css';
 
 const COLORS = ['#e17055', '#00b894', '#6c5ce7', '#0984e3'];
@@ -51,6 +53,8 @@ function AnglePath({ x, y, rotation, color, opacity }: AngleConfig & { opacity: 
 
 export default function RightAngles() {
   const [compared, setCompared] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const toggle = useCallback(() => setCompared((v) => !v), []);
 
@@ -73,15 +77,14 @@ export default function RightAngles() {
 
         {compared && (
           <text x={320} y={50} textAnchor="middle" fontSize={18} fontWeight={700} fill="#2d3436">
-            They all match perfectly!
+            {t.allMatch}
           </text>
         )}
 
-        {/* Compare / Scatter button */}
         <g onClick={toggle} style={{ cursor: 'pointer' }}>
           <rect x={255} y={355} width={130} height={38} rx={12} fill={compared ? '#dfe6e9' : '#0984e3'} />
           <text x={320} y={380} textAnchor="middle" fontSize={15} fontWeight={700} fill={compared ? '#636e72' : '#fff'}>
-            {compared ? 'Scatter' : 'Compare!'}
+            {compared ? t.scatter : t.compare}
           </text>
         </g>
       </svg>

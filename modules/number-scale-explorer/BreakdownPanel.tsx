@@ -1,4 +1,6 @@
 import styles from './Activity.module.css';
+import { useLanguage } from '@/lib/language';
+import translations from './translations';
 
 const SEGMENT_COLORS = [
   styles.segment1,
@@ -18,6 +20,9 @@ export default function BreakdownPanel({
   cursorPositions,
   scale,
 }: BreakdownPanelProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const sorted = [...cursorPositions].sort((a, b) => a - b);
   const boundaries = [0, ...sorted, 100];
 
@@ -32,7 +37,7 @@ export default function BreakdownPanel({
 
   return (
     <div className={styles.breakdownPanel}>
-      <h2 className={styles.breakdownTitle}>Segments</h2>
+      <h2 className={styles.breakdownTitle}>{t.segments}</h2>
 
       <div className={styles.segmentsList}>
         {values.map((value, i) => (
@@ -40,7 +45,7 @@ export default function BreakdownPanel({
             <div
               className={`${styles.segmentColor} ${SEGMENT_COLORS[i] ?? ''}`}
             />
-            <span className={styles.segmentLabel}>Part {i + 1}:</span>
+            <span className={styles.segmentLabel}>{t.part} {i + 1}:</span>
             <span className={styles.segmentNumber}>{value}</span>
           </div>
         ))}
