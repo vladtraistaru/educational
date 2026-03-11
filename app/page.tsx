@@ -28,7 +28,7 @@ export default async function HomePage() {
             <h2>{SUBJECT_LABELS[lang][subject as Subject] ?? subject}</h2>
             <div className={styles.grid}>
               {modules.map((mod) => (
-                <ModuleCard key={mod.slug} module={mod} lang={lang} showGrades />
+                <ModuleCard key={mod.slug} module={mod} lang={lang} />
               ))}
             </div>
           </section>

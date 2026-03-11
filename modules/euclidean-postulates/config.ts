@@ -5,5 +5,5 @@ export const config: ModuleConfig = {
   title: 'Geometry Rules',
   description: 'Discover the 5 basic rules that all shapes and lines follow',
   subject: 'mathematics',
-  grades: [3, 4, 5],
+  difficulty: 6,
 };

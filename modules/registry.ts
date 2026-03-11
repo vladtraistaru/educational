@@ -30,7 +30,9 @@ const moduleEntries: ModuleEntry[] = [
   },
 ];
 
-const modules = moduleEntries.map((e) => e.config);
+const modules = moduleEntries
+  .map((e) => e.config)
+  .sort((a, b) => a.difficulty - b.difficulty);
 
 export function getAllModules(): ModuleConfig[] {
   return modules;
@@ -44,32 +46,8 @@ export function getAllSubjects(): string[] {
   return [...new Set(modules.map((m) => m.subject))];
 }
 
-export function getModulesByGrade(grade: number): ModuleConfig[] {
-  return modules.filter((m) => m.grades.includes(grade));
-}
-
-export function getSubjectsForGrade(grade: number): string[] {
-  const mods = getModulesByGrade(grade);
-  return [...new Set(mods.map((m) => m.subject))];
-}
-
-export function getModulesByGradeAndSubject(
-  grade: number,
-  subject: string,
-): ModuleConfig[] {
-  return modules.filter(
-    (m) => m.grades.includes(grade) && m.subject === subject,
-  );
-}
-
 export function getModuleBySlug(slug: string): ModuleConfig | undefined {
   return modules.find((m) => m.slug === slug);
-}
-
-export function getAllGrades(): number[] {
-  const grades = new Set<number>();
-  modules.forEach((m) => m.grades.forEach((g) => grades.add(g)));
-  return [...grades].sort((a, b) => a - b);
 }
 
 export function getActivityComponent(

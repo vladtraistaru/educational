@@ -14,19 +14,36 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
-.grades {
+.difficulty {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.gradeBadge {
+.difficultyLabel {
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  background: var(--pico-card-sectionning-background-color, #f0f0f0);
   color: var(--pico-muted-color);
   white-space: nowrap;
+}
+
+.difficultyDots {
+  display: flex;
+  gap: 3px;
+}
+
+.dotFilled,
+.dotEmpty {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dotFilled {
+  background: var(--pico-primary);
+}
+
+.dotEmpty {
+  background: var(--pico-card-sectionning-background-color, #e0e0e0);
 }

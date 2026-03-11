@@ -11,7 +11,7 @@ export interface ModuleConfig {
   title: string;
   description: string;
   subject: Subject;
-  grades: number[]; // 1 = Year 1, 2 = Year 2, etc. 0 = Reception
+  difficulty: number; // 1 (easiest) to 10 (hardest)
   icon?: string;
   estimatedMinutes?: number;
 }
@@ -39,42 +39,17 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
   },
 };
 
-export const GRADE_LABELS: Record<Language, Record<number, string>> = {
-  en: {
-    0: 'Reception',
-    1: 'Year 1',
-    2: 'Year 2',
-    3: 'Year 3',
-    4: 'Year 4',
-    5: 'Year 5',
-    6: 'Year 6',
-  },
-  fr: {
-    0: 'Maternelle',
-    1: 'CP',
-    2: 'CE1',
-    3: 'CE2',
-    4: 'CM1',
-    5: 'CM2',
-    6: '6ème',
-  },
-};
-
 export const UI_LABELS: Record<Language, Record<string, string>> = {
   en: {
     home: 'Home',
     platformTitle: 'Educational Platform',
     exploreBySubject: 'Explore activities by subject',
-    chooseSubject: 'Choose a subject',
-    activity: 'activity',
-    activities: 'activities',
+    difficulty: 'Difficulty',
   },
   fr: {
     home: 'Accueil',
     platformTitle: 'Plateforme Éducative',
     exploreBySubject: 'Explorer les activités par matière',
-    chooseSubject: 'Choisir une matière',
-    activity: 'activité',
-    activities: 'activités',
+    difficulty: 'Difficulté',
   },
 };

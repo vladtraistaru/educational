@@ -5,5 +5,5 @@ export const config: ModuleConfig = {
   title: 'Number Scale Explorer',
   description: 'Drag markers on a number line to explore how numbers split into parts',
   subject: 'mathematics',
-  grades: [1, 2, 3],
+  difficulty: 3,
 };
