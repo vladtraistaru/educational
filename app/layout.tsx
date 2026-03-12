@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { LanguageProvider } from '@/lib/language';
+import { BreadcrumbProvider } from '@/lib/breadcrumb';
 import { getLanguage } from '@/lib/language-server';
-import FeedbackButton from '@/components/FeedbackButton';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -21,8 +23,11 @@ export default async function RootLayout({
     <html lang={lang} data-theme="light">
       <body>
         <LanguageProvider initialLanguage={lang}>
-          <main className="container">{children}</main>
-          <FeedbackButton />
+          <BreadcrumbProvider>
+            <Header />
+            <main className="container">{children}</main>
+            <Footer />
+          </BreadcrumbProvider>
         </LanguageProvider>
       </body>
     </html>

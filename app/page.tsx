@@ -2,7 +2,6 @@ import { getAllSubjects, getModulesBySubject, getModuleMetadata } from '@/module
 import { SUBJECT_LABELS, UI_LABELS, Subject } from '@/lib/types';
 import { getLanguage } from '@/lib/language-server';
 import ModuleCard from '@/components/ModuleCard';
-import LanguageSelector from '@/components/LanguageSelector';
 import styles from './page.module.css';
 
 export default async function HomePage() {
@@ -12,10 +11,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <LanguageSelector />
-      </div>
-
       <hgroup>
         <h1>{ui.platformTitle}</h1>
         <p>{ui.exploreBySubject}</p>
@@ -43,19 +38,6 @@ export default async function HomePage() {
           </section>
         );
       })}
-
-      <footer className={styles.footer}>
-        <p>{ui.footerOpenSource}</p>
-        <p>
-          <a
-            href="https://github.com/vladtraistaru/educational"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {ui.footerSourceCode}
-          </a>
-        </p>
-      </footer>
     </>
   );
 }

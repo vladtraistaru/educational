@@ -3,21 +3,31 @@
   margin-top: 3rem;
   padding: 1.5rem 0;
   text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
-.trigger {
+.footer p {
+  margin-bottom: 0.25rem;
+}
+
+.separator {
+  margin: 0 0.5rem;
+}
+
+.feedbackLink {
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--accent-purple);
   cursor: pointer;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
+  font-size: inherit;
+  padding: 0;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.trigger:hover {
-  color: var(--accent-purple);
+.feedbackLink:hover {
+  color: var(--text-primary);
 }
 
 .dialog {
