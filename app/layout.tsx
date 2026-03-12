@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { LanguageProvider } from '@/lib/language';
 import { getLanguage } from '@/lib/language-server';
+import FeedbackButton from '@/components/FeedbackButton';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default async function RootLayout({
       <body>
         <LanguageProvider initialLanguage={lang}>
           <main className="container">{children}</main>
+          <FeedbackButton />
         </LanguageProvider>
       </body>
     </html>
