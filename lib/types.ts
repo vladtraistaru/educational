@@ -45,11 +45,15 @@ export const UI_LABELS: Record<Language, Record<string, string>> = {
     platformTitle: 'Educational Platform',
     exploreBySubject: 'Explore activities by subject',
     difficulty: 'Difficulty',
+    footerOpenSource: 'This platform is free to use, share, and improve.',
+    footerSourceCode: 'Source code on GitHub',
   },
   fr: {
     home: 'Accueil',
     platformTitle: 'Plateforme Éducative',
     exploreBySubject: 'Explorer les activités par matière',
     difficulty: 'Difficulté',
+    footerOpenSource: 'Cette plateforme est gratuite à utiliser, partager et améliorer.',
+    footerSourceCode: 'Code source sur GitHub',
   },
 };

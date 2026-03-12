@@ -43,6 +43,19 @@ export default async function HomePage() {
           </section>
         );
       })}
+
+      <footer className={styles.footer}>
+        <p>{ui.footerOpenSource}</p>
+        <p>
+          <a
+            href="https://github.com/vladtraistaru/educational"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {ui.footerSourceCode}
+          </a>
+        </p>
+      </footer>
     </>
   );
 }
