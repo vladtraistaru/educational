@@ -7,6 +7,8 @@ export interface PostulateText {
 }
 
 export interface EuclideanTranslations {
+  title: string;
+  description: string;
   ruleOf: string;
   previous: string;
   next: string;
@@ -25,33 +27,35 @@ export interface EuclideanTranslations {
 
 const translations: Record<Language, EuclideanTranslations> = {
   en: {
+    title: 'Geometry Rules',
+    description: 'Discover the 5 basic rules that all shapes and lines follow',
     ruleOf: 'Rule {n} of {total}',
     previous: 'Previous',
     next: 'Next',
     postulates: [
       {
-        title: 'Connect Any Two Dots',
-        description: 'You can always draw a straight line between any two dots.',
+        title: 'The Straight Line Postulate',
+        description: 'A straight line segment can be drawn joining any two points.',
         hint: 'Tap one dot, then tap another!',
       },
       {
-        title: 'Lines Go On Forever',
-        description: 'A line can always be made longer \u2014 it never has to stop!',
+        title: 'The Extension Postulate',
+        description: 'Any straight line segment can be extended indefinitely in a straight line.',
         hint: 'Drag the handles to stretch the line.',
       },
       {
-        title: 'Perfect Circles',
-        description: 'Pick any dot and any size \u2014 you can always draw a perfect circle.',
+        title: 'The Circle Postulate',
+        description: 'Given any point and any distance, a circle can be drawn with that centre and that radius.',
         hint: 'Click and drag to draw a circle.',
       },
       {
-        title: 'Right Angles Are Always Equal',
-        description: 'Every L-shaped corner is exactly the same size \u2014 always 90\u00B0.',
+        title: 'The Right Angle Postulate',
+        description: 'All right angles are equal to one another \u2014 each measuring exactly 90\u00B0.',
         hint: 'Press Compare to see them overlap!',
       },
       {
-        title: 'Parallel Lines Never Meet',
-        description: 'Some lines run side by side and never cross, no matter how far they go.',
+        title: 'The Parallel Postulate',
+        description: 'Through a point not on a given line, exactly one line can be drawn parallel to it \u2014 and parallel lines never intersect.',
         hint: 'Press Extend to see them grow!',
       },
     ],
@@ -67,33 +71,35 @@ const translations: Record<Language, EuclideanTranslations> = {
     neverTouch: 'They never touch!',
   },
   fr: {
+    title: 'Règles de Géométrie',
+    description: 'Découvre les 5 règles de base que toutes les formes et lignes suivent',
     ruleOf: 'Règle {n} sur {total}',
     previous: 'Précédent',
     next: 'Suivant',
     postulates: [
       {
-        title: 'Relier deux points',
-        description: 'On peut toujours tracer une ligne droite entre deux points.',
+        title: 'Le postulat de la ligne droite',
+        description: 'Un segment de droite peut être tracé entre deux points quelconques.',
         hint: 'Touche un point, puis un autre !',
       },
       {
-        title: 'Les lignes n\u2019ont pas de fin',
-        description: 'Une ligne peut toujours être prolongée \u2014 elle ne s\u2019arrête jamais !',
+        title: 'Le postulat de prolongement',
+        description: 'Tout segment de droite peut être prolongé indéfiniment en une ligne droite.',
         hint: 'Glisse les poignées pour étirer la ligne.',
       },
       {
-        title: 'Cercles parfaits',
-        description: 'Choisis un point et une taille \u2014 tu peux toujours tracer un cercle parfait.',
+        title: 'Le postulat du cercle',
+        description: 'Étant donné un point et une distance, on peut tracer un cercle de ce centre et de ce rayon.',
         hint: 'Clique et glisse pour dessiner un cercle.',
       },
       {
-        title: 'Les angles droits sont toujours égaux',
-        description: 'Chaque coin en L a exactement la même taille \u2014 toujours 90\u00B0.',
+        title: 'Le postulat de l\u2019angle droit',
+        description: 'Tous les angles droits sont égaux entre eux \u2014 chacun mesurant exactement 90\u00B0.',
         hint: 'Appuie sur Comparer pour les superposer !',
       },
       {
-        title: 'Les lignes parallèles ne se rencontrent jamais',
-        description: 'Certaines lignes vont côte à côte et ne se croisent jamais, même très loin.',
+        title: 'Le postulat des parallèles',
+        description: 'Par un point extérieur à une droite, on ne peut tracer qu\u2019une seule droite parallèle \u2014 et les droites parallèles ne se coupent jamais.',
         hint: 'Appuie sur Prolonger pour les voir grandir !',
       },
     ],

@@ -6,6 +6,8 @@ interface Shape3DText {
 }
 
 export interface Shape3DTranslations {
+  title: string;
+  description: string;
   faces: string;
   edges: string;
   vertices: string;
@@ -16,6 +18,8 @@ export interface Shape3DTranslations {
 
 const translations: Record<Language, Shape3DTranslations> = {
   en: {
+    title: '3D Shape Explorer',
+    description: 'Spin and explore 3D shapes — learn about faces, edges and vertices',
     faces: 'Faces',
     edges: 'Edges',
     vertices: 'Vertices',
@@ -32,6 +36,8 @@ const translations: Record<Language, Shape3DTranslations> = {
     },
   },
   fr: {
+    title: 'Explorateur de Formes 3D',
+    description: 'Fais tourner et explore les formes 3D — découvre les faces, arêtes et sommets',
     faces: 'Faces',
     edges: 'Arêtes',
     vertices: 'Sommets',

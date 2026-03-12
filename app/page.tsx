@@ -1,4 +1,4 @@
-import { getAllSubjects, getModulesBySubject } from '@/modules/registry';
+import { getAllSubjects, getModulesBySubject, getModuleMetadata } from '@/modules/registry';
 import { SUBJECT_LABELS, UI_LABELS, Subject } from '@/lib/types';
 import { getLanguage } from '@/lib/language-server';
 import ModuleCard from '@/components/ModuleCard';
@@ -27,9 +27,18 @@ export default async function HomePage() {
           <section key={subject}>
             <h2>{SUBJECT_LABELS[lang][subject as Subject] ?? subject}</h2>
             <div className={styles.grid}>
-              {modules.map((mod) => (
-                <ModuleCard key={mod.slug} module={mod} lang={lang} />
-              ))}
+              {modules.map((mod) => {
+                const meta = getModuleMetadata(mod.slug, lang);
+                return (
+                  <ModuleCard
+                    key={mod.slug}
+                    module={mod}
+                    lang={lang}
+                    title={meta?.title}
+                    description={meta?.description}
+                  />
+                );
+              })}
             </div>
           </section>
         );

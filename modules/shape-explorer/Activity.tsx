@@ -6,6 +6,7 @@ import { shapes } from './shapes';
 import ShapeSelector from './ShapeSelector';
 import ShapeDisplay from './ShapeDisplay';
 import ShapeProperties from './ShapeProperties';
+import styles from './Activity.module.css';
 
 export default function ShapeExplorer(_props: ActivityProps) {
   const [selectedId, setSelectedId] = useState(shapes[0].id);
@@ -17,7 +18,7 @@ export default function ShapeExplorer(_props: ActivityProps) {
   }, []);
 
   return (
-    <>
+    <div className={styles.wrapper}>
       <ShapeSelector
         shapes={shapes}
         selectedId={selectedId}
@@ -27,6 +28,6 @@ export default function ShapeExplorer(_props: ActivityProps) {
       <ShapeDisplay shape={selectedShape} />
 
       <ShapeProperties shape={selectedShape} />
-    </>
+    </div>
   );
 }

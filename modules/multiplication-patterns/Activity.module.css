@@ -1,0 +1,555 @@
+/* Layout */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.arraySection {
+  composes: activityArea from '@/modules/activity.module.css';
+  padding: 1.25rem;
+}
+
+.explorerSection {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  composes: activityArea from '@/modules/activity.module.css';
+  padding: 1.25rem;
+}
+
+.sectionTitle {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--pico-color);
+}
+
+/* Equation row — the equation IS the control */
+
+.equationRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.tappableNumber {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.chevronBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.6rem;
+  color: var(--pico-muted-color);
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+.chevronBtn:hover:not(:disabled) {
+  color: var(--pico-primary);
+}
+
+.chevronBtn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.numberValue {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--pico-color);
+  min-width: 2ch;
+  text-align: center;
+}
+
+.equationOperator {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  line-height: 1;
+}
+
+.equationResult {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--pico-primary);
+  line-height: 1;
+  min-width: 3ch;
+  text-align: center;
+}
+
+.flipBtn {
+  composes: btn from '@/modules/activity.module.css';
+  background: #6c5ce7;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.75rem;
+  min-height: 30px;
+  margin: 0 auto 0.75rem;
+}
+
+.flipBtn:hover {
+  background: #5b4cdb;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+/* Dot array */
+
+.dotGrid {
+  display: grid;
+  gap: 4px;
+  justify-content: center;
+  padding: 0.75rem;
+  max-width: 100%;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: dotAppear 0.25s ease both;
+}
+
+@keyframes dotAppear {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+/* Pattern panel */
+
+.patternSection {
+}
+
+.patternButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.patternBtn,
+.patternBtnActive {
+  composes: btn from '@/modules/activity.module.css';
+  background: var(--pico-muted-border-color);
+  color: var(--pico-color);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  min-height: 38px;
+  border: 2px solid transparent;
+}
+
+.patternBtn:hover {
+  background: var(--pico-secondary-background);
+}
+
+.patternBtnActive {
+  color: #fff;
+}
+
+.patternIcon {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.patternDescription {
+  font-size: 0.95rem;
+  color: var(--pico-muted-color);
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.patternHint {
+  font-size: 0.85rem;
+  color: var(--pico-muted-color);
+  font-style: italic;
+  margin: 0.25rem 0 0;
+}
+
+/* Number picker (times table) */
+
+.numberPicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pickerLabel {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  white-space: nowrap;
+}
+
+.pickerNumbers {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.pickerNum,
+.pickerNumActive {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--pico-muted-border-color);
+  background: transparent;
+  color: var(--pico-color);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.pickerNum:hover {
+  border-color: #0984e3;
+  color: #0984e3;
+}
+
+.pickerNumActive {
+  background: #0984e3;
+  border-color: #0984e3;
+  color: #fff;
+}
+
+/* Nines showcase */
+
+.ninesShowcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.3rem 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.ninesRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ninesCalc {
+  color: var(--pico-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.ninesArrow {
+  color: var(--pico-muted-color);
+}
+
+.ninesSum {
+  color: #fdcb6e;
+  font-weight: 800;
+}
+
+/* Ones digit cycle display */
+
+.cycleDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.cycleBadges {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.cycleBadge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.cycleLength {
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+  font-style: italic;
+}
+
+/* Doubling chain panel */
+
+.doublingPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chainSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chainBtn,
+.chainBtnActive {
+  composes: btn from '@/modules/activity.module.css';
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  min-height: 32px;
+  background: var(--pico-muted-border-color);
+  color: var(--pico-color);
+  border: 2px solid transparent;
+}
+
+.chainBtn:hover {
+  background: var(--pico-secondary-background);
+}
+
+.chainBtnActive {
+  background: #0984e3;
+  border-color: #0984e3;
+  color: #fff;
+}
+
+.doublingExamples {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pico-color);
+}
+
+.doublingItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.doublingArrow {
+  color: var(--pico-muted-color);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.doublingLabel {
+  color: #0984e3;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+/* Digit sum legend */
+
+.digitSumLegend {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.legendItems {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.legendItem {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+/* Multiples overlap panel */
+
+.overlapPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.overlapResult {
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  margin: 0.25rem 0 0;
+}
+
+.overlapResult strong {
+  color: #e17055;
+  font-size: 1.05rem;
+}
+
+/* Digit star SVG */
+
+.digitStarWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.digitStarSvg {
+  max-width: 200px;
+  max-height: 200px;
+}
+
+/* Multiplication grid */
+
+.gridWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 40px repeat(12, minmax(36px, 1fr));
+  gap: 2px;
+  min-width: fit-content;
+}
+
+.gridCorner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--pico-muted-color);
+  background: var(--pico-card-background-color);
+  border-radius: 8px;
+}
+
+.gridHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: var(--pico-color);
+  background: var(--pico-card-background-color);
+  min-height: 36px;
+  border-radius: 6px;
+}
+
+.gridCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  min-height: 36px;
+  border-radius: 6px;
+  color: var(--pico-color);
+  background: var(--pico-card-background-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: default;
+  user-select: none;
+}
+
+.cellHighlighted {
+  color: #fff;
+  font-weight: 800;
+}
+
+.cellSquare {
+  color: #fff;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.cellEven {
+  background: rgba(0, 184, 148, 0.25);
+}
+
+.cellOdd {
+  background: rgba(108, 92, 231, 0.25);
+}
+
+/* Responsive */
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 30px repeat(12, minmax(28px, 1fr));
+    gap: 1px;
+  }
+
+  .gridCell,
+  .gridHeader {
+    min-height: 28px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .patternButtons {
+    gap: 0.35rem;
+  }
+
+  .patternBtn,
+  .patternBtnActive {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    min-height: 34px;
+  }
+
+  .pickerNum,
+  .pickerNumActive {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .cycleBadge {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .legendItem {
+    width: 24px;
+    height: 24px;
+    font-size: 0.65rem;
+  }
+
+  .digitStarSvg {
+    max-width: 150px;
+    max-height: 150px;
+  }
+}

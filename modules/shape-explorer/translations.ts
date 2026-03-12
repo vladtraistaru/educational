@@ -7,6 +7,8 @@ interface ShapeText {
 }
 
 export interface ShapeTranslations {
+  title: string;
+  description: string;
   side: string;
   sides: string;
   corner: string;
@@ -25,6 +27,8 @@ export interface ShapeTranslations {
 
 const translations: Record<Language, ShapeTranslations> = {
   en: {
+    title: 'Shape Explorer',
+    description: 'Discover 2D shapes, count their sides and corners, and see where they appear in the real world',
     side: 'Side',
     sides: 'Sides',
     corner: 'Corner',
@@ -50,6 +54,8 @@ const translations: Record<Language, ShapeTranslations> = {
     },
   },
   fr: {
+    title: 'Explorateur de Formes',
+    description: 'Découvre les formes 2D, compte leurs côtés et coins, et vois où elles apparaissent dans le monde réel',
     side: 'Côté',
     sides: 'Côtés',
     corner: 'Coin',

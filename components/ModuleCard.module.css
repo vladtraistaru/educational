@@ -5,26 +5,67 @@
 }
 
 .card article {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  background: var(--surface-card);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
   height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card article::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--brand-gradient);
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .card article:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card article:hover::before {
+  opacity: 1;
+}
+
+.card article strong {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.card article p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0;
 }
 
 .difficulty {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .difficultyLabel {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: var(--pico-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -35,15 +76,15 @@
 
 .dotFilled,
 .dotEmpty {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
 .dotFilled {
-  background: var(--pico-primary);
+  background: var(--accent-purple);
 }
 
 .dotEmpty {
-  background: var(--pico-card-sectionning-background-color, #e0e0e0);
+  background: #e2e8f0;
 }

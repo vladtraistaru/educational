@@ -1,0 +1,365 @@
+/* Wrapper */
+
+.wrapper {
+  composes: activityArea from '@/modules/activity.module.css';
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+}
+
+/* ---- Menu Screen ---- */
+
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.menuTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--pico-color);
+  margin: 0;
+  text-align: center;
+}
+
+.levelCards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.levelCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  border: 3px solid;
+  background: var(--pico-card-background-color);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.levelCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.levelCard:active {
+  transform: scale(0.97);
+}
+
+.levelLabel {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.levelRange {
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  font-weight: 600;
+}
+
+.levelPoints {
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+  font-weight: 700;
+}
+
+/* ---- Game Screen ---- */
+
+.gameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--pico-card-background-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.scoreDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.scoreLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scoreValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--pico-color);
+  line-height: 1;
+}
+
+.streakDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.streakFire {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #e17055;
+  text-shadow: 0 0 8px rgba(225, 112, 85, 0.5);
+  animation: pulse 0.6s ease infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+
+.progressDisplay {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+}
+
+/* Question */
+
+.questionArea {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.questionText {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--pico-color);
+  letter-spacing: 0.02em;
+}
+
+/* Feedback badge */
+
+.feedbackBadgeCorrect,
+.feedbackBadgeWrong {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  animation: badgePop 0.25s ease;
+}
+
+.feedbackBadgeCorrect {
+  background: rgba(0, 184, 148, 0.15);
+  color: #00b894;
+}
+
+.feedbackBadgeWrong {
+  background: rgba(214, 48, 49, 0.15);
+  color: #d63031;
+}
+
+.bonusText {
+  font-size: 0.8rem;
+  font-weight: 800;
+  opacity: 0.8;
+}
+
+@keyframes badgePop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Answer options */
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.optionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --pico-background-color: var(--pico-card-background-color);
+  --pico-border-color: var(--pico-muted-border-color);
+  --pico-color: inherit;
+  background: var(--pico-card-background-color);
+  color: inherit;
+  border: 3px solid var(--pico-muted-border-color);
+  font-size: 1.4rem;
+  font-weight: 800;
+  min-height: 64px;
+  border-radius: 14px;
+  cursor: pointer;
+  padding: 0.6rem 1.25rem;
+  transition: transform 0.12s ease, background-color 0.2s ease,
+    border-color 0.2s ease, color 0.2s ease;
+}
+
+.optionBtn:active {
+  transform: scale(0.95);
+}
+
+.optionBtn:hover {
+  border-color: var(--pico-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.optionCorrect {
+  background: #00b894;
+  border-color: #00b894;
+  color: #fff;
+  animation: correctPop 0.3s ease;
+}
+
+.optionWrong {
+  background: #d63031;
+  border-color: #d63031;
+  color: #fff;
+  animation: shake 0.35s ease;
+}
+
+.optionDimmed {
+  opacity: 0.4;
+}
+
+@keyframes correctPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ---- Result Screen ---- */
+
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 360px;
+}
+
+.starsRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.starEarned {
+  font-size: 3rem;
+  color: #fdcb6e;
+  filter: drop-shadow(0 2px 6px rgba(253, 203, 110, 0.5));
+  animation: starBounce 0.4s ease both;
+}
+
+.starEmpty {
+  font-size: 3rem;
+  color: var(--pico-muted-border-color);
+}
+
+.starEarned:nth-child(1) { animation-delay: 0ms; }
+.starEarned:nth-child(2) { animation-delay: 150ms; }
+.starEarned:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes starBounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.finalScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.finalScoreLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.finalScoreValue {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--pico-color);
+  line-height: 1;
+}
+
+.correctSummary {
+  font-size: 1rem;
+  color: var(--pico-muted-color);
+  margin: 0;
+}
+
+.correctSummary strong {
+  color: var(--pico-color);
+}
+
+.playAgainBtn {
+  composes: btnPrimary from '@/modules/activity.module.css';
+  font-size: 1.1rem;
+  padding: 0.7rem 2rem;
+  margin-top: 0.5rem;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 480px) {
+  .questionText {
+    font-size: 2rem;
+  }
+
+  .optionBtn {
+    font-size: 1.1rem;
+    min-height: 56px;
+  }
+
+  .optionsGrid {
+    gap: 0.5rem;
+  }
+
+  .starEarned,
+  .starEmpty {
+    font-size: 2.2rem;
+  }
+
+  .finalScoreValue {
+    font-size: 2.2rem;
+  }
+}

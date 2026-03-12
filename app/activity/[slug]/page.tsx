@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getModuleBySlug } from '@/modules/registry';
+import { getModuleBySlug, getModuleMetadata } from '@/modules/registry';
 import { UI_LABELS } from '@/lib/types';
 import { getLanguage } from '@/lib/language-server';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -16,16 +16,19 @@ export default async function ActivityPage({ params }: Props) {
 
   if (!mod) return notFound();
 
+  const meta = getModuleMetadata(slug, lang);
+  const title = meta?.title ?? mod.title;
+
   return (
     <>
       <Breadcrumb
         crumbs={[
           { label: UI_LABELS[lang].home, href: '/' },
-          { label: mod.title },
+          { label: title },
         ]}
       />
 
-      <h1>{mod.title}</h1>
+      <h1>{title}</h1>
 
       <ActivityLoader slug={slug} />
     </>

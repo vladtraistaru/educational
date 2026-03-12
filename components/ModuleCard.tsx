@@ -6,16 +6,18 @@ import styles from './ModuleCard.module.css';
 interface Props {
   module: ModuleConfig;
   lang?: Language;
+  title?: string;
+  description?: string;
 }
 
-export default function ModuleCard({ module, lang = 'en' }: Props) {
+export default function ModuleCard({ module, lang = 'en', title, description }: Props) {
   const ui = UI_LABELS[lang];
 
   return (
     <Link href={`/activity/${module.slug}`} className={styles.card}>
       <article>
-        <strong>{module.title}</strong>
-        <p>{module.description}</p>
+        <strong>{title ?? module.title}</strong>
+        <p>{description ?? module.description}</p>
         <div className={styles.difficulty}>
           <span className={styles.difficultyLabel}>{ui.difficulty}</span>
           <span className={styles.difficultyDots}>

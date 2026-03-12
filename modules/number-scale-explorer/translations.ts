@@ -1,7 +1,20 @@
 import type { Language } from '@/lib/language';
 
-const translations: Record<Language, Record<string, string>> = {
+export interface NumberScaleTranslations {
+  title: string;
+  description: string;
+  scale: string;
+  addMarker: string;
+  remove: string;
+  reset: string;
+  segments: string;
+  part: string;
+}
+
+const translations: Record<Language, NumberScaleTranslations> = {
   en: {
+    title: 'Number Scale Explorer',
+    description: 'Drag markers on a number line to explore how numbers split into parts',
     scale: 'Scale:',
     addMarker: 'Add Marker',
     remove: 'Remove',
@@ -10,6 +23,8 @@ const translations: Record<Language, Record<string, string>> = {
     part: 'Part',
   },
   fr: {
+    title: 'Explorateur de Graduations',
+    description: 'Glisse des repères sur une ligne pour découvrir comment les nombres se décomposent',
     scale: 'Échelle :',
     addMarker: 'Ajouter',
     remove: 'Retirer',

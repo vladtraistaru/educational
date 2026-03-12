@@ -17,7 +17,7 @@ export default async function RootLayout({
   const lang = await getLanguage();
 
   return (
-    <html lang={lang}>
+    <html lang={lang} data-theme="light">
       <body>
         <LanguageProvider initialLanguage={lang}>
           <main className="container">{children}</main>

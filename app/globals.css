@@ -2,14 +2,27 @@
 
 :root {
   --brand-gradient: linear-gradient(135deg, #6c5ce7, #00b894);
+  --accent-purple: #6c5ce7;
+  --accent-green: #00b894;
+  --surface-card: #ffffff;
+  --surface-bg: #f5f7fa;
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
 body {
   min-height: 100vh;
+  background: var(--surface-bg);
+  color: var(--text-primary);
 }
 
 .container {
-  max-width: 960px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem 1.5rem;
 }
