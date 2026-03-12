@@ -87,6 +87,7 @@ export default function PatternPanel({
       {activePatternId === 'ones-digit' && (
         <>
           <OnesDigitCycleDisplay number={selectedTimesTable} t={t} />
+          <p className={styles.patternHint}>{t.onesDigitStar}</p>
           <DigitStar number={selectedTimesTable} />
         </>
       )}
@@ -179,9 +180,30 @@ function OnesDigitCycleDisplay({
 }) {
   const cycle = getOnesDigitCycle(number);
   const uniqueCycle = getUniqueCycleLength(cycle);
+  const multiples = Array.from({ length: 12 }, (_, i) => number * (i + 1));
 
   return (
     <div className={styles.cycleDisplay}>
+      <span className={styles.pickerLabel}>{t.onesDigitExample}</span>
+      <div className={styles.multiplesRow}>
+        {multiples.map((product, i) => {
+          const lastDigit = product % 10;
+          const productStr = String(product);
+          const prefix = productStr.slice(0, -1);
+          return (
+            <span key={i} className={styles.multipleItem}>
+              {prefix}
+              <span
+                className={styles.multipleLastDigit}
+                style={{ color: ONES_DIGIT_COLORS[lastDigit] }}
+              >
+                {lastDigit}
+              </span>
+            </span>
+          );
+        })}
+      </div>
+
       <span className={styles.pickerLabel}>{t.onesDigitCycle}:</span>
       <div className={styles.cycleBadges}>
         {cycle.map((digit, i) => (

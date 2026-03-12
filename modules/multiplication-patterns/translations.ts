@@ -20,6 +20,8 @@ export interface MultiplicationTranslations {
   pickNumber: string;
   onesDigitCycle: string;
   cycleLength: string;
+  onesDigitExample: string;
+  onesDigitStar: string;
   selectChain: string;
   eachDoubles: string;
   digitSumLegend: string;
@@ -43,8 +45,10 @@ const translations: Record<Language, MultiplicationTranslations> = {
     sameAnswer: 'Same answer!',
     tapCell: 'Tap any cell to see its mirror',
     pickNumber: 'Pick a number',
-    onesDigitCycle: 'Ones digit cycle',
+    onesDigitCycle: 'The last digits repeat',
     cycleLength: 'digits before repeating',
+    onesDigitExample: 'Look at the last digit of each answer:',
+    onesDigitStar: 'Connect those digits on a circle — a star appears!',
     selectChain: 'Pick a chain',
     eachDoubles: 'each doubles!',
     digitSumLegend: 'Digit sum',
@@ -74,7 +78,7 @@ const translations: Record<Language, MultiplicationTranslations> = {
       },
       'ones-digit': {
         label: 'Ones Digit',
-        description: 'Pick a number — the last digit of each multiple follows a repeating cycle!',
+        description: 'Look at the last digit of each answer in a times table. For 3s: 3, 6, 9, 12, 15, 18… the last digits go 3, 6, 9, 2, 5, 8 — and then the pattern repeats! Each colour in the grid is a different last digit.',
       },
       doubling: {
         label: 'Doubling',
@@ -103,8 +107,10 @@ const translations: Record<Language, MultiplicationTranslations> = {
     sameAnswer: 'Même résultat !',
     tapCell: 'Touche une case pour voir son miroir',
     pickNumber: 'Choisis un nombre',
-    onesDigitCycle: 'Cycle du chiffre des unités',
+    onesDigitCycle: 'Les derniers chiffres se répètent',
     cycleLength: 'chiffres avant de se répéter',
+    onesDigitExample: 'Regarde le dernier chiffre de chaque réponse :',
+    onesDigitStar: 'Relie ces chiffres sur un cercle — une étoile apparaît !',
     selectChain: 'Choisis une chaîne',
     eachDoubles: 'chaque fois le double !',
     digitSumLegend: 'Somme des chiffres',
@@ -134,7 +140,7 @@ const translations: Record<Language, MultiplicationTranslations> = {
       },
       'ones-digit': {
         label: 'Chiffre des unités',
-        description: 'Choisis un nombre — le dernier chiffre de chaque multiple suit un cycle qui se répète !',
+        description: 'Regarde le dernier chiffre de chaque réponse dans une table. Pour les 3 : 3, 6, 9, 12, 15, 18… les derniers chiffres font 3, 6, 9, 2, 5, 8 — et le motif se répète ! Chaque couleur dans la grille est un dernier chiffre différent.',
       },
       doubling: {
         label: 'Doublement',
