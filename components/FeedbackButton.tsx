@@ -33,15 +33,19 @@ export default function FeedbackButton() {
     } else {
       setStatus('sent');
       formRef.current?.reset();
-      setTimeout(close, 1500);
+      setTimeout(close, 2000);
     }
   };
 
   return (
     <>
-      <button className={styles.trigger} onClick={open} aria-label="Send feedback">
-        💬
-      </button>
+      <footer className={styles.footer}>
+        <div className="container">
+          <button className={styles.trigger} onClick={open}>
+            Send Feedback
+          </button>
+        </div>
+      </footer>
 
       <dialog ref={dialogRef} className={styles.dialog}>
         <article>
@@ -54,13 +58,38 @@ export default function FeedbackButton() {
             <p className={styles.success}>Thanks for your feedback!</p>
           ) : (
             <form ref={formRef} action={handleSubmit}>
+              <p className={styles.hint}>
+                Got an idea, a feature request, or found a bug? We&apos;d love to hear from you.
+              </p>
+
               <textarea
                 name="message"
-                placeholder="What's on your mind?"
+                placeholder="Your feedback…"
                 rows={4}
                 required
                 autoFocus
               />
+
+              <details className={styles.optional}>
+                <summary>Tell us a bit about yourself (optional)</summary>
+                <label>
+                  Who are you?
+                  <input
+                    type="text"
+                    name="who"
+                    placeholder="e.g. parent, teacher, student…"
+                  />
+                </label>
+                <label>
+                  How did you find this platform?
+                  <input
+                    type="text"
+                    name="source"
+                    placeholder="e.g. Google, a friend, social media…"
+                  />
+                </label>
+              </details>
+
               {status === 'error' && (
                 <p className={styles.error}>Something went wrong. Please try again.</p>
               )}
