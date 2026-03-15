@@ -1,5 +1,5 @@
 import { getAllSubjects, getModulesBySubject, getModuleMetadata } from '@/modules/registry';
-import { SUBJECT_LABELS, UI_LABELS, Subject } from '@/lib/types';
+import { SUBJECT_LABELS, Subject } from '@/lib/types';
 import { getLanguage } from '@/lib/language-server';
 import ModuleCard from '@/components/ModuleCard';
 import styles from './page.module.css';
@@ -7,15 +7,9 @@ import styles from './page.module.css';
 export default async function HomePage() {
   const lang = await getLanguage();
   const subjects = getAllSubjects();
-  const ui = UI_LABELS[lang];
 
   return (
     <>
-      <hgroup>
-        <h1>{ui.platformTitle}</h1>
-        <p>{ui.exploreBySubject}</p>
-      </hgroup>
-
       {subjects.map((subject) => {
         const modules = getModulesBySubject(subject);
         return (

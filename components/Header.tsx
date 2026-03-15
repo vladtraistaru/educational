@@ -2,17 +2,21 @@
 
 import Link from 'next/link';
 import { useBreadcrumbs } from '@/lib/breadcrumb';
+import { useLanguage } from '@/lib/language';
+import { UI_LABELS } from '@/lib/types';
 import LanguageSelector from './LanguageSelector';
 import styles from './Header.module.css';
 
 export default function Header() {
   const { crumbs } = useBreadcrumbs();
+  const { language } = useLanguage();
+  const ui = UI_LABELS[language];
 
   return (
     <header className={styles.header}>
       <div className="container">
         <div className={styles.row}>
-          {crumbs.length > 0 && (
+          {crumbs.length > 0 ? (
             <nav aria-label="breadcrumb" className={styles.breadcrumb}>
               <ul>
                 {crumbs.map((crumb, i) => {
@@ -29,6 +33,11 @@ export default function Header() {
                 })}
               </ul>
             </nav>
+          ) : (
+            <div className={styles.title}>
+              <strong>{ui.platformTitle}</strong>
+              <span>{ui.exploreBySubject}</span>
+            </div>
           )}
           <div className={styles.spacer} />
           <LanguageSelector />
