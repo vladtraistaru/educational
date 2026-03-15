@@ -1,3 +1,7 @@
+import { digitalRoot, gcd, lcm } from '@/lib/math/number-theory';
+
+export { digitalRoot, gcd, lcm };
+
 export interface Pattern {
   id: string;
   icon: string;
@@ -148,16 +152,6 @@ export function getPattern(id: string): Pattern | undefined {
   return patterns.find((p) => p.id === id);
 }
 
-export function digitalRoot(n: number): number {
-  let sum = n;
-  while (sum >= 10) {
-    sum = String(sum)
-      .split('')
-      .reduce((a, d) => a + Number(d), 0);
-  }
-  return sum;
-}
-
 export function getNinesDigitSum(n: number): { product: number; digits: string; sum: number } {
   const product = 9 * n;
   const digits = String(product).split('').join(' + ');
@@ -181,14 +175,5 @@ export const DOUBLING_CHAINS = [
   { id: 1, label: '2 → 4 → 8' },
   { id: 2, label: '3 → 6 → 12' },
 ];
-
-export function gcd(a: number, b: number): number {
-  while (b) { [a, b] = [b, a % b]; }
-  return a;
-}
-
-export function lcm(a: number, b: number): number {
-  return (a * b) / gcd(a, b);
-}
 
 export { ONES_DIGIT_COLORS, DIGIT_SUM_COLORS };

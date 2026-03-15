@@ -1,7 +1,6 @@
-export interface Point {
-  x: number;
-  y: number;
-}
+import { type Point, raySegment } from '@/lib/physics/geometry2d';
+
+export type { Point };
 
 export interface Mirror {
   id: number;
@@ -27,27 +26,6 @@ export const MIRROR_HALF = 60;
 
 const BEAM_MAX = 1000;
 const MAX_BOUNCES = 20;
-const EPS = 0.1;
-
-function cross(ax: number, ay: number, bx: number, by: number) {
-  return ax * by - ay * bx;
-}
-
-function raySegment(
-  ox: number, oy: number, dx: number, dy: number,
-  ax: number, ay: number, bx: number, by: number,
-): number | null {
-  const sx = bx - ax;
-  const sy = by - ay;
-  const denom = cross(dx, dy, sx, sy);
-  if (Math.abs(denom) < 1e-10) return null;
-  const ex = ax - ox;
-  const ey = ay - oy;
-  const t = cross(ex, ey, sx, sy) / denom;
-  const u = cross(ex, ey, dx, dy) / denom;
-  if (t < EPS || u < 0 || u > 1) return null;
-  return t;
-}
 
 function mirrorEndpoints(m: Mirror): [Point, Point] {
   const c = Math.cos(m.angle);

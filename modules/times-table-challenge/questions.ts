@@ -1,3 +1,5 @@
+import { randInt, shuffle } from '@/lib/math/random';
+
 export interface DifficultyConfig {
   id: 'easy' | 'medium' | 'hard';
   minFactor: number;
@@ -19,19 +21,6 @@ export interface Question {
 }
 
 export const QUESTIONS_PER_ROUND = 10;
-
-function randInt(min: number, max: number): number {
-  return min + Math.floor(Math.random() * (max - min + 1));
-}
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function generateWrongAnswers(correct: number): number[] {
   const offsets = [-7, -5, -3, -2, -1, 1, 2, 3, 4, 5, 6, 8];
