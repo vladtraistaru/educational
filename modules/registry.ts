@@ -8,12 +8,14 @@ import { config as shapeExplorer } from './shape-explorer/config';
 import { config as shapeExplorer3d } from './3d-shape-explorer/config';
 import { config as multiplicationPatterns } from './multiplication-patterns/config';
 import { config as timesTableChallenge } from './times-table-challenge/config';
+import { config as opticsStudy1 } from './optics-study-1/config';
 import numberScaleExplorerT from './number-scale-explorer/translations';
 import euclideanPostulatesT from './euclidean-postulates/translations';
 import shapeExplorerT from './shape-explorer/translations';
 import shapeExplorer3dT from './3d-shape-explorer/translations';
 import multiplicationPatternsT from './multiplication-patterns/translations';
 import timesTableChallengeT from './times-table-challenge/translations';
+import opticsStudy1T from './optics-study-1/translations';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -53,6 +55,11 @@ const moduleEntries: ModuleEntry[] = [
     config: timesTableChallenge,
     component: dynamic(() => import('./times-table-challenge/Activity')),
     translations: timesTableChallengeT,
+  },
+  {
+    config: opticsStudy1,
+    component: dynamic(() => import('./optics-study-1/Activity')),
+    translations: opticsStudy1T,
   },
 ];
 

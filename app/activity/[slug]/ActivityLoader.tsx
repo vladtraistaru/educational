@@ -1,6 +1,7 @@
 'use client';
 
-import { getActivityComponent, getModuleBySlug } from '@/modules/registry';
+import { getActivityComponent, getModuleMetadata } from '@/modules/registry';
+import { useLanguage } from '@/lib/language';
 import ActivityShell from '@/components/ActivityShell';
 
 interface Props {
@@ -9,14 +10,15 @@ interface Props {
 
 export default function ActivityLoader({ slug }: Props) {
   const Component = getActivityComponent(slug);
-  const mod = getModuleBySlug(slug);
+  const { language } = useLanguage();
+  const meta = getModuleMetadata(slug, language);
 
   if (!Component) {
     return <p>Activity not found.</p>;
   }
 
   return (
-    <ActivityShell description={mod?.description}>
+    <ActivityShell description={meta?.description}>
       <Component />
     </ActivityShell>
   );

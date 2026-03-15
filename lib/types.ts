@@ -4,7 +4,8 @@ export type Subject =
   | 'literacy'
   | 'geography'
   | 'history'
-  | 'art';
+  | 'art'
+  | 'physics';
 
 export interface ModuleConfig {
   slug: string;
@@ -28,6 +29,7 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
     geography: 'Geography',
     history: 'History',
     art: 'Art',
+    physics: 'Physics',
   },
   fr: {
     mathematics: 'Mathématiques',
@@ -36,6 +38,7 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
     geography: 'Géographie',
     history: 'Histoire',
     art: 'Art',
+    physics: 'Physique',
   },
 };
 
