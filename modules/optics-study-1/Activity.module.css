@@ -1,9 +1,14 @@
+.buttonRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .toggleBtn {
   padding: 0.4rem 0.9rem;
   font-size: 0.85rem;
   min-height: 36px;
   min-width: 36px;
-  margin-bottom: 0.5rem;
 }
 
 .canvas {
@@ -50,11 +55,6 @@
 .beamIncidentAnim {
   composes: beam;
   animation: drawBeam 0.5s ease-out forwards;
-}
-
-.beamReflectedAnim {
-  composes: beam;
-  animation: drawBeam 0.4s ease-out 0.5s forwards;
 }
 
 @keyframes drawBeam {

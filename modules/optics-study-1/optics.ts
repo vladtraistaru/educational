@@ -3,26 +3,31 @@ export interface Point {
   y: number;
 }
 
-export interface ReflectionGeometry {
-  mirrorStart: Point;
-  mirrorEnd: Point;
-  laserTip: Point;
-  beamEnd: Point;
-  hitPoint: Point | null;
-  reflectedEnd: Point | null;
-  incidentBeamLength: number;
-  reflectedBeamLength: number;
+export interface Mirror {
+  id: number;
+  pos: Point;
+  angle: number;
+}
+
+export interface BeamSegment {
+  from: Point;
+  to: Point;
+  length: number;
 }
 
 export const DEFAULT_LASER_POS: Point = { x: 90, y: 250 };
 export const DEFAULT_LASER_ANGLE = 0;
-export const DEFAULT_MIRROR_POS: Point = { x: 400, y: 250 };
-export const DEFAULT_MIRROR_ANGLE = -Math.PI / 4;
+
+export const DEFAULT_MIRRORS: Mirror[] = [
+  { id: 1, pos: { x: 400, y: 250 }, angle: -Math.PI / 4 },
+];
 
 export const LASER_HALF = 30;
 export const MIRROR_HALF = 60;
 
 const BEAM_MAX = 1000;
+const MAX_BOUNCES = 20;
+const EPS = 0.1;
 
 function cross(ax: number, ay: number, bx: number, by: number) {
   return ax * by - ay * bx;
@@ -40,54 +45,76 @@ function raySegment(
   const ey = ay - oy;
   const t = cross(ex, ey, sx, sy) / denom;
   const u = cross(ex, ey, dx, dy) / denom;
-  if (t < 0 || u < 0 || u > 1) return null;
+  if (t < EPS || u < 0 || u > 1) return null;
   return t;
 }
 
-export function computeReflection(
+function mirrorEndpoints(m: Mirror): [Point, Point] {
+  const c = Math.cos(m.angle);
+  const s = Math.sin(m.angle);
+  return [
+    { x: m.pos.x - c * MIRROR_HALF, y: m.pos.y - s * MIRROR_HALF },
+    { x: m.pos.x + c * MIRROR_HALF, y: m.pos.y + s * MIRROR_HALF },
+  ];
+}
+
+export function traceBeam(
   laserPos: Point,
   laserAngle: number,
-  mirrorPos: Point,
-  mirrorAngle: number,
-): ReflectionGeometry {
-  const dx = Math.cos(laserAngle);
-  const dy = Math.sin(laserAngle);
+  mirrors: Mirror[],
+): BeamSegment[] {
+  let dx = Math.cos(laserAngle);
+  let dy = Math.sin(laserAngle);
+  let ox = laserPos.x + dx * LASER_HALF;
+  let oy = laserPos.y + dy * LASER_HALF;
 
-  const tipX = laserPos.x + dx * LASER_HALF;
-  const tipY = laserPos.y + dy * LASER_HALF;
-  const laserTip: Point = { x: tipX, y: tipY };
+  const segments: BeamSegment[] = [];
+  let lastHitId = -1;
 
-  const mc = Math.cos(mirrorAngle);
-  const ms = Math.sin(mirrorAngle);
-  const mirrorStart: Point = { x: mirrorPos.x - mc * MIRROR_HALF, y: mirrorPos.y - ms * MIRROR_HALF };
-  const mirrorEnd: Point = { x: mirrorPos.x + mc * MIRROR_HALF, y: mirrorPos.y + ms * MIRROR_HALF };
+  for (let bounce = 0; bounce < MAX_BOUNCES; bounce++) {
+    let bestT = Infinity;
+    let bestMirror: Mirror | null = null;
 
-  const t = raySegment(tipX, tipY, dx, dy, mirrorStart.x, mirrorStart.y, mirrorEnd.x, mirrorEnd.y);
+    for (const m of mirrors) {
+      if (m.id === lastHitId) continue;
+      const [a, b] = mirrorEndpoints(m);
+      const t = raySegment(ox, oy, dx, dy, a.x, a.y, b.x, b.y);
+      if (t !== null && t < bestT) {
+        bestT = t;
+        bestMirror = m;
+      }
+    }
 
-  if (t === null) {
-    return {
-      mirrorStart, mirrorEnd, laserTip,
-      beamEnd: { x: tipX + dx * BEAM_MAX, y: tipY + dy * BEAM_MAX },
-      hitPoint: null, reflectedEnd: null,
-      incidentBeamLength: BEAM_MAX, reflectedBeamLength: 0,
-    };
+    if (!bestMirror || bestT === Infinity) {
+      segments.push({
+        from: { x: ox, y: oy },
+        to: { x: ox + dx * BEAM_MAX, y: oy + dy * BEAM_MAX },
+        length: BEAM_MAX,
+      });
+      break;
+    }
+
+    const hx = ox + dx * bestT;
+    const hy = oy + dy * bestT;
+    segments.push({ from: { x: ox, y: oy }, to: { x: hx, y: hy }, length: bestT });
+
+    const ms = Math.sin(bestMirror.angle);
+    const mc = Math.cos(bestMirror.angle);
+    let nx = -ms;
+    let ny = mc;
+    if (dx * nx + dy * ny > 0) { nx = -nx; ny = -ny; }
+
+    const dot = dx * nx + dy * ny;
+    dx = dx - 2 * dot * nx;
+    dy = dy - 2 * dot * ny;
+    ox = hx;
+    oy = hy;
+    lastHitId = bestMirror.id;
   }
 
-  const hitPoint: Point = { x: tipX + dx * t, y: tipY + dy * t };
+  return segments;
+}
 
-  let nx = -ms;
-  let ny = mc;
-  if (dx * nx + dy * ny > 0) { nx = -nx; ny = -ny; }
-
-  const dot = dx * nx + dy * ny;
-  const rx = dx - 2 * dot * nx;
-  const ry = dy - 2 * dot * ny;
-  const reflectedEnd: Point = { x: hitPoint.x + rx * BEAM_MAX, y: hitPoint.y + ry * BEAM_MAX };
-
-  return {
-    mirrorStart, mirrorEnd, laserTip,
-    beamEnd: hitPoint,
-    hitPoint, reflectedEnd,
-    incidentBeamLength: t, reflectedBeamLength: BEAM_MAX,
-  };
+export function getMirrorEndpoints(m: Mirror): [Point, Point] {
+  return mirrorEndpoints(m);
 }
