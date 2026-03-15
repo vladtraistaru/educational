@@ -10,14 +10,14 @@ export interface OpticsTranslations {
 
 const translations: Record<Language, OpticsTranslations> = {
   en: {
-    title: 'Optics Study 1',
+    title: 'Laser and Mirrors',
     description: 'An introduction to light, reflection and refraction',
     shine: 'Shine',
     turnOff: 'Turn off',
     addMirror: 'Add mirror',
   },
   fr: {
-    title: "Étude d'Optique 1",
+    title: 'Laser et Miroirs',
     description: 'Une introduction à la lumière, la réflexion et la réfraction',
     shine: 'Allumer',
     turnOff: 'Éteindre',

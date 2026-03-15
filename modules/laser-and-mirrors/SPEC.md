@@ -1,4 +1,4 @@
-# Optics Study 1
+# Laser and Mirrors
 
 ## Purpose
 

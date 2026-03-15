@@ -12,7 +12,7 @@ import {
 } from './optics';
 import OpticsCanvas from './OpticsCanvas';
 
-export default function OpticsStudy1(_props: ActivityProps) {
+export default function LaserAndMirrors(_props: ActivityProps) {
   const [laserOn, setLaserOn] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [laserPos, setLaserPos] = useState(DEFAULT_LASER_POS);
