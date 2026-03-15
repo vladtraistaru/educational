@@ -1,5 +1,7 @@
 # AGENTS.md
 
+**Keep this file up to date.** When you make conceptual or structural changes — new conventions, new folders, changed patterns — update the relevant sections of this file. AGENTS.md is the source of truth for how the codebase is organized and how to work in it.
+
 ## Project
 
 Open-source educational platform for primary school children and beyond. Interactive activities organized by subject and difficulty. Supports English and French.
@@ -10,6 +12,7 @@ Open-source educational platform for primary school children and beyond. Interac
 - **Language**: TypeScript
 - **Styling**: Pico CSS (base) + CSS Modules (component overrides) — no Tailwind, no CSS-in-JS
 - **Hosting**: Vercel — push to `main` auto-deploys
+- **Testing**: Vitest — run `npm test` (single run) or `npm run test:watch` (watch mode)
 - **Backend**: Supabase is planned but not yet implemented — no Supabase client or env vars exist in the codebase
 
 ## Principles
@@ -26,7 +29,7 @@ Open-source educational platform for primary school children and beyond. Interac
 /app          — Next.js App Router pages and layouts
 /components   — shared UI components
 /modules      — educational activity modules (one folder per activity)
-/lib          — types, utilities, language helpers
+/lib          — types, utilities, language helpers, shared subject logic
 /public       — static assets
 ```
 
@@ -199,6 +202,31 @@ Modules provide translations via `translations.ts`. The registry uses `title` an
 | `.feedbackIncorrect` | Red text for incorrect answers |
 
 Import as: `import shared from '@/modules/activity.module.css';`
+
+## Shared Subject Logic
+
+Reusable pure logic (no React, no UI) lives in `/lib/` under subject-specific folders. Module-specific logic stays inside the module folder.
+
+```
+/lib/
+  physics/
+    geometry2d.ts       — Point, cross product, ray-segment intersection
+  math/
+    number-theory.ts    — digitalRoot, gcd, lcm
+    random.ts           — randInt, shuffle
+```
+
+**Convention**: when a function is useful across multiple modules, extract it to `/lib/{subject}/`. When it's specific to one activity, keep it in the module. Modules can import from `/lib/` and re-export symbols so their consumers don't need to know about the shared layer.
+
+Example: `modules/laser-and-mirrors/optics.ts` imports `Point` and `raySegment` from `@/lib/physics/geometry2d`, re-exports `Point`, and keeps mirror-specific logic locally.
+
+## Testing
+
+Tests use Vitest. Test files live next to the source files they test (`foo.test.ts` alongside `foo.ts`).
+
+Run tests: `npm test` (single run) or `npm run test:watch` (watch mode).
+
+Shared subject logic in `/lib/physics/` and `/lib/math/` has unit tests. When adding new shared logic, add tests.
 
 ## Key Types
 
