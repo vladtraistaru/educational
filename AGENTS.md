@@ -47,6 +47,7 @@ Every educational activity is a self-contained **module** — a folder inside `/
 
 ```
 /modules/my-activity/
+  SPEC.md            — what the module does, UX, components, state
   config.ts          — exports a ModuleConfig object
   Activity.tsx       — default-exports the React component
   index.ts           — barrel: re-exports config, translations, dynamic component
@@ -59,6 +60,18 @@ Every educational activity is a self-contained **module** — a folder inside `/
   Activity.module.css   — scoped styles (most modules have this)
   SomeComponent.tsx     — sub-components to keep files under 200 lines
 ```
+
+### SPEC.md — Module Specification
+
+Every module has a `SPEC.md` file that describes what the module does, how the user interacts with it, and what educational concepts it covers. This is the file to read before modifying a module.
+
+Structure:
+- **Purpose** — one or two sentences: what the module teaches and how
+- **User Experience** — what the user sees and does, step by step
+- **Components** — table of files and their roles
+- **Key State** — state variables in Activity.tsx and how they flow to sub-components
+
+When creating a new module, write a `SPEC.md` before writing code. When modifying an existing module, read `SPEC.md` first and update it if the behavior changes.
 
 ### Registration
 
@@ -73,7 +86,11 @@ All modules are registered in `/modules/registry.ts`. Each module is imported as
 
 ## Adding a New Module
 
-### 1. Create config
+### 0. Write the spec
+
+Create `SPEC.md` in the module folder. Describe the purpose, user experience, components, and key state. This is the design document — write it before coding.
+
+### 2. Create config
 
 ```typescript
 // modules/my-activity/config.ts
@@ -92,7 +109,7 @@ export const config: ModuleConfig = {
 
 `difficulty` is 1 (easiest) to 10 (hardest). It controls sort order on the homepage.
 
-### 2. Create translations
+### 3. Create translations
 
 ```typescript
 // modules/my-activity/translations.ts
@@ -107,7 +124,7 @@ export default translations;
 
 The `title` and `description` keys are required (used by the registry for metadata). You can add module-specific keys — define a custom interface extending `{ title: string; description: string }` and use it in your Activity component.
 
-### 3. Create the activity component
+### 4. Create the activity component
 
 ```typescript
 // modules/my-activity/Activity.tsx
@@ -127,7 +144,7 @@ export default function Activity({}: ActivityProps) {
 
 Activity components are always client components (`'use client'`). They manage their own state and UI. They are automatically wrapped in `ActivityShell` by the platform — do not wrap them yourself.
 
-### 4. Create the barrel export
+### 5. Create the barrel export
 
 ```typescript
 // modules/my-activity/index.ts
@@ -139,7 +156,7 @@ export const component = dynamic(() => import('./Activity'));
 
 This exact pattern is required. The registry imports the namespace and expects `config`, `translations`, and `component`.
 
-### 5. Register in the registry
+### 6. Register in the registry
 
 In `/modules/registry.ts`:
 
