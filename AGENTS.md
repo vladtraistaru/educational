@@ -2,32 +2,15 @@
 
 ## Project
 
-Open-source educational platform for primary school children and beyond. All code is AI-driven.
+Open-source educational platform for primary school children and beyond. Interactive activities organized by subject and difficulty. Supports English and French.
 
 ## Tech Stack
 
-- **Framework**: Next.js (App Router) — simplest path for Vercel deployment
+- **Framework**: Next.js (App Router)
 - **Language**: TypeScript
 - **Styling**: Pico CSS (base) + CSS Modules (component overrides) — no Tailwind, no CSS-in-JS
-- **Hosting**: Vercel — zero-config deployment with Next.js
-- **Backend**: Supabase (see below)
-
-### Why Next.js
-
-Vercel built it. Deployment is automatic. File-based routing keeps each educational tool in its own folder. Supabase has official Next.js helpers. AI tools generate it well.
-
-## Supabase
-
-Use Supabase as the single backend. It covers:
-
-- **Database** — Postgres for storing user progress, scores, tool configurations
-- **Auth** — email/password and social logins for students and teachers
-- **Storage** — file buckets for images, media, and educational assets
-- **Realtime** — live updates if needed (e.g. classroom activities)
-- **Edge Functions** — serverless logic if needed
-- **Row Level Security** — control who sees what at the database level
-
-Use the Supabase JS client (`@supabase/supabase-js`) and the official `@supabase/ssr` helper for Next.js.
+- **Hosting**: Vercel — push to `main` auto-deploys
+- **Backend**: Supabase is planned but not yet implemented — no Supabase client or env vars exist in the codebase
 
 ## Principles
 
@@ -40,106 +23,222 @@ Use the Supabase JS client (`@supabase/supabase-js`) and the official `@supabase
 ## Project Structure
 
 ```
-/app                                — Next.js App Router pages
-/components                         — shared UI components
-/modules                            — educational activity modules
-/lib                                — types, utilities, Supabase client
-/public                             — static assets
+/app          — Next.js App Router pages and layouts
+/components   — shared UI components
+/modules      — educational activity modules (one folder per activity)
+/lib          — types, utilities, language helpers
+/public       — static assets
 ```
 
-### How the Platform Works
+## Routing
 
-The platform is a modular system. Each educational activity (e.g. "Number Scale Explorer") is a **module** — a self-contained folder inside `/modules/`. The homepage reads all module configs and organizes them into a hierarchy: **grade > subject > activity**.
+Two routes exist:
 
-Users navigate: homepage (pick a grade) → grade page (pick a subject) → subject page (pick an activity) → activity page (the interactive tool).
+- `/` — homepage: groups all modules by subject, sorted by difficulty within each subject
+- `/activity/[slug]` — activity page: renders one module by its slug (flat URL, stable)
 
-### `/app` — Pages (Next.js App Router)
+There are no grade-based routes. No `/[grade]` or `/[subject]` dynamic segments.
 
-```
-/app
-  /page.tsx                         — homepage: shows a grid of grade cards
-  /[grade]/page.tsx                 — grade page: shows subjects available for that grade
-  /[grade]/[subject]/page.tsx       — subject page: shows activity cards for that grade+subject
-  /activity/[slug]/page.tsx         — activity page: renders the actual interactive module
-  /activity/[slug]/ActivityLoader.tsx — client component that lazy-loads the module component
-  /layout.tsx                       — root layout (Pico CSS, metadata)
-  /globals.css                      — global styles (imports Pico CSS)
-```
+## The Module System
 
-The `[grade]`, `[subject]`, and `[slug]` folders are dynamic routes. The grade is a number (0 = Reception, 1 = Year 1, etc.). The subject is a string like `mathematics`. The slug is the module's unique identifier like `number-scale-explorer`.
+Every educational activity is a self-contained **module** — a folder inside `/modules/`. Modules are independent: they export metadata, translations, and a React component. The platform discovers them through the registry.
 
-Activity URLs are flat (`/activity/[slug]`) so they stay stable even if a module's grade assignment changes.
-
-### `/modules` — Educational Activity Modules
+### Required files per module
 
 ```
-/modules
-  /number-scale-explorer/           — one module = one folder
-    config.ts                       — metadata: slug, title, description, subject, grades
-    Activity.tsx                    — top-level React component (state + composition)
-    Activity.module.css             — scoped styles for this activity
-    NumberLine.tsx                  — interactive number line with drag handling
-    Controls.tsx                    — scale selector and action buttons
-    BreakdownPanel.tsx             — segment summary and equation
-  registry.ts                       — imports all configs + components, exports helpers
-  activity.module.css               — shared design tokens and reusable classes for all modules
+/modules/my-activity/
+  config.ts          — exports a ModuleConfig object
+  Activity.tsx       — default-exports the React component
+  index.ts           — barrel: re-exports config, translations, dynamic component
+  translations.ts    — Record<Language, { title, description, ...custom keys }>
 ```
 
-Every module has exactly two required files:
-- **`config.ts`** — exports a `ModuleConfig` object with `slug`, `title`, `description`, `subject`, and `grades[]`
-- **`Activity.tsx`** — exports the default React component that IS the activity (accepts `ActivityProps`)
-
-Modules can have additional sub-components (like `NumberLine.tsx`, `Controls.tsx`) to keep files under 200 lines.
-
-**`registry.ts`** is the single registration file. It imports each module's config and lazy-loads its component via `dynamic()`. It exports helper functions: `getAllGrades()`, `getModulesByGrade()`, `getModulesByGradeAndSubject()`, `getModuleBySlug()`, `getActivityComponent()`.
-
-**`activity.module.css`** provides shared design tokens and reusable CSS classes (buttons, controls bar, feedback colors, activity area) that all modules import for visual consistency.
-
-### `/components` — Shared UI
+### Optional files
 
 ```
-/components
-  ActivityShell.tsx                 — wraps every activity with consistent layout
-  ActivityShell.module.css          — shell styles
-  GradeCard.tsx                     — card linking to a grade page
-  ModuleCard.tsx                    — card linking to an activity
-  Breadcrumb.tsx                    — breadcrumb navigation
+  Activity.module.css   — scoped styles (most modules have this)
+  SomeComponent.tsx     — sub-components to keep files under 200 lines
 ```
 
-**`ActivityShell`** is applied automatically by `ActivityLoader` — it wraps every activity component with a consistent container, optional description, and standard spacing. Individual modules do not need to use it directly.
+### Registration
 
-### `/lib` — Types and Utilities
+All modules are registered in `/modules/registry.ts`. Each module is imported as a namespace (`import * as myActivity from './my-activity'`) and added to the `moduleEntries` array. The registry exports:
 
+- `getAllModules()` — all configs, sorted by difficulty
+- `getModulesBySubject(subject)` — configs filtered by subject
+- `getAllSubjects()` — unique subject list
+- `getModuleBySlug(slug)` — single config lookup
+- `getActivityComponent(slug)` — the React component for a slug
+- `getModuleMetadata(slug, lang)` — translated title + description
+
+## Adding a New Module
+
+### 1. Create config
+
+```typescript
+// modules/my-activity/config.ts
+import { ModuleConfig } from '@/lib/types';
+
+export const config: ModuleConfig = {
+  slug: 'my-activity',
+  title: 'My Activity',
+  description: 'What this activity teaches',
+  subject: 'mathematics',
+  difficulty: 3,
+};
 ```
-/lib
-  types.ts                          — ModuleConfig, ActivityProps, Subject type, label maps
+
+`subject` must be one of: `'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'physics'`.
+
+`difficulty` is 1 (easiest) to 10 (hardest). It controls sort order on the homepage.
+
+### 2. Create translations
+
+```typescript
+// modules/my-activity/translations.ts
+import type { Language } from '@/lib/language';
+
+const translations: Record<Language, { title: string; description: string }> = {
+  en: { title: 'My Activity', description: 'What this activity teaches' },
+  fr: { title: 'Mon Activité', description: 'Ce que cette activité enseigne' },
+};
+export default translations;
 ```
 
-- `Subject` — union type of subjects
-- `ModuleConfig` — metadata for each module (slug, title, description, subject, grades, optional icon and estimatedMinutes)
-- `ActivityProps` — standard props interface for all activity components (empty for now, extensible)
-- `SUBJECT_LABELS`, `GRADE_LABELS` — human-readable display labels
+The `title` and `description` keys are required (used by the registry for metadata). You can add module-specific keys — define a custom interface extending `{ title: string; description: string }` and use it in your Activity component.
 
-### Adding a New Module
+### 3. Create the activity component
 
-1. Create `/modules/my-activity/config.ts` — export a `ModuleConfig`
-2. Create `/modules/my-activity/Activity.tsx` — export a default component accepting `ActivityProps`
-3. Add one entry in `/modules/registry.ts` (import config + add `{ config, component: dynamic(...) }` to the array)
-4. Done — it auto-appears on the homepage under the correct grade and subject
+```typescript
+// modules/my-activity/Activity.tsx
+'use client';
 
-Use shared styles from `activity.module.css` for buttons, controls, and layout to maintain visual consistency across modules.
+import type { ActivityProps } from '@/lib/types';
+import shared from '@/modules/activity.module.css';
 
-### Navigation URLs
+export default function Activity({}: ActivityProps) {
+  return (
+    <div className={shared.activityArea}>
+      {/* Your interactive activity */}
+    </div>
+  );
+}
+```
 
-- `/` — grid of grades (Reception, Year 1, Year 2, ...)
-- `/1` — subjects available in Year 1
-- `/1/mathematics` — activity cards for Year 1 Mathematics
-- `/activity/number-scale-explorer` — the actual activity (flat URL, stable)
+Activity components are always client components (`'use client'`). They manage their own state and UI. They are automatically wrapped in `ActivityShell` by the platform — do not wrap them yourself.
 
-## Deployment
+### 4. Create the barrel export
 
-Push to `main` → Vercel auto-deploys. No manual build steps.
+```typescript
+// modules/my-activity/index.ts
+import dynamic from 'next/dynamic';
+export { config } from './config';
+export { default as translations } from './translations';
+export const component = dynamic(() => import('./Activity'));
+```
 
-Environment variables needed:
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+This exact pattern is required. The registry imports the namespace and expects `config`, `translations`, and `component`.
+
+### 5. Register in the registry
+
+In `/modules/registry.ts`:
+
+```typescript
+import * as myActivity from './my-activity';
+```
+
+Then add `myActivity` to the `moduleEntries` array.
+
+Done — the module appears on the homepage under its subject, sorted by difficulty.
+
+## Language / i18n
+
+Languages: `'en' | 'fr'` (defined in `/lib/language-config.ts`).
+
+How it works:
+- Language preference is stored in a cookie (`lang`)
+- Server side: `getLanguage()` from `/lib/language-server.ts` reads the cookie
+- Client side: `useLanguage()` from `/lib/language.tsx` returns `{ language, setLanguage }`
+- Root layout wraps everything in `<LanguageProvider initialLanguage={lang}>`
+- The `LanguageSelector` component (in the header) lets users switch
+
+Modules provide translations via `translations.ts`. The registry uses `title` and `description` for metadata. Activity components can import their own `translations` and use `useLanguage()` to access the current language and all their custom keys.
+
+## Shared Styles
+
+`/modules/activity.module.css` provides reusable classes that all modules should use for visual consistency:
+
+| Class | Purpose |
+|-------|---------|
+| `.activityArea` | Main activity container (min-height, padding, card background, shadow) |
+| `.controlsBar` | Horizontal bar for controls (flex, wrap, card style) |
+| `.controlGroup` | Group of related controls with label |
+| `.controlButtons` | Flex container for action buttons |
+| `.btn` | Base button (bold, rounded, 48px min-height, press animation) |
+| `.btnPrimary` | Green button (#00b894) |
+| `.btnDanger` | Red button (#e17055) |
+| `.btnSecondary` | Purple button (#6c5ce7) |
+| `.feedbackCorrect` | Green text for correct answers |
+| `.feedbackIncorrect` | Red text for incorrect answers |
+
+Import as: `import shared from '@/modules/activity.module.css';`
+
+## Key Types
+
+From `/lib/types.ts`:
+
+```typescript
+type Subject = 'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'physics';
+
+interface ModuleConfig {
+  slug: string;
+  title: string;
+  description: string;
+  subject: Subject;
+  difficulty: number;       // 1 (easiest) to 10 (hardest)
+  icon?: string;
+  estimatedMinutes?: number;
+}
+
+interface ActivityProps {}   // empty, extensible
+```
+
+From `/lib/language-config.ts`:
+
+```typescript
+type Language = 'en' | 'fr';
+```
+
+Label maps: `SUBJECT_LABELS` (per-language subject names) and `UI_LABELS` (per-language UI strings) are in `/lib/types.ts`.
+
+## Shared Components
+
+In `/components`:
+
+| Component | Role |
+|-----------|------|
+| `ActivityShell` | Wraps every activity with description + consistent layout. Applied automatically by `ActivityLoader` — modules do not use it directly. |
+| `Header` | Top bar: breadcrumbs + language selector |
+| `Footer` | Footer: open-source note, GitHub link, feedback dialog |
+| `Breadcrumb` | Syncs breadcrumb state from route |
+| `ModuleCard` | Card linking to an activity (title, description, difficulty) |
+| `LanguageSelector` | Dropdown to switch language |
+
+## App Layout
+
+The root layout (`/app/layout.tsx`) provides:
+- `<LanguageProvider>` — wraps everything with language context
+- `<BreadcrumbProvider>` — breadcrumb state
+- `<Header>` and `<Footer>` — consistent chrome
+- `<main className="container">` — Pico CSS container around page content
+
+## How an Activity Loads
+
+1. User navigates to `/activity/[slug]`
+2. `page.tsx` (server component) looks up the module config and translated metadata, renders breadcrumb + title + `<ActivityLoader>`
+3. `ActivityLoader.tsx` (client component) calls `getActivityComponent(slug)` to get the dynamically imported component, wraps it in `<ActivityShell>`
+4. The module's `Activity.tsx` renders with its own state and UI
+
+## Server Actions
+
+`/app/actions/feedback.ts` — a server action for sending feedback emails via Resend. No API routes exist.
