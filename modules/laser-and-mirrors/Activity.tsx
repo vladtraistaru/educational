@@ -1,57 +1,212 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import type { ActivityProps } from '@/lib/types';
 import { useLanguage } from '@/lib/language';
 import shared from '@/modules/activity.module.css';
 import translations from './translations';
 import styles from './Activity.module.css';
 import {
-  DEFAULT_LASER_POS, DEFAULT_LASER_ANGLE, DEFAULT_MIRRORS,
-  type Point, type Mirror,
+  traceBeam, DEFAULT_LASER_POS, DEFAULT_LASER_ANGLE, DEFAULT_MIRRORS,
+  LASER_HALF, MIRROR_HALF,
+  type Mirror,
 } from './optics';
-import OpticsCanvas from './OpticsCanvas';
+
+interface ShapeData {
+  id: string;
+  type: 'laser' | 'mirror';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+  fill: string;
+}
+
+const DEG_TO_RAD = Math.PI / 180;
+const RAD_TO_DEG = 180 / Math.PI;
+const VIRTUAL_W = 800;
+const VIRTUAL_H = 500;
+
+const INITIAL_SHAPES: ShapeData[] = [
+  {
+    id: 'l1', type: 'laser',
+    x: DEFAULT_LASER_POS.x, y: DEFAULT_LASER_POS.y,
+    width: LASER_HALF * 2, height: 24,
+    rotation: DEFAULT_LASER_ANGLE * RAD_TO_DEG, fill: '#d63031',
+  },
+  ...DEFAULT_MIRRORS.map((m) => ({
+    id: `m${m.id}`, type: 'mirror' as const,
+    x: m.pos.x, y: m.pos.y,
+    width: MIRROR_HALF * 2, height: 3,
+    rotation: m.angle * RAD_TO_DEG, fill: '#2d3436',
+  })),
+];
+
+let Konva: typeof import('react-konva') | null = null;
 
 export default function LaserAndMirrors(_props: ActivityProps) {
+  const [shapes, setShapes] = useState<ShapeData[]>(INITIAL_SHAPES);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [laserOn, setLaserOn] = useState(false);
   const [animating, setAnimating] = useState(false);
-  const [laserPos, setLaserPos] = useState(DEFAULT_LASER_POS);
-  const [laserAngle, setLaserAngle] = useState(DEFAULT_LASER_ANGLE);
-  const [mirrors, setMirrors] = useState<Mirror[]>(DEFAULT_MIRRORS);
+  const [konvaLoaded, setKonvaLoaded] = useState(false);
+  const [stageWidth, setStageWidth] = useState(VIRTUAL_W);
+  const [beamTravel, setBeamTravel] = useState(Infinity);
   const nextId = useRef(2);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const transformerRef = useRef<any>(null);
+  const shapeRefs = useRef<Record<string, any>>({});
+  const shapesRef = useRef(shapes);
+  shapesRef.current = shapes;
   const { language } = useLanguage();
   const t = translations[language];
 
   const handleToggle = () => {
     const wasOff = !laserOn;
     setLaserOn(!laserOn);
-    if (wasOff) setAnimating(true);
+    if (wasOff) {
+      setAnimating(true);
+      setBeamTravel(0);
+    }
   };
+
+  const beamSegments = useMemo(() => {
+    if (!laserOn) return [];
+    const laser = shapes.find((s) => s.type === 'laser');
+    if (!laser) return [];
+    const mirrors: Mirror[] = shapes
+      .filter((s) => s.type === 'mirror')
+      .map((s, i) => ({ id: i, pos: { x: s.x, y: s.y }, angle: s.rotation * DEG_TO_RAD }));
+    return traceBeam({ x: laser.x, y: laser.y }, laser.rotation * DEG_TO_RAD, mirrors);
+  }, [shapes, laserOn]);
+
+  const beamSegmentsRef = useRef(beamSegments);
+  beamSegmentsRef.current = beamSegments;
 
   useEffect(() => {
     if (!animating) return;
-    const id = setTimeout(() => setAnimating(false), 900);
-    return () => clearTimeout(id);
+    const totalLen = beamSegmentsRef.current.reduce((sum, s) => sum + s.length, 0);
+    if (!totalLen) { setAnimating(false); setBeamTravel(Infinity); return; }
+    const SPEED = 600;
+    let start: number | null = null;
+    let raf: number;
+    const tick = (ts: number) => {
+      if (!start) start = ts;
+      const traveled = ((ts - start) / 1000) * SPEED;
+      setBeamTravel(traveled);
+      if (traveled >= totalLen) {
+        setBeamTravel(Infinity);
+        setAnimating(false);
+      } else {
+        raf = requestAnimationFrame(tick);
+      }
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [animating]);
 
-  const stopAnimation = useCallback(() => setAnimating(false), []);
+  useEffect(() => {
+    import('react-konva').then((mod) => { Konva = mod; setKonvaLoaded(true); });
+  }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => setStageWidth(entry.contentRect.width));
+    observer.observe(el);
+    setStageWidth(el.clientWidth);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!transformerRef.current) return;
+    const node = selectedId ? shapeRefs.current[selectedId] : null;
+    const tr = transformerRef.current;
+    tr.nodes(node ? [node] : []);
+    tr.getLayer()?.batchDraw();
+  }, [selectedId, konvaLoaded]);
+
+  const scale = stageWidth / VIRTUAL_W;
+  const stageHeight = VIRTUAL_H * scale;
+
+  const handleDragMove = useCallback((id: string, e: any) => {
+    setShapes((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, x: e.target.x(), y: e.target.y() } : s)),
+    );
+  }, []);
+
+  const handleTransform = useCallback((id: string, e: any) => {
+    const node = e.target;
+    const newRotation = node.rotation();
+    const current = shapesRef.current.find((s) => s.id === id);
+    if (current) { node.x(current.x); node.y(current.y); }
+    node.scaleX(1);
+    node.scaleY(1);
+    setShapes((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, rotation: newRotation } : s)),
+    );
+  }, []);
 
   const addMirror = () => {
     const id = nextId.current++;
-    setMirrors((prev) => [
+    setShapes((prev) => [
       ...prev,
-      { id, pos: { x: 300 + id * 40, y: 200 }, angle: -Math.PI / 4 },
+      { id: `m${id}`, type: 'mirror', x: 300 + id * 40, y: 200, width: MIRROR_HALF * 2, height: 3, rotation: -45, fill: '#2d3436' },
     ]);
   };
 
-  const handleMirrorChange = useCallback(
-    (id: number, pos: Point, angle: number) => {
-      setMirrors((prev) =>
-        prev.map((m) => (m.id === id ? { ...m, pos, angle } : m)),
-      );
-    },
-    [],
-  );
+  if (!konvaLoaded || !Konva) {
+    return (
+      <div ref={containerRef} style={{ width: '100%', minHeight: 200 }}>
+        Loading canvas...
+      </div>
+    );
+  }
+
+  const { Stage, Layer, Rect, Circle, Line, Group, Transformer } = Konva;
+
+  const renderShape = (s: ShapeData) => {
+    const ref = (node: any) => { if (node) shapeRefs.current[s.id] = node; };
+    const common = {
+      x: s.x, y: s.y, rotation: s.rotation, draggable: true,
+      onClick: () => setSelectedId(s.id),
+      onTap: () => setSelectedId(s.id),
+      onDragMove: (e: any) => handleDragMove(s.id, e),
+      onTransform: (e: any) => handleTransform(s.id, e),
+    };
+
+    switch (s.type) {
+      case 'laser': {
+        const hw = s.width / 2;
+        const hh = s.height / 2;
+        return (
+          <Group key={s.id} ref={ref} {...common}>
+            <Rect width={s.width} height={s.height} offsetX={hw} offsetY={hh} fill={s.fill} cornerRadius={4} />
+            <Line points={[hw, -hh, hw + 12, 0, hw, hh]} fill="#b71c1c" closed />
+            <Circle x={hw + 12} r={5} fill="#ff7675" />
+            <Circle x={hw + 12} r={9} fill="rgba(255,118,117,0.3)" />
+          </Group>
+        );
+      }
+      case 'mirror':
+        return (
+          <Group key={s.id} ref={ref} {...common}>
+            <Rect
+              x={-s.width / 2} y={-10}
+              width={s.width} height={20}
+              fill="transparent"
+            />
+            <Line points={[-s.width / 2, 0, s.width / 2, 0]} stroke={s.fill} strokeWidth={s.height} lineCap="round" />
+          </Group>
+        );
+    }
+  };
+
+  const cumLengths = beamSegments.reduce<number[]>((acc, seg, i) => {
+    acc.push(i === 0 ? 0 : acc[i - 1] + beamSegments[i - 1].length);
+    return acc;
+  }, []);
 
   return (
     <>
@@ -62,25 +217,49 @@ export default function LaserAndMirrors(_props: ActivityProps) {
         >
           {laserOn ? '⏹' : '💡'} {laserOn ? t.turnOff : t.shine}
         </button>
-        <button
-          className={`${shared.btnSecondary} ${styles.toggleBtn}`}
-          onClick={addMirror}
-        >
+        <button className={`${shared.btnSecondary} ${styles.toggleBtn}`} onClick={addMirror}>
           + {t.addMirror}
         </button>
       </div>
-
-      <OpticsCanvas
-        laserOn={laserOn}
-        animating={animating}
-        laserPos={laserPos}
-        laserAngle={laserAngle}
-        mirrors={mirrors}
-        onLaserPosChange={setLaserPos}
-        onLaserAngleChange={setLaserAngle}
-        onMirrorChange={handleMirrorChange}
-        onInteractionStart={stopAnimation}
-      />
+      <div ref={containerRef} className={styles.canvas}>
+        <Stage
+          width={stageWidth} height={stageHeight}
+          scaleX={scale} scaleY={scale}
+          onPointerDown={(e: any) => { if (e.target === e.target.getStage()) setSelectedId(null); }}
+        >
+          <Layer>
+            {beamSegments.map((seg, i) => {
+              const remaining = beamTravel - cumLengths[i];
+              if (remaining <= 0) return null;
+              const frac = Math.min(remaining / seg.length, 1);
+              const toX = seg.from.x + (seg.to.x - seg.from.x) * frac;
+              const toY = seg.from.y + (seg.to.y - seg.from.y) * frac;
+              return (
+                <Line
+                  key={`beam-${i}`}
+                  points={[seg.from.x, seg.from.y, toX, toY]}
+                  stroke="#ff3333" strokeWidth={3} lineCap="round"
+                  shadowColor="rgba(255,50,50,0.6)" shadowBlur={6} shadowEnabled
+                  listening={false}
+                />
+              );
+            })}
+            {shapes.map(renderShape)}
+            <Transformer
+              ref={transformerRef}
+              rotateEnabled
+              rotateAnchorOffset={25}
+              rotateAnchorCursor="crosshair"
+              anchorCornerRadius={10}
+              enabledAnchors={[]}
+              padding={0}
+              borderStrokeWidth={1}
+              anchorSize={20}
+              boundBoxFunc={(_old: any, newBox: any) => ({ ...newBox, width: _old.width, height: _old.height })}
+            />
+          </Layer>
+        </Stage>
+      </div>
     </>
   );
 }

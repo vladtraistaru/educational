@@ -16,51 +16,7 @@
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-}
-
-.canvas svg {
-  display: block;
-  width: 100%;
-  height: auto;
   touch-action: none;
-}
-
-.draggable {
-  cursor: grab;
-}
-
-.draggable:active {
-  cursor: grabbing;
-}
-
-.rotateHandle {
-  fill: rgba(108, 92, 231, 0.15);
-  stroke: #6c5ce7;
-  stroke-width: 2;
-  stroke-dasharray: 4 2;
-  cursor: crosshair;
-}
-
-.rotateHandle:hover {
-  fill: rgba(108, 92, 231, 0.4);
-}
-
-.beam {
-  stroke: #ff3333;
-  stroke-width: 3;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 4px rgba(255, 50, 50, 0.6));
-}
-
-.beamIncidentAnim {
-  composes: beam;
-  animation: drawBeam 0.5s ease-out forwards;
-}
-
-@keyframes drawBeam {
-  to {
-    stroke-dashoffset: 0;
-  }
 }
 
 @media (max-width: 480px) {
