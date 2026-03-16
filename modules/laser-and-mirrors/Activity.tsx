@@ -194,10 +194,12 @@ export default function LaserAndMirrors(_props: ActivityProps) {
 
   const addMirror = () => {
     const id = nextId.current++;
+    const newId = `m${id}`;
     setShapes((prev) => [
       ...prev,
-      { id: `m${id}`, type: 'mirror', x: 300 + id * 40, y: 200, width: MIRROR_HALF * 2, height: 3, rotation: -45, fill: '#2d3436' },
+      { id: newId, type: 'mirror', x: 300 + id * 40, y: 200, width: MIRROR_HALF * 2, height: 3, rotation: -45, fill: '#2d3436' },
     ]);
+    setSelectedId(newId);
   };
 
   const [wallMirrors, setWallMirrors] = useState(false);
