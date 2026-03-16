@@ -7,7 +7,7 @@ import shared from '@/modules/activity.module.css';
 import translations from './translations';
 import styles from './Activity.module.css';
 import {
-  traceBeam, DEFAULT_LASER_POS, DEFAULT_LASER_ANGLE, DEFAULT_MIRRORS,
+  traceBeam, DEFAULT_LASER_POS, DEFAULT_LASER_ANGLE, DEFAULT_MIRRORS, DEFAULT_BEAM_MAX,
   LASER_HALF, MIRROR_HALF,
   type Mirror,
 } from './optics';
@@ -53,6 +53,10 @@ export default function LaserAndMirrors(_props: ActivityProps) {
   const [konvaLoaded, setKonvaLoaded] = useState(false);
   const [stageWidth, setStageWidth] = useState(VIRTUAL_W);
   const [beamTravel, setBeamTravel] = useState(Infinity);
+  const [lightSpeed, setLightSpeed] = useState(600);
+  const lightSpeedRef = useRef(lightSpeed);
+  lightSpeedRef.current = lightSpeed;
+  const [beamMax, setBeamMax] = useState(DEFAULT_BEAM_MAX);
   const nextId = useRef(2);
   const containerRef = useRef<HTMLDivElement>(null);
   const transformerRef = useRef<any>(null);
@@ -66,8 +70,11 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     const wasOff = !laserOn;
     setLaserOn(!laserOn);
     if (wasOff) {
-      setAnimating(true);
       setBeamTravel(0);
+      setAnimating(true);
+    } else {
+      setAnimating(false);
+      setBeamTravel(Infinity);
     }
   };
 
@@ -78,8 +85,8 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     const mirrors: Mirror[] = shapes
       .filter((s) => s.type === 'mirror')
       .map((s, i) => ({ id: i, pos: { x: s.x, y: s.y }, angle: s.rotation * DEG_TO_RAD }));
-    return traceBeam({ x: laser.x, y: laser.y }, laser.rotation * DEG_TO_RAD, mirrors);
-  }, [shapes, laserOn]);
+    return traceBeam({ x: laser.x, y: laser.y }, laser.rotation * DEG_TO_RAD, mirrors, beamMax, { w: VIRTUAL_W, h: VIRTUAL_H });
+  }, [shapes, laserOn, beamMax]);
 
   const beamSegmentsRef = useRef(beamSegments);
   beamSegmentsRef.current = beamSegments;
@@ -87,13 +94,16 @@ export default function LaserAndMirrors(_props: ActivityProps) {
   useEffect(() => {
     if (!animating) return;
     const totalLen = beamSegmentsRef.current.reduce((sum, s) => sum + s.length, 0);
-    if (!totalLen) { setAnimating(false); setBeamTravel(Infinity); return; }
-    const SPEED = 600;
-    let start: number | null = null;
+    if (!totalLen || lightSpeedRef.current === Infinity) {
+      setBeamTravel(Infinity); setAnimating(false); return;
+    }
+    let prev: number | null = null;
+    let traveled = 0;
     let raf: number;
     const tick = (ts: number) => {
-      if (!start) start = ts;
-      const traveled = ((ts - start) / 1000) * SPEED;
+      if (!prev) prev = ts;
+      traveled += ((ts - prev) / 1000) * lightSpeedRef.current;
+      prev = ts;
       setBeamTravel(traveled);
       if (traveled >= totalLen) {
         setBeamTravel(Infinity);
@@ -156,6 +166,34 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     ]);
   };
 
+  const [wallMirrors, setWallMirrors] = useState(false);
+
+  const toggleWallMirrors = () => {
+    if (wallMirrors) {
+      setShapes((prev) => prev.filter((s) => !s.id.startsWith('wall-')));
+    } else {
+      const W = VIRTUAL_W;
+      const H = VIRTUAL_H;
+      const mw = MIRROR_HALF * 2;
+      const walls: ShapeData[] = [];
+      const margin = 5;
+      const countH = Math.ceil(W / mw);
+      const countV = Math.ceil(H / mw);
+      for (let i = 0; i < countH; i++) {
+        const x = margin + mw / 2 + i * mw;
+        walls.push({ id: `wall-t${i}`, type: 'mirror', x, y: margin, width: mw, height: 3, rotation: 0, fill: '#636e72' });
+        walls.push({ id: `wall-b${i}`, type: 'mirror', x, y: H - margin, width: mw, height: 3, rotation: 0, fill: '#636e72' });
+      }
+      for (let i = 0; i < countV; i++) {
+        const y = margin + mw / 2 + i * mw;
+        walls.push({ id: `wall-l${i}`, type: 'mirror', x: margin, y, width: mw, height: 3, rotation: 90, fill: '#636e72' });
+        walls.push({ id: `wall-r${i}`, type: 'mirror', x: W - margin, y, width: mw, height: 3, rotation: 90, fill: '#636e72' });
+      }
+      setShapes((prev) => [...prev, ...walls]);
+    }
+    setWallMirrors(!wallMirrors);
+  };
+
   if (!konvaLoaded || !Konva) {
     return (
       <div ref={containerRef} style={{ width: '100%', minHeight: 200 }}>
@@ -208,6 +246,9 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     return acc;
   }, []);
 
+  const totalBeamLength = beamSegments.reduce((sum, s) => sum + s.length, 0);
+  const visibleLength = Math.min(beamTravel, totalBeamLength);
+
   return (
     <>
       <div className={styles.buttonRow}>
@@ -220,6 +261,38 @@ export default function LaserAndMirrors(_props: ActivityProps) {
         <button className={`${shared.btnSecondary} ${styles.toggleBtn}`} onClick={addMirror}>
           + {t.addMirror}
         </button>
+        <button
+          className={`${wallMirrors ? shared.btnDanger : shared.btnSecondary} ${styles.toggleBtn}`}
+          onClick={toggleWallMirrors}
+        >
+          {wallMirrors ? '✕' : '▢'} Walls
+        </button>
+        <label className={styles.speedSlider}>
+          🐢
+          <input
+            type="range" min={50} max={10000} step={50}
+            value={lightSpeed === Infinity ? 10000 : lightSpeed}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setLightSpeed(v >= 10000 ? Infinity : v);
+            }}
+          />
+          ⚡
+        </label>
+        <label className={styles.speedSlider}>
+          ✂️
+          <input
+            type="range" min={200} max={5000} step={100}
+            value={beamMax}
+            onChange={(e) => setBeamMax(Number(e.target.value))}
+          />
+          ♾️
+        </label>
+        {laserOn && (
+          <span className={styles.rayCounter}>
+            📏 {Math.round(visibleLength)} px
+          </span>
+        )}
       </div>
       <div ref={containerRef} className={styles.canvas}>
         <Stage
