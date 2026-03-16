@@ -1,18 +1,44 @@
 # Educational Platform
 
-An open-source educational platform for primary school children and beyond.
+An open-source educational platform for primary school children and beyond. Interactive activities organized by subject and difficulty, available in English and French.
 
 All code in this project is AI-driven — written entirely through AI coding tools.
 
-## Current Tools
+## Activities
 
-### Number Scale Explorer
+### Mathematics
 
-An interactive number line for exploring part-whole relationships and number decomposition. Drag markers to split a number line into segments and see how numbers break apart.
+| Activity | Description | Difficulty |
+|----------|-------------|:----------:|
+| Shape Explorer | Discover 2D shapes, count their sides and corners, and see where they appear in the real world | 2 |
+| Number Scale Explorer | Drag markers on a number line to explore how numbers split into parts | 3 |
+| Multiplication Patterns | Build arrays, explore the times table grid, and discover hidden patterns | 3 |
+| 3D Shape Explorer | Spin and explore 3D shapes — learn about faces, edges and vertices | 4 |
+| Times Table Challenge | Test your times tables with timed quizzes and streak-based scoring | 4 |
+| Geometry Rules | Discover the 5 basic rules that all shapes and lines follow | 6 |
+
+### Physics
+
+| Activity | Description | Difficulty |
+|----------|-------------|:----------:|
+| Laser and Mirrors | An introduction to light, reflection and refraction | 3 |
 
 ## Tech
 
-Vanilla HTML, CSS, and JavaScript. No frameworks, no build step — just open `index.html` in a browser.
+- **Framework**: Next.js (App Router) with TypeScript
+- **Styling**: Pico CSS + CSS Modules
+- **Canvas**: react-konva, React Three Fiber
+- **Testing**: Vitest
+- **Hosting**: Vercel
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Tests: `npm test` or `npm run test:watch`.
 
 ## License
 
