@@ -6,6 +6,7 @@ export interface Mirror {
   id: number;
   pos: Point;
   angle: number;
+  halfWidth?: number;
 }
 
 export interface BeamSegment {
@@ -28,11 +29,12 @@ export const DEFAULT_BEAM_MAX = 1000;
 const BOUNCE_LIMIT = 500;
 
 function mirrorEndpoints(m: Mirror): [Point, Point] {
+  const hw = m.halfWidth ?? MIRROR_HALF;
   const c = Math.cos(m.angle);
   const s = Math.sin(m.angle);
   return [
-    { x: m.pos.x - c * MIRROR_HALF, y: m.pos.y - s * MIRROR_HALF },
-    { x: m.pos.x + c * MIRROR_HALF, y: m.pos.y + s * MIRROR_HALF },
+    { x: m.pos.x - c * hw, y: m.pos.y - s * hw },
+    { x: m.pos.x + c * hw, y: m.pos.y + s * hw },
   ];
 }
 
@@ -50,8 +52,9 @@ export function traceBeam(
 
   const segments: BeamSegment[] = [];
   let lastHitId = -1;
+  let remaining = beamMax;
 
-  for (let bounce = 0; bounce < BOUNCE_LIMIT; bounce++) {
+  for (let bounce = 0; bounce < BOUNCE_LIMIT && remaining > 0; bounce++) {
     let bestT = Infinity;
     let bestMirror: Mirror | null = null;
 
@@ -66,7 +69,7 @@ export function traceBeam(
     }
 
     if (!bestMirror || bestT === Infinity) {
-      let t = beamMax;
+      let t = remaining;
       if (bounds) {
         const edges = [];
         if (dx > 0) edges.push((bounds.w - ox) / dx);
@@ -84,9 +87,19 @@ export function traceBeam(
       break;
     }
 
+    if (bestT >= remaining) {
+      segments.push({
+        from: { x: ox, y: oy },
+        to: { x: ox + dx * remaining, y: oy + dy * remaining },
+        length: remaining,
+      });
+      break;
+    }
+
     const hx = ox + dx * bestT;
     const hy = oy + dy * bestT;
     segments.push({ from: { x: ox, y: oy }, to: { x: hx, y: hy }, length: bestT });
+    remaining -= bestT;
 
     const ms = Math.sin(bestMirror.angle);
     const mc = Math.cos(bestMirror.angle);

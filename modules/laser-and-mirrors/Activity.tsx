@@ -27,6 +27,7 @@ const DEG_TO_RAD = Math.PI / 180;
 const RAD_TO_DEG = 180 / Math.PI;
 const VIRTUAL_W = 800;
 const VIRTUAL_H = 500;
+const MIN_MIRROR_WIDTH = 50;
 
 const INITIAL_SHAPES: ShapeData[] = [
   {
@@ -84,7 +85,7 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     if (!laser) return [];
     const mirrors: Mirror[] = shapes
       .filter((s) => s.type === 'mirror')
-      .map((s, i) => ({ id: i, pos: { x: s.x, y: s.y }, angle: s.rotation * DEG_TO_RAD }));
+      .map((s, i) => ({ id: i, pos: { x: s.x, y: s.y }, angle: s.rotation * DEG_TO_RAD, halfWidth: s.width / 2 }));
     return traceBeam({ x: laser.x, y: laser.y }, laser.rotation * DEG_TO_RAD, mirrors, beamMax, { w: VIRTUAL_W, h: VIRTUAL_H });
   }, [shapes, laserOn, beamMax]);
 
@@ -129,13 +130,17 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     return () => observer.disconnect();
   }, []);
 
+  const selectedShape = shapes.find((s) => s.id === selectedId);
+  const isMirrorSelected = selectedShape?.type === 'mirror';
+
   useEffect(() => {
     if (!transformerRef.current) return;
     const node = selectedId ? shapeRefs.current[selectedId] : null;
     const tr = transformerRef.current;
     tr.nodes(node ? [node] : []);
+    tr.enabledAnchors(isMirrorSelected ? ['middle-left', 'middle-right'] : []);
     tr.getLayer()?.batchDraw();
-  }, [selectedId, konvaLoaded]);
+  }, [selectedId, konvaLoaded, isMirrorSelected]);
 
   const scale = stageWidth / VIRTUAL_W;
   const stageHeight = VIRTUAL_H * scale;
@@ -148,14 +153,34 @@ export default function LaserAndMirrors(_props: ActivityProps) {
 
   const handleTransform = useCallback((id: string, e: any) => {
     const node = e.target;
-    const newRotation = node.rotation();
     const current = shapesRef.current.find((s) => s.id === id);
-    if (current) { node.x(current.x); node.y(current.y); }
-    node.scaleX(1);
-    node.scaleY(1);
-    setShapes((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, rotation: newRotation } : s)),
-    );
+    if (current?.type !== 'mirror') {
+      if (current) { node.x(current.x); node.y(current.y); }
+      node.scaleX(1);
+      node.scaleY(1);
+      setShapes((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, rotation: node.rotation() } : s)),
+      );
+    }
+  }, []);
+
+  const handleTransformEnd = useCallback((id: string, e: any) => {
+    const node = e.target;
+    const current = shapesRef.current.find((s) => s.id === id);
+    if (current?.type === 'mirror') {
+      const newWidth = Math.max(current.width * node.scaleX(), MIN_MIRROR_WIDTH);
+      const newX = node.x();
+      const newY = node.y();
+      node.scaleX(1);
+      node.scaleY(1);
+      setShapes((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, x: newX, y: newY, width: newWidth, rotation: node.rotation() } : s)),
+      );
+      requestAnimationFrame(() => {
+        transformerRef.current?.forceUpdate();
+        transformerRef.current?.getLayer()?.batchDraw();
+      });
+    }
   }, []);
 
   const addMirror = () => {
@@ -212,6 +237,7 @@ export default function LaserAndMirrors(_props: ActivityProps) {
       onTap: () => setSelectedId(s.id),
       onDragMove: (e: any) => handleDragMove(s.id, e),
       onTransform: (e: any) => handleTransform(s.id, e),
+      onTransformEnd: (e: any) => handleTransformEnd(s.id, e),
     };
 
     switch (s.type) {
@@ -267,33 +293,38 @@ export default function LaserAndMirrors(_props: ActivityProps) {
         >
           {wallMirrors ? '✕' : '▢'} Walls
         </button>
-        <label className={styles.speedSlider}>
-          🐢
-          <input
-            type="range" min={50} max={10000} step={50}
-            value={lightSpeed === Infinity ? 10000 : lightSpeed}
-            onChange={(e) => {
-              const v = Number(e.target.value);
-              setLightSpeed(v >= 10000 ? Infinity : v);
-            }}
-          />
-          ⚡
-        </label>
-        <label className={styles.speedSlider}>
-          ✂️
-          <input
-            type="range" min={200} max={5000} step={100}
-            value={beamMax}
-            onChange={(e) => setBeamMax(Number(e.target.value))}
-          />
-          ♾️
-        </label>
         {laserOn && (
           <span className={styles.rayCounter}>
             📏 {Math.round(visibleLength)} px
           </span>
         )}
       </div>
+      <details className={styles.advanced}>
+        <summary>⚙️ Advanced</summary>
+        <div className={styles.advancedControls}>
+          <label className={styles.speedSlider}>
+            🐢 Speed
+            <input
+              type="range" min={50} max={10000} step={50}
+              value={lightSpeed === Infinity ? 10000 : lightSpeed}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setLightSpeed(v >= 10000 ? Infinity : v);
+              }}
+            />
+            {lightSpeed === Infinity ? '∞' : lightSpeed}
+          </label>
+          <label className={styles.speedSlider}>
+            ✂️ Beam length
+            <input
+              type="range" min={200} max={100000} step={200}
+              value={beamMax}
+              onChange={(e) => setBeamMax(Number(e.target.value))}
+            />
+            {beamMax}
+          </label>
+        </div>
+      </details>
       <div ref={containerRef} className={styles.canvas}>
         <Stage
           width={stageWidth} height={stageHeight}
@@ -324,11 +355,14 @@ export default function LaserAndMirrors(_props: ActivityProps) {
               rotateAnchorOffset={25}
               rotateAnchorCursor="crosshair"
               anchorCornerRadius={10}
-              enabledAnchors={[]}
               padding={0}
               borderStrokeWidth={1}
               anchorSize={20}
-              boundBoxFunc={(_old: any, newBox: any) => ({ ...newBox, width: _old.width, height: _old.height })}
+              boundBoxFunc={(_old: any, newBox: any) => ({
+                ...newBox,
+                width: Math.max(newBox.width, 50),
+                height: _old.height,
+              })}
             />
           </Layer>
         </Stage>

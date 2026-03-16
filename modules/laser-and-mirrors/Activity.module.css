@@ -33,6 +33,24 @@
   min-width: 36px;
 }
 
+.advanced {
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.advanced summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.advancedControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
 .canvas {
   background: var(--pico-card-background-color);
   border-radius: 16px;
