@@ -25,7 +25,7 @@ export const DEFAULT_MIRRORS: Mirror[] = [
 export const LASER_HALF = 30;
 export const MIRROR_HALF = 60;
 
-export const DEFAULT_BEAM_MAX = 1000;
+export const DEFAULT_BEAM_MAX = 30000;
 const BOUNCE_LIMIT = 500;
 
 function mirrorEndpoints(m: Mirror): [Point, Point] {
