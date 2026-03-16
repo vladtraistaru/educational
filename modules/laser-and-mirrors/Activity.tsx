@@ -154,8 +154,20 @@ export default function LaserAndMirrors(_props: ActivityProps) {
   const handleTransform = useCallback((id: string, e: any) => {
     const node = e.target;
     const current = shapesRef.current.find((s) => s.id === id);
-    if (current?.type !== 'mirror') {
-      if (current) { node.x(current.x); node.y(current.y); }
+    if (!current) return;
+
+    if (current.type === 'mirror') {
+      const newWidth = Math.max(node.width() * node.scaleX(), MIN_MIRROR_WIDTH);
+      node.scaleX(1);
+      node.scaleY(1);
+      node.width(newWidth);
+      node.offsetX(newWidth / 2);
+      setShapes((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, x: node.x(), y: node.y(), width: newWidth, rotation: node.rotation() } : s)),
+      );
+    } else {
+      node.x(current.x);
+      node.y(current.y);
       node.scaleX(1);
       node.scaleY(1);
       setShapes((prev) =>
@@ -168,18 +180,15 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     const node = e.target;
     const current = shapesRef.current.find((s) => s.id === id);
     if (current?.type === 'mirror') {
-      const newWidth = Math.max(current.width * node.scaleX(), MIN_MIRROR_WIDTH);
-      const newX = node.x();
-      const newY = node.y();
+      const scaleX = node.scaleX();
+      const newWidth = Math.max(node.width() * scaleX, MIN_MIRROR_WIDTH);
       node.scaleX(1);
       node.scaleY(1);
+      node.width(newWidth);
+      node.offsetX(newWidth / 2);
       setShapes((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, x: newX, y: newY, width: newWidth, rotation: node.rotation() } : s)),
+        prev.map((s) => (s.id === id ? { ...s, x: node.x(), y: node.y(), width: newWidth, rotation: node.rotation() } : s)),
       );
-      requestAnimationFrame(() => {
-        transformerRef.current?.forceUpdate();
-        transformerRef.current?.getLayer()?.batchDraw();
-      });
     }
   }, []);
 
@@ -255,14 +264,12 @@ export default function LaserAndMirrors(_props: ActivityProps) {
       }
       case 'mirror':
         return (
-          <Group key={s.id} ref={ref} {...common}>
-            <Rect
-              x={-s.width / 2} y={-10}
-              width={s.width} height={20}
-              fill="transparent"
-            />
-            <Line points={[-s.width / 2, 0, s.width / 2, 0]} stroke={s.fill} strokeWidth={s.height} lineCap="round" />
-          </Group>
+          <Rect key={s.id} ref={ref} {...common}
+            width={s.width} height={s.height}
+            offsetX={s.width / 2} offsetY={s.height / 2}
+            fill={s.fill} cornerRadius={2}
+            hitStrokeWidth={20}
+          />
         );
     }
   };
@@ -352,17 +359,19 @@ export default function LaserAndMirrors(_props: ActivityProps) {
             <Transformer
               ref={transformerRef}
               rotateEnabled
+              flipEnabled={false}
               rotateAnchorOffset={25}
               rotateAnchorCursor="crosshair"
               anchorCornerRadius={10}
               padding={0}
               borderStrokeWidth={1}
               anchorSize={20}
-              boundBoxFunc={(_old: any, newBox: any) => ({
-                ...newBox,
-                width: Math.max(newBox.width, 50),
-                height: _old.height,
-              })}
+              boundBoxFunc={(oldBox: any, newBox: any) => {
+                if (Math.abs(newBox.width) < MIN_MIRROR_WIDTH) {
+                  return oldBox;
+                }
+                return newBox;
+              }}
             />
           </Layer>
         </Stage>
