@@ -1,0 +1,139 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rulerWrap {
+  max-width: 100%;
+  padding: 0.5rem 0;
+}
+
+.contextLine {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  margin: 0;
+}
+
+.question {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 0.35rem;
+  line-height: 1.35;
+}
+
+.readSubtext {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  margin: 0 0 1rem;
+  line-height: 1.45;
+  max-width: 36rem;
+}
+
+.rulerCard {
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 2px solid var(--pico-muted-border-color);
+  background: color-mix(in srgb, var(--pico-card-background-color) 92%, #00b894 8%);
+}
+
+.rulerLegend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 0.65rem;
+  color: var(--pico-color);
+}
+
+.greenSwatch {
+  width: 1.35rem;
+  height: 0.65rem;
+  border-radius: 4px;
+  background: #00b894;
+  flex-shrink: 0;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+}
+
+.readChoices {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.chooseLegend {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0 0 0.65rem;
+  padding: 0;
+}
+
+.choiceGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.choiceBtn {
+  min-width: 5.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.pickHint {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  margin: 0.35rem 0 0;
+  min-height: 1.35rem;
+}
+
+.compareBars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.compareRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.barLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.barTrack {
+  height: 28px;
+  background: var(--pico-muted-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  min-width: 4px;
+  border-radius: 8px;
+  transition: width 0.25s ease;
+}
+
+.compareActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.feedbackRow {
+  min-height: 1.75rem;
+  font-weight: 700;
+}
+
+.nextRow {
+  margin-top: 0.25rem;
+}
