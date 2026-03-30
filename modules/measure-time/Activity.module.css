@@ -1,0 +1,250 @@
+.clockWrap {
+  margin: 0 auto;
+  touch-action: none;
+}
+
+.clockWrap[data-interactive='true'] {
+  cursor: pointer;
+}
+
+.clockSvg {
+  display: block;
+}
+
+.clockFace {
+  fill: var(--pico-card-background-color);
+  stroke: var(--pico-muted-border-color);
+  stroke-width: 3;
+}
+
+.tickMajor {
+  stroke: var(--pico-color);
+  stroke-width: 2;
+}
+
+.tickMinor {
+  stroke: var(--pico-muted-color);
+  stroke-width: 1;
+}
+
+.clockNumber {
+  fill: var(--pico-color);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.handHour {
+  stroke: var(--pico-color);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.handMinute {
+  stroke: #0984e3;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.handCap {
+  fill: var(--pico-color);
+}
+
+.exerciseBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.prompt {
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  max-width: 28rem;
+}
+
+.digitalPrompt {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.optionBtn {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-background-color);
+  color: var(--pico-color);
+  cursor: pointer;
+  min-height: 52px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.optionBtn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.optionBtn:disabled {
+  cursor: default;
+}
+
+.optionCorrect {
+  border-color: #00b894;
+  background: rgba(0, 184, 148, 0.12);
+}
+
+.optionWrong {
+  border-color: #d63031;
+  background: rgba(214, 48, 49, 0.1);
+}
+
+.optionDimmed {
+  opacity: 0.45;
+}
+
+.clockOptionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.clockOptionBtn {
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.clockOptionBtn:disabled {
+  cursor: default;
+}
+
+.clockOptionCorrect {
+  opacity: 1;
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px #00b894;
+}
+
+.clockOptionWrong {
+  opacity: 1;
+  border-radius: 12px;
+  box-shadow: 0 0 0 3px #d63031;
+}
+
+.clockOptionDimmed {
+  opacity: 0.45;
+}
+
+.setClockRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+
+.digitalPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+}
+
+.pickerField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+}
+
+.pickerSelect {
+  font-weight: 700;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  border: 2px solid var(--pico-muted-border-color);
+  min-height: 48px;
+  margin-bottom: 0;
+}
+
+.durationRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.durationLabel {
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.durationArrow {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--pico-muted-color);
+}
+
+.eventCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.eventCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  min-width: 10rem;
+}
+
+.eventTime {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.feedbackLine {
+  font-weight: 800;
+  font-size: 1.1rem;
+  min-height: 1.5rem;
+  text-align: center;
+}
+
+.nextRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
