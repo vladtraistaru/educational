@@ -33,6 +33,8 @@ Open-source educational platform for primary school children and beyond. Interac
 /modules      — educational activity modules (one folder per activity)
 /lib          — types, utilities, language helpers, shared subject logic
 /public       — static assets
+/docs         — reference docs; curricula in `/docs/curriculum/` (see `curriculum/README.md`; Suisse romande: `curriculum/romandie.md`)
+/specs        — product roadmap and planned modules (`specs/planned-modules.md`); not module specs — those live in each `/modules/<slug>/SPEC.md`
 ```
 
 ## Routing
@@ -65,6 +67,8 @@ Every educational activity is a self-contained **module** — a folder inside `/
   Activity.module.css   — scoped styles (most modules have this)
   SomeComponent.tsx     — sub-components to keep files under 200 lines
 ```
+
+Some `/modules/<slug>/` folders may exist with **only** `SPEC.md` while the activity is planned (see `specs/planned-modules.md`). Do not register them in `registry.ts` until the required files above are present.
 
 ### SPEC.md — Module Specification
 
