@@ -9,6 +9,9 @@ import * as shapeExplorer3d from './3d-shape-explorer';
 import * as multiplicationPatterns from './multiplication-patterns';
 import * as timesTableChallenge from './times-table-challenge';
 import * as laserAndMirrors from './laser-and-mirrors';
+import * as symmetryPlay from './symmetry-play';
+import * as measureTime from './measure-time';
+import * as measureLengths from './measure-lengths';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -25,7 +28,10 @@ const moduleEntries: ModuleEntry[] = [
   shapeExplorer3d,
   multiplicationPatterns,
   timesTableChallenge,
+  symmetryPlay,
   laserAndMirrors,
+  measureTime,
+  measureLengths,
 ];
 
 const modules = moduleEntries
