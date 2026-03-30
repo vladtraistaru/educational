@@ -6,6 +6,8 @@
 
 Open-source educational platform for primary school children and beyond. Interactive activities organized by subject and difficulty. Supports English and French.
 
+**License**: MIT — see `LICENSE` in the repository root.
+
 ## Tech Stack
 
 - **Framework**: Next.js (App Router)
