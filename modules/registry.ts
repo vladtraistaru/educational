@@ -13,6 +13,7 @@ import * as symmetryPlay from './symmetry-play';
 import * as measureTime from './measure-time';
 import * as measureLengths from './measure-lengths';
 import * as simpleCircuits from './simple-circuits';
+import * as conjugaisonPresent from './conjugaison-present';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -34,6 +35,7 @@ const moduleEntries: ModuleEntry[] = [
   measureTime,
   measureLengths,
   simpleCircuits,
+  conjugaisonPresent,
 ];
 
 const modules = moduleEntries

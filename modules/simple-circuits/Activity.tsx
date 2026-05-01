@@ -11,13 +11,14 @@ import CircuitCanvas from './CircuitCanvas';
 import { simulate } from './simulation';
 import {
   PlacedComponent,
+  Rotation,
   TerminalRef,
   WireLink,
   sameTerminal,
 } from './state';
 
 const INITIAL_PLACED: PlacedComponent[] = [
-  { id: 'battery', kind: 'battery', x: 400, y: 250 },
+  { id: 'battery', kind: 'battery', x: 400, y: 250, rotation: 0 },
 ];
 
 export default function SimpleCircuits(_props: ActivityProps) {
@@ -27,6 +28,7 @@ export default function SimpleCircuits(_props: ActivityProps) {
   const [placed, setPlaced] = useState<PlacedComponent[]>(INITIAL_PLACED);
   const [wires, setWires] = useState<WireLink[]>([]);
   const [pendingWireStart, setPendingWireStart] = useState<TerminalRef | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const nextId = useRef(1);
 
   const simResult = useMemo(() => simulate(placed, wires), [placed, wires]);
@@ -35,8 +37,20 @@ export default function SimpleCircuits(_props: ActivityProps) {
     const id = `${kind}-${nextId.current++}`;
     setPlaced((prev) => [
       ...prev,
-      { id, kind, x, y, ...(kind === 'switch' ? { closed: false } : {}) },
+      { id, kind, x, y, rotation: 0, ...(kind === 'switch' ? { closed: false } : {}) },
     ]);
+  }, []);
+
+  const handleSelect = useCallback((id: string | null) => {
+    setSelectedId(id);
+  }, []);
+
+  const handleRotate = useCallback((id: string) => {
+    setPlaced((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, rotation: ((c.rotation + 90) % 360) as Rotation } : c,
+      ),
+    );
   }, []);
 
   const handleMovePlaced = useCallback((id: string, x: number, y: number) => {
@@ -65,18 +79,23 @@ export default function SimpleCircuits(_props: ActivityProps) {
 
   const handleCanvasClick = useCallback(() => {
     setPendingWireStart(null);
+    setSelectedId(null);
   }, []);
 
   const handleReset = useCallback(() => {
     setPlaced(INITIAL_PLACED);
     setWires([]);
     setPendingWireStart(null);
+    setSelectedId(null);
     nextId.current = 1;
   }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setPendingWireStart(null);
+      if (e.key === 'Escape') {
+        setPendingWireStart(null);
+        setSelectedId(null);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -94,9 +113,12 @@ export default function SimpleCircuits(_props: ActivityProps) {
             placed={placed}
             wires={wires}
             pendingWireStart={pendingWireStart}
+            selectedId={selectedId}
             simResult={simResult}
             onAddPlaced={handleAddPlaced}
             onMovePlaced={handleMovePlaced}
+            onSelect={handleSelect}
+            onRotate={handleRotate}
             onTerminalClick={handleTerminalClick}
             onSwitchToggle={handleSwitchToggle}
             onWireClick={handleWireClick}

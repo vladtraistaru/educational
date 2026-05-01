@@ -1,0 +1,298 @@
+/* ---- Pool selector ---- */
+
+.poolScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.poolIntro {
+  font-size: 1.05rem;
+  color: var(--pico-muted-color);
+  text-align: center;
+  margin: 0;
+}
+
+.poolGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.poolBtn {
+  font-size: 1.15rem;
+  padding: 1rem 1.25rem;
+  justify-content: center;
+}
+
+@media (min-width: 600px) {
+  .poolGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---- Progress ---- */
+
+.progress {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* ---- Conjugation table ---- */
+
+.tableWrap {
+  max-width: 460px;
+  margin: 0 auto 1.5rem;
+}
+
+.verbHeading {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 1rem;
+}
+
+.verbTense {
+  font-weight: 600;
+  color: var(--pico-muted-color);
+  font-size: 1rem;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--pico-card-background-color);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  min-height: 44px;
+  font-size: 1.1rem;
+}
+
+.rowTarget {
+  background: rgba(108, 92, 231, 0.12);
+  outline: 2px dashed #6c5ce7;
+}
+
+.pronounCell {
+  font-weight: 700;
+  color: var(--pico-muted-color);
+}
+
+.formCell {
+  font-size: 1.15rem;
+}
+
+.targetMark {
+  font-weight: 800;
+  color: #6c5ce7;
+  font-size: 1.4rem;
+}
+
+.emptyMark {
+  color: var(--pico-muted-border-color);
+}
+
+.filledForm {
+  font-weight: 600;
+  animation: slideIn 0.25s ease;
+}
+
+.ending {
+  font-weight: 800;
+}
+
+.endingFlash {
+  font-weight: 800;
+  color: #00b894;
+  background: rgba(0, 184, 148, 0.18);
+  padding: 0 0.2rem;
+  border-radius: 4px;
+  animation: flashPulse 0.6s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes flashPulse {
+  0% { background: rgba(0, 184, 148, 0); }
+  40% { background: rgba(0, 184, 148, 0.35); }
+  100% { background: rgba(0, 184, 148, 0.18); }
+}
+
+/* ---- Chip row ---- */
+
+.chipRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+  .chipRow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.chip {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  min-height: 56px;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.2s ease;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: #6c5ce7;
+  transform: translateY(-2px);
+}
+
+.chip:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.chipShake {
+  border-color: #d63031;
+  color: #d63031;
+  animation: chipShake 0.4s ease;
+}
+
+@keyframes chipShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ---- Recap ---- */
+
+.recap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.recapTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.recapHint {
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  text-align: center;
+  margin: 0;
+}
+
+.recapList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.recapItem {
+  background: var(--pico-card-background-color);
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.recapRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.recapRow:disabled {
+  cursor: default;
+}
+
+.recapDotGreen {
+  font-size: 1.2rem;
+  color: #00b894;
+}
+
+.recapDotOrange {
+  font-size: 1.2rem;
+  color: #e17055;
+}
+
+.recapVerb {
+  font-weight: 700;
+}
+
+.recapExpand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem 0.85rem 2.7rem;
+  font-size: 0.95rem;
+}
+
+.recapConjLine {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0.5rem;
+}
+
+.recapConjPronoun {
+  color: var(--pico-muted-color);
+  font-weight: 600;
+}
+
+.recapButtons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}

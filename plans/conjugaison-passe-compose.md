@@ -2,6 +2,8 @@
 
 Pre-SPEC design notes for the *passé composé* module. Slug, subject, and registration follow the rules in `AGENTS.md` and the roadmap entry in `specs/planned-modules.md` (Priority 4 — Français).
 
+Cross-module decisions (start screen, end-of-round recap, persistence, pronoun handling, feedback timings, no-audio policy) live in `conjugaison-shared.md`. This file covers only what is unique to passé composé.
+
 ---
 
 ## Learner
@@ -63,23 +65,69 @@ Each round = 5 verbs, randomly drawn. The end-of-round screen highlights any ver
 
 ---
 
+## Module-specific design decisions
+
+- **Sentence frame rotation**: 5 frames, one per verb in the round, rotated:
+  1. `Hier, [pronom] [aux] [pp] {object}.`
+  2. `La semaine dernière, [pronom] [aux] [pp] {object}.`
+  3. `Quand j'ai fini, [pronom] [aux] [pp] {object}.`
+  4. `Ce matin, [pronom] [aux] [pp] {object}.`
+  5. `Pendant les vacances, [pronom] [aux] [pp] {object}.`
+  
+  Rationale: rotating frames builds the **temporal meaning** of passé composé (a *past punctual* event), without overwhelming the learner. All frames are clearly past-tense markers a 9-year-old recognises.
+
+- **Per-verb sample object**: stored in the module's `translations.ts` as `{ verbInfinitive → object }` so the sentence reads naturally. Examples:
+  - `chanter` → *une chanson*
+  - `manger` → *une pomme*
+  - `parler` → *avec mon ami*
+  - `aimer` → *ce livre*
+  - `finir` → *mes devoirs*
+  - `choisir` → *un cadeau*
+  - `aller` → *à l'école*
+  - `faire` → *un dessin*
+  - `dire` → *bonjour*
+  - `être` → *content* (frame becomes "*Hier, nous avons été contents.*" — works grammatically, slightly stilted but pedagogically clear)
+  - `avoir` → *un cadeau* (frame becomes "*Hier, j'ai eu un cadeau.*")
+
+- **Auxiliary chip pool**: always **4 chips**, **2 *avoir* forms + 2 *être* forms** — including the correct one. The other 3 chips are forms at the same person but from the wrong auxiliary, OR forms at a different person from the correct auxiliary. This forces a double check: *avoir or être? AND which person?*
+
+- **Participe chip pool**: always **4 chips** — the correct participe + 3 high-likelihood wrong-form distractors:
+  - the **infinitive** (e.g. *manger* alongside *mangé*)
+  - the **présent *nous*-form** (e.g. *mangeons*)
+  - the **présent *je*-form** (e.g. *mange*)
+  
+  These are exactly the wrong forms a 9-year-old produces at this stage — ear-confusable for 1er groupe, but visibly different on the page.
+
+- **Two-stage pick is enforced**: the participe chips are **disabled** until a correct auxiliary chip is picked. Reason: the cognitive flow is *first decide which auxiliary, then build the participe* — locking the order respects this.
+
+- **`aller` first appearance**: round 1 is **avoir verbs only**. *aller* (the only *être* verb in scope) is **introduced in round 2** with a small *« Nouveau ! »* badge and a **one-paragraph intro panel** before the first *aller* question:
+  > *« Attention ! Quelques verbes utilisent **être** au lieu de **avoir** au passé composé. Le verbe* aller *en fait partie. »*
+  
+  This avoids overwhelming the learner with two new concepts (the structure + the auxiliary choice) at once.
+
+- **Hints on wrong picks**: structural, never giving the answer:
+  - Wrong auxiliary → *« avoir ou être ? »*
+  - Wrong participe → *« -é, -i, ou irrégulier ? »*
+  
+  Hints appear next to the chip row for ~2 s after a wrong pick, then fade.
+
+- **No agreement penalty**: the module accepts the masculine-singular participe by default. A learner answering with `nous sommes allés` (correct with agreement) is still marked **correct** (so future iterations adding agreement don't break backward compatibility); but the module never *requests* the agreed form in this version.
+
 ## Scope
 
-**In scope:**
+**In scope (specific to this module):**
 
 - Tense: **passé composé only**.
-- Verbs: same 11 as the other two modules (`chanter, manger, parler, aimer, finir, choisir, être, avoir, aller, faire, dire`).
+- Verbs: same 11 as the other two modules.
 - Auxiliaries: **avoir** for 10 verbs; **être** for `aller` (the only `être`-auxiliary verb in current scope).
-- Pronouns: all 9 PER pronouns.
-- Round = 5 verbs.
+- Round structure: 5 verbs, with *aller* deferred to round 2.
 
-**Out of scope (deliberate, with reasons):**
+**Out of scope — extra to the uniform list in `conjugaison-shared.md`:**
 
-- **Gender / number agreement of the participe with *être*** (*je suis allé* vs *je suis allée*, *nous sommes allés*). The library returns masculine-singular by default. PER cycle 2 introduces this gradually 7P–8P; for a 9-year-old's *first encounter* with passé composé, surfacing agreement adds noise. **The module displays the masculine-singular default and does not penalise; a future iteration can add a "with agreement" mode.**
-- More verbs taking *être* (*venir, partir, arriver, sortir, ...*). Add when the verb DB grows.
-- Pronominal verbs (*se laver, s'habiller*) — out of scope for the same reason: they always use *être* and trigger the agreement question.
+- **Gender / number agreement of the participe with *être*** (already covered above — module accepts but does not require).
+- More verbs taking *être* (*venir, partir, arriver, sortir, ...*) — add when the verb DB grows.
+- Pronominal verbs (*se laver, s'habiller*) — they always use *être* and trigger the agreement question.
 - Tense distinction *imparfait vs passé composé* — separate planned module.
-- Free-text typing.
 
 ---
 
@@ -92,19 +140,9 @@ Uses `lib/linguistics/french/conjugation.ts`:
 - `Auxiliary` type — for the auxiliary chip pool.
 - The `Verb.participePasse` and `Verb.auxiliary` fields — read directly to build the participe chip pool and the correct auxiliary chip.
 
-**Two small library helpers this module would benefit from** (probably worth lifting to the library now since they're general):
+**Two small library helpers this module needs**, to be added at SPEC time (each ~3 lines):
 
-1. `getAuxiliary(verb): 'avoir' | 'etre'` — currently the module would read `verb.auxiliary ?? 'avoir'` inline. A one-line library function makes the default explicit and documents it.
-2. `getParticipe(verb): string` — currently the module would replicate the regular-verb derivation logic that `conjugate()` does internally. Exposing it stops the duplication.
+1. `getAuxiliary(verb): Auxiliary` — exposes `verb.auxiliary ?? 'avoir'` cleanly so the module doesn't replicate the default-handling rule.
+2. `getParticipe(verb): string` — exposes the participe passé (regular derivation for groups 1/2, stored value for group 3) so the module doesn't replicate the derivation logic that `conjugate()` already does internally.
 
-Both are ~3 lines each. Defer until writing the SPEC confirms they're needed; they're cheap to add then.
-
----
-
-## Open questions to resolve before writing `SPEC.md`
-
-1. **Sentence frame variety** — same frame every round ("Hier, ... une pomme") or rotate frames ("Hier, ...", "La semaine dernière, ...", "Quand j'ai fini, ...")? Rotating builds the sense that passé composé describes *past punctual events*, which is its meaning. Recommend: 4–5 frames, rotated.
-2. **Sentence object word** — does the object change per verb? *manger une pomme* makes sense; *finir une pomme* doesn't. Either curate a `{ verb → sample object }` map, or use a generic frame like "Hier, … et tout s'est bien passé." that works with any verb. Recommend: per-verb sample object stored in the module's translations, not in the library.
-3. **Auxiliary chip pool** — always show 4 chips (2 *avoir* forms + 2 *être* forms), or show all 6 *avoir* forms or all 6 *être* forms? 4 chips with a mix is the right cognitive load; the learner must read the pronoun and pick the *matching person* from the *correct auxiliary*.
-4. **Participe chip distractors** — beside the correct participe (*mangé*), use the **infinitive** (*manger*), the **présent *nous*-form** (*mangeons*), and the **présent *je*-form** (*mange*) as distractors. These are exactly the wrong forms a 9-year-old produces. Confirm this strategy in the SPEC.
-5. **`aller` first appearance** — should *aller* (the only *être* verb) be excluded from the first round to let *avoir* feel "default" first, then introduced in round 2? Recommend: yes — first round is *avoir* verbs only; second round introduces *aller* with a small "*nouveau !*" badge and a one-sentence intro panel.
+Both go straight into `lib/linguistics/french/conjugation.ts` as exports, with a unit test each.

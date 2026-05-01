@@ -2,6 +2,8 @@
 
 Pre-SPEC design notes for the *imparfait de l'indicatif* module. Slug, subject, and registration follow the rules in `AGENTS.md` and the roadmap entry in `specs/planned-modules.md` (Priority 4 — Français).
 
+Cross-module decisions (start screen, end-of-round recap, persistence, pronoun handling, feedback timings, no-audio policy) live in `conjugaison-shared.md`. This file covers only what is unique to imparfait.
+
 ---
 
 ## Learner
@@ -51,22 +53,23 @@ Three rounds per verb, each with a different pronoun. After the third correct an
 
 ---
 
+## Module-specific design decisions
+
+- **Stem reveal animation**: the *nous* présent form is shown for 1 s in full (e.g. `nous chantons`), then the `-ons` is **struck through** and the remaining stem (`chant-`) is **underlined**. This makes the rule visceral. Stays underlined through the question.
+- **`être` handling**: *être* is **excluded from the `1er groupe` and `2e groupe` pools** and only appears in **`Irréguliers` and `Mélange`**. When it does appear, the top row shows `nous somm[es]` greyed out + a one-line note: *« être est spécial : on utilise le radical** ét- »*. The same chip-picking interaction follows. This explicit acknowledgement of the exception aligns with PER's "*observation des régularités*" — irregularities are taught as identifiable, not as random noise.
+- **Pronoun rotation per verb**: each verb gets **6 micro-questions, one per morphological person**, in the order `je, tu, il/elle/on, nous, vous, ils/elles`. The pronoun is bound to one of the 9 PER pronouns at random for the surface form (so `il/elle/on` → sometimes `il`, sometimes `elle`, sometimes `on`). Rationale: deterministic order guarantees the learner meets all 6 endings (including the trickier `nous chantions` and `vous chantiez` with `i` insertion); randomising the surface pronoun keeps it varied.
+- **End-of-verb table flash**: once the 6 forms are completed, the **full imparfait table** of the verb is shown for 2 s with **stem in one color, ending in another** (consistent across all verbs). Visualises the very rule the module teaches — same stem repeats six times, the ending is what changes.
+- **Round size**: 5 verbs × 6 pronouns = 30 micro-questions per round (not 15 as initially considered). This is the only module of the three with > 5 micro-questions per verb, because here the **pattern is the lesson** and the learner needs to see all 6 endings on each verb.
+
 ## Scope
 
-**In scope:**
+**In scope (specific to this module):**
 
 - Tense: **imparfait only**.
-- Verbs: same 11 as `conjugaison-present` (`chanter, manger, parler, aimer, finir, choisir, être, avoir, aller, faire, dire`).
-- Pronouns: all 9 PER pronouns, randomised per round.
-- Round structure: 5 verbs × 3 pronouns each = 15 micro-questions per round.
-- One pool selector at start (same UI as `conjugaison-present`): **1er groupe** / **2e groupe** / **Irréguliers** / **Mélange**.
+- Verbs: same 11 as `conjugaison-present`.
+- Round structure (per above) and pool selector: see `conjugaison-shared.md`.
 
-**Out of scope:**
-
-- Other tenses (separate modules).
-- The semantic distinction *imparfait vs passé composé* — that's a whole separate module (`imparfait-vs-passe-compose`, mentioned in expansion of Priority 4). This module is purely about producing imparfait forms correctly.
-- Free-text typing.
-- Verbs beyond the 11.
+Out-of-scope items follow the uniform list in `conjugaison-shared.md`. Note in particular that the **semantic distinction *imparfait vs passé composé*** is **not** part of this module; it is the role of a separate planned module (`imparfait-vs-passe-compose`).
 
 ---
 
@@ -79,13 +82,3 @@ Uses `lib/linguistics/french/conjugation.ts`:
 - `conjugate(verb, 'imparfait', pronoun)` — for the expected answer and to generate distractor chips.
 
 **The library already supports this module fully** — no additions required. The fact that imparfait derives from `nous`-présent is encoded inside `conjugate()`; the module just calls it twice (once for présent display, once for imparfait answer) and the relationship is exposed to the learner through the UI, not the library.
-
----
-
-## Open questions to resolve before writing `SPEC.md`
-
-1. **Pronoun choice within a verb** — random across all 9 each time, or guarantee at least one of `nous` and `vous` (the forms with `i` insertion: *nous chantions*, *vous chantiez*) so the learner sees the trickier endings? Recommend: deterministic — round through the 6 morphological persons in order (je, tu, il, nous, vous, ils), randomly bind `il` to one of `il/elle/on` and `ils` to one of `ils/elles`.
-2. **Stem reveal animation** — show the *nous*-form *with* `-ons` for 1 second, then *strike through* the `-ons` and *underline* the remaining stem? This makes the rule visceral. Worth the small motion design effort.
-3. **`être` handling** — is the gentle "*être est spécial*" note enough, or should *être* be excluded from the first encounter and only introduced after the learner has done one round of regulars? Recommend: exclude from "1er groupe" pool; include only in "Irréguliers" and "Mélange".
-4. **Should the end-of-verb table flash include a **stem / ending color split** (e.g. blue stem, orange ending)?** Strong yes — visualises the very rule the module teaches.
-5. **Reuse with `conjugaison-present`** — should the pool-selection start screen be a **shared component**? Decide after at least two modules exist; for now, copy-paste is fine.

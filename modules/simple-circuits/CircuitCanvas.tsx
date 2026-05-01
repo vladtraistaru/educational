@@ -11,6 +11,7 @@ import {
   Terminal,
   TerminalRef,
   WireLink,
+  getTerminalOutward,
   getTerminalPosition,
   pathLength,
   pointAlongPath,
@@ -26,9 +27,12 @@ interface Props {
   placed: PlacedComponent[];
   wires: WireLink[];
   pendingWireStart: TerminalRef | null;
+  selectedId: string | null;
   simResult: SimResult;
   onAddPlaced: (kind: 'bulb' | 'switch', x: number, y: number) => void;
   onMovePlaced: (id: string, x: number, y: number) => void;
+  onSelect: (id: string | null) => void;
+  onRotate: (id: string) => void;
   onTerminalClick: (ref: TerminalRef) => void;
   onSwitchToggle: (id: string) => void;
   onWireClick: (id: string) => void;
@@ -113,10 +117,14 @@ export default function CircuitCanvas(props: Props) {
       >
         <Layer>
           {props.wires.map((w) => {
-            const from = findTerminal(props.placed, w.from);
-            const to = findTerminal(props.placed, w.to);
-            if (!from || !to) return null;
-            const route = routeOrthogonal(from, w.from.terminal, to, w.to.terminal);
+            const fromC = props.placed.find((p) => p.id === w.from.componentId);
+            const toC = props.placed.find((p) => p.id === w.to.componentId);
+            if (!fromC || !toC) return null;
+            const from = getTerminalPosition(fromC, w.from.terminal);
+            const to = getTerminalPosition(toC, w.to.terminal);
+            const fOut = getTerminalOutward(fromC, w.from.terminal);
+            const tOut = getTerminalOutward(toC, w.to.terminal);
+            const route = routeOrthogonal(from, fOut, to, tOut);
             const i = props.simResult.wireCurrent.get(w.id) ?? 0;
             const flowing = i > 0.001;
             return (
@@ -138,16 +146,13 @@ export default function CircuitCanvas(props: Props) {
 
           {props.pendingWireStart &&
             renderPendingHighlight(props.placed, props.pendingWireStart, Circle)}
+
+          {props.selectedId &&
+            renderRotateButton(props.placed, props.selectedId, props.onRotate, Circle, Text, Group)}
         </Layer>
       </Stage>
     </div>
   );
-}
-
-function findTerminal(placed: PlacedComponent[], ref: TerminalRef) {
-  const c = placed.find((p) => p.id === ref.componentId);
-  if (!c) return null;
-  return getTerminalPosition(c, ref.terminal);
 }
 
 function renderElectrons(
@@ -238,9 +243,44 @@ function renderComponent(
     </>
   );
 
+  const isSelected = props.selectedId === c.id;
+  const selectionRing = isSelected ? (
+    <Rect
+      width={COMPONENT_WIDTH + 12}
+      height={COMPONENT_HEIGHT + 12}
+      offsetX={(COMPONENT_WIDTH + 12) / 2}
+      offsetY={(COMPONENT_HEIGHT + 12) / 2}
+      stroke="#0984e3"
+      strokeWidth={2}
+      dash={[6, 4]}
+      cornerRadius={8}
+      listening={false}
+    />
+  ) : null;
+
+  const groupCommon = {
+    key: c.id,
+    x: c.x,
+    y: c.y,
+    rotation: c.rotation,
+    draggable: true,
+    onDragMove,
+    onClick: (e: any) => {
+      e.cancelBubble = true;
+      props.onSelect(c.id);
+      if (c.kind === 'switch' && e.evt?.detail !== 0) props.onSwitchToggle(c.id);
+    },
+    onTap: (e: any) => {
+      e.cancelBubble = true;
+      props.onSelect(c.id);
+      if (c.kind === 'switch') props.onSwitchToggle(c.id);
+    },
+  };
+
   if (c.kind === 'battery') {
     return (
-      <Group key={c.id} x={c.x} y={c.y} draggable onDragMove={onDragMove}>
+      <Group {...groupCommon}>
+        {selectionRing}
         <Rect
           width={COMPONENT_WIDTH}
           height={COMPONENT_HEIGHT}
@@ -261,7 +301,8 @@ function renderComponent(
     const current = props.simResult.componentCurrent.get(c.id) ?? 0;
     const brightness = lit ? Math.min(current / 0.2, 1) : 0;
     return (
-      <Group key={c.id} x={c.x} y={c.y} draggable onDragMove={onDragMove}>
+      <Group {...groupCommon}>
+        {selectionRing}
         <Line
           points={[-COMPONENT_WIDTH / 2, 0, -COMPONENT_HEIGHT / 2 + 5, 0]}
           stroke="#2d3436"
@@ -291,21 +332,10 @@ function renderComponent(
     );
   }
 
-  // switch
   const closed = c.closed ?? false;
   return (
-    <Group
-      key={c.id}
-      x={c.x}
-      y={c.y}
-      draggable
-      onDragMove={onDragMove}
-      onClick={(e: any) => {
-        if (e.evt.detail === 0) return;
-        props.onSwitchToggle(c.id);
-      }}
-      onTap={() => props.onSwitchToggle(c.id)}
-    >
+    <Group {...groupCommon}>
+      {selectionRing}
       <Rect
         width={COMPONENT_WIDTH}
         height={COMPONENT_HEIGHT}
@@ -350,5 +380,29 @@ function renderPendingHighlight(
       strokeWidth={3}
       listening={false}
     />
+  );
+}
+
+function renderRotateButton(
+  placed: PlacedComponent[],
+  selectedId: string,
+  onRotate: (id: string) => void,
+  Circle: any,
+  Text: any,
+  Group: any,
+) {
+  const c = placed.find((p) => p.id === selectedId);
+  if (!c) return null;
+  const bx = c.x + COMPONENT_WIDTH / 2 + 10;
+  const by = c.y - COMPONENT_HEIGHT / 2 - 10;
+  const handleClick = (e: any) => {
+    e.cancelBubble = true;
+    onRotate(selectedId);
+  };
+  return (
+    <Group x={bx} y={by} onClick={handleClick} onTap={handleClick}>
+      <Circle radius={14} fill="#0984e3" stroke="#0652a3" strokeWidth={1.5} shadowBlur={4} shadowOpacity={0.3} />
+      <Text x={-6} y={-7} text="↻" fontSize={16} fontStyle="bold" fill="#fff" listening={false} />
+    </Group>
   );
 }

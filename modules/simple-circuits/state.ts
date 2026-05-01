@@ -1,11 +1,13 @@
 export type ComponentKind = 'battery' | 'bulb' | 'switch';
 export type Terminal = 'a' | 'b';
+export type Rotation = 0 | 90 | 180 | 270;
 
 export interface PlacedComponent {
   id: string;
   kind: ComponentKind;
   x: number;
   y: number;
+  rotation: Rotation;
   closed?: boolean;
 }
 
@@ -32,8 +34,23 @@ export const TERMINAL_RADIUS = 6;
 export const BULB_LIT_THRESHOLD = 0.005;
 
 export function getTerminalPosition(c: PlacedComponent, t: Terminal): { x: number; y: number } {
-  const dx = COMPONENT_WIDTH / 2;
-  return { x: c.x + (t === 'a' ? -dx : dx), y: c.y };
+  const localX = (t === 'a' ? -1 : 1) * (COMPONENT_WIDTH / 2);
+  const r = rotateLocal(localX, 0, c.rotation);
+  return { x: c.x + r.x, y: c.y + r.y };
+}
+
+export function getTerminalOutward(c: PlacedComponent, t: Terminal): { x: number; y: number } {
+  const localDx = t === 'a' ? -1 : 1;
+  return rotateLocal(localDx, 0, c.rotation);
+}
+
+function rotateLocal(x: number, y: number, deg: Rotation): { x: number; y: number } {
+  switch (deg) {
+    case 0: return { x, y };
+    case 90: return { x: -y, y: x };
+    case 180: return { x: -x, y: -y };
+    case 270: return { x: y, y: -x };
+  }
 }
 
 export function findTerminalAt(
@@ -70,53 +87,87 @@ export interface Pt {
 const WIRE_STUB = 20;
 
 /**
- * Outward horizontal direction of a terminal: 'a' exits left, 'b' exits right.
- */
-function outwardDx(t: Terminal): number {
-  return t === 'a' ? -1 : 1;
-}
-
-/**
- * Manhattan route between two terminals. Each end leaves horizontally along
- * its outward direction (a→left, b→right) before turning, so wires never
- * cross component bodies. The vertical leg is placed outside both components
- * based on the stub directions.
+ * Manhattan route between two terminals. Each end leaves along its outward
+ * direction (the stub) before turning, so wires never cross component bodies
+ * at the connection points. The intermediate routing always preserves the
+ * stub directions: wire exits `from` along fOut, and arrives at `to` from
+ * the −tOut direction.
  */
 export function routeOrthogonal(
   from: Pt,
-  fromTerminal: Terminal,
+  fOut: Pt,
   to: Pt,
-  toTerminal: Terminal,
+  tOut: Pt,
 ): Pt[] {
-  const fdx = outwardDx(fromTerminal);
-  const tdx = outwardDx(toTerminal);
-  const fStub = { x: from.x + fdx * WIRE_STUB, y: from.y };
-  const tStub = { x: to.x + tdx * WIRE_STUB, y: to.y };
+  const fStub = { x: from.x + fOut.x * WIRE_STUB, y: from.y + fOut.y * WIRE_STUB };
+  const tStub = { x: to.x + tOut.x * WIRE_STUB, y: to.y + tOut.y * WIRE_STUB };
 
-  if (fStub.y === tStub.y) {
-    return [from, fStub, tStub, to];
-  }
+  const fHorizontal = fOut.x !== 0;
+  const tHorizontal = tOut.x !== 0;
 
-  let midX: number;
-  if (fdx > 0 && tdx > 0) {
-    midX = Math.max(fStub.x, tStub.x);
-  } else if (fdx < 0 && tdx < 0) {
-    midX = Math.min(fStub.x, tStub.x);
-  } else if (fdx > 0 && tdx < 0) {
-    if (fStub.x <= tStub.x) {
-      midX = (fStub.x + tStub.x) / 2;
-    } else {
-      midX = Math.max(from.x, to.x) + COMPONENT_WIDTH / 2 + WIRE_STUB;
+  if (fHorizontal && tHorizontal) {
+    if (fStub.y === tStub.y && (tStub.x - fStub.x) * fOut.x > 0) {
+      return [from, fStub, tStub, to];
     }
-  } else {
-    midX = Math.min(from.x, to.x) - COMPONENT_WIDTH / 2 - WIRE_STUB;
+    if (fOut.x * tOut.x < 0 && (tStub.x - fStub.x) * fOut.x >= 0) {
+      const midX = (fStub.x + tStub.x) / 2;
+      return [from, fStub, { x: midX, y: fStub.y }, { x: midX, y: tStub.y }, tStub, to];
+    }
+    const wrapX = fOut.x > 0
+      ? Math.max(fStub.x, tStub.x)
+      : Math.min(fStub.x, tStub.x);
+    return [from, fStub, { x: wrapX, y: fStub.y }, { x: wrapX, y: tStub.y }, tStub, to];
   }
 
+  if (!fHorizontal && !tHorizontal) {
+    if (fStub.x === tStub.x && (tStub.y - fStub.y) * fOut.y > 0) {
+      return [from, fStub, tStub, to];
+    }
+    if (fOut.y * tOut.y < 0 && (tStub.y - fStub.y) * fOut.y >= 0) {
+      const midY = (fStub.y + tStub.y) / 2;
+      return [from, fStub, { x: fStub.x, y: midY }, { x: tStub.x, y: midY }, tStub, to];
+    }
+    const wrapY = fOut.y > 0
+      ? Math.max(fStub.y, tStub.y)
+      : Math.min(fStub.y, tStub.y);
+    return [from, fStub, { x: fStub.x, y: wrapY }, { x: tStub.x, y: wrapY }, tStub, to];
+  }
+
+  // Perpendicular stubs.
+  const naturalCorner = fHorizontal
+    ? { x: tStub.x, y: fStub.y }
+    : { x: fStub.x, y: tStub.y };
+  const cornerOutwardFrom = fHorizontal
+    ? (naturalCorner.x - from.x) * fOut.x >= 0
+    : (naturalCorner.y - from.y) * fOut.y >= 0;
+  const cornerOutwardTo = tHorizontal
+    ? (naturalCorner.x - to.x) * tOut.x >= 0
+    : (naturalCorner.y - to.y) * tOut.y >= 0;
+
+  if (cornerOutwardFrom && cornerOutwardTo) {
+    return [from, fStub, naturalCorner, to];
+  }
+
+  // Wrap around: turn perpendicular at fStub, run past tStub on its outward
+  // side, then in along the to-axis. This approaches `to` from the −tOut
+  // direction without crossing the destination body.
+  if (fHorizontal) {
+    const standoffY = tStub.y + tOut.y * WIRE_STUB;
+    return [
+      from,
+      fStub,
+      { x: fStub.x, y: standoffY },
+      { x: tStub.x, y: standoffY },
+      tStub,
+      to,
+    ];
+  }
+  const standoffX = tStub.x + tOut.x * WIRE_STUB;
   return [
     from,
     fStub,
-    { x: midX, y: fStub.y },
-    { x: midX, y: tStub.y },
+    { x: standoffX, y: fStub.y },
+    { x: standoffX, y: tStub.y },
     tStub,
     to,
   ];
