@@ -9,6 +9,7 @@ import styles from './Activity.module.css';
 import {
   traceBeam, DEFAULT_LASER_POS, DEFAULT_LASER_ANGLE, DEFAULT_MIRRORS, DEFAULT_BEAM_MAX,
   LASER_HALF, MIRROR_HALF,
+  Point,
   type Mirror,
 } from './optics';
 
@@ -85,8 +86,8 @@ export default function LaserAndMirrors(_props: ActivityProps) {
     if (!laser) return [];
     const mirrors: Mirror[] = shapes
       .filter((s) => s.type === 'mirror')
-      .map((s, i) => ({ id: i, pos: { x: s.x, y: s.y }, angle: s.rotation * DEG_TO_RAD, halfWidth: s.width / 2 }));
-    return traceBeam({ x: laser.x, y: laser.y }, laser.rotation * DEG_TO_RAD, mirrors, beamMax, { w: VIRTUAL_W, h: VIRTUAL_H });
+      .map((s, i) => ({ id: i, pos: new Point(s.x, s.y), angle: s.rotation * DEG_TO_RAD, halfWidth: s.width / 2 }));
+    return traceBeam(new Point(laser.x, laser.y), laser.rotation * DEG_TO_RAD, mirrors, beamMax, { w: VIRTUAL_W, h: VIRTUAL_H });
   }, [shapes, laserOn, beamMax]);
 
   const beamSegmentsRef = useRef(beamSegments);
