@@ -4,6 +4,6 @@ export const config: ModuleConfig = {
   slug: 'laser-and-mirrors',
   title: 'Laser and Mirrors',
   description: 'An introduction to light, reflection and refraction',
-  subject: 'physics',
+  subject: 'optics',
   difficulty: 3,
 };

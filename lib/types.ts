@@ -5,7 +5,8 @@ export type Subject =
   | 'geography'
   | 'history'
   | 'art'
-  | 'physics';
+  | 'optics'
+  | 'electricity-and-magnetism';
 
 export interface ModuleConfig {
   slug: string;
@@ -29,7 +30,8 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
     geography: 'Geography',
     history: 'History',
     art: 'Art',
-    physics: 'Physics',
+    optics: 'Optics',
+    'electricity-and-magnetism': 'Electricity & Magnetism',
   },
   fr: {
     mathematics: 'Mathématiques',
@@ -38,7 +40,8 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
     geography: 'Géographie',
     history: 'Histoire',
     art: 'Art',
-    physics: 'Physique',
+    optics: 'Optique',
+    'electricity-and-magnetism': 'Électricité et magnétisme',
   },
 };
 

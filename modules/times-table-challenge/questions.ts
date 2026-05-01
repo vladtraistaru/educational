@@ -1,4 +1,4 @@
-import { randInt, shuffle } from '@/lib/math/random';
+import { randInt, shuffle } from '@/lib/science/math/random';
 
 export interface DifficultyConfig {
   id: 'easy' | 'medium' | 'hard';

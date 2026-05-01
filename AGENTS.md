@@ -114,7 +114,7 @@ export const config: ModuleConfig = {
 };
 ```
 
-`subject` must be one of: `'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'physics'`.
+`subject` must be one of: `'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'optics' | 'electricity-and-magnetism'`.
 
 `difficulty` is 1 (easiest) to 10 (hardest). It controls sort order on the homepage.
 
@@ -211,20 +211,31 @@ Import as: `import shared from '@/modules/activity.module.css';`
 
 ## Shared Subject Logic
 
-Reusable pure logic (no React, no UI) lives in `/lib/` under subject-specific folders. Module-specific logic stays inside the module folder.
+Reusable pure logic (no React, no UI) lives in `/lib/science/` under subject-specific folders. Module-specific logic stays inside the module folder.
 
 ```
-/lib/
+/lib/science/
   physics/
-    geometry2d.ts       — Point, cross product, ray-segment intersection
+    point.ts            — Point class (x, y; add, sub, distanceTo)
+    segment.ts          — Segment class
+    ray.ts              — Ray class with intersectSegment
   math/
     number-theory.ts    — digitalRoot, gcd, lcm
     random.ts           — randInt, shuffle
+  electricity/
+    component.ts        — abstract Component base class
+    node.ts             — Node (junction)
+    resistor.ts         — Resistor
+    wire.ts             — Wire (ideal conductor)
+    switch.ts           — Switch (open/closed)
+    source.ts           — VoltageSource
+    circuit.ts          — Circuit (graph + solve())
+    solver.ts           — DC series/parallel reduction solver
 ```
 
-**Convention**: when a function is useful across multiple modules, extract it to `/lib/{subject}/`. When it's specific to one activity, keep it in the module. Modules can import from `/lib/` and re-export symbols so their consumers don't need to know about the shared layer.
+**Convention**: when a function is useful across multiple modules, extract it to `/lib/science/{subject}/`. When it's specific to one activity, keep it in the module. Modules can import from `/lib/science/` and re-export symbols so their consumers don't need to know about the shared layer.
 
-Example: `modules/laser-and-mirrors/optics.ts` imports `Point` and `raySegment` from `@/lib/physics/geometry2d`, re-exports `Point`, and keeps mirror-specific logic locally.
+Example: `modules/laser-and-mirrors/optics.ts` imports `Point`, `Ray`, `Segment` from `@/lib/science/physics`, re-exports `Point`, and keeps mirror-specific logic locally.
 
 ## Testing
 
@@ -239,7 +250,7 @@ Shared subject logic in `/lib/physics/` and `/lib/math/` has unit tests. When ad
 From `/lib/types.ts`:
 
 ```typescript
-type Subject = 'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'physics';
+type Subject = 'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'optics' | 'electricity-and-magnetism';
 
 interface ModuleConfig {
   slug: string;

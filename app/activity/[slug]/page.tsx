@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getModuleBySlug, getModuleMetadata } from '@/modules/registry';
-import { UI_LABELS } from '@/lib/types';
+import { UI_LABELS, SUBJECT_LABELS } from '@/lib/types';
 import { getLanguage } from '@/lib/language-server';
 import Breadcrumb from '@/components/Breadcrumb';
 import ActivityLoader from './ActivityLoader';
@@ -24,11 +24,10 @@ export default async function ActivityPage({ params }: Props) {
       <Breadcrumb
         crumbs={[
           { label: UI_LABELS[lang].home, href: '/' },
+          { label: SUBJECT_LABELS[lang][mod.subject] },
           { label: title },
         ]}
       />
-
-      <h1>{title}</h1>
 
       <ActivityLoader slug={slug} />
     </>

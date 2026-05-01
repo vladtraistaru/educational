@@ -38,6 +38,23 @@ Product plan aligned with the Romandie PER sketch in `docs/curriculum/romandie.m
 
 ---
 
+## Priority 4 — Français (L1, langue de scolarisation)
+
+Aligned with PER **L1** axes (see `docs/curriculum/romandie.md` §4.1). Cycle 1 modules focus on entry into reading/writing; cycle 2 on autonomous reading, grammar, and writing.
+
+| Slug (proposed) | Subject | PER axis | Short description |
+|-----------------|---------|----------|-------------------|
+| `phoneme-grapheme-match` | literacy | `L1 11-12` (cycle 1) | Match a heard sound to the right letter or letter group; combinatoire foundation. |
+| `syllable-counter` | literacy | `L1 11-12` (cycle 1) | Tap or click to segment a spoken word into syllables; phonological awareness. |
+| `mots-outils-flash` | literacy | `L1 11-12` (cycle 1) | Recognise high-frequency function words (le, la, et, est, dans…) at sight. |
+| `accord-singulier-pluriel` | literacy | `L1 16` / `L1 26` | Agree noun + adjective in number; chaîne d’accord on short noun phrases. |
+| `classes-de-mots` | literacy | `L1 16` / `L1 26` | Sort words into nom / verbe / adjectif / déterminant; cycle 2 grammar basics. |
+| `conjugaison-present` | literacy | `L1 26` (cycle 2) | Conjugate regular verbs (1er groupe + être/avoir) at présent de l’indicatif. |
+| `lecture-comprehension-courte` | literacy | `L1 21` (cycle 2) | Read a short text, answer literal then inferential questions. |
+| `comparaison-fr-en` | literacy | `L 17` / `L 27` | Spot cognates and false friends between French and English; interlinguistic awareness. |
+
+---
+
 ## Already shipped (context)
 
 | Slug | Notes |

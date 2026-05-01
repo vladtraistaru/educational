@@ -1,4 +1,4 @@
-import { randInt, shuffle } from '@/lib/math/random';
+import { randInt, shuffle } from '@/lib/science/math/random';
 import type { Language } from '@/lib/language-config';
 
 export type MinuteStep = 60 | 30 | 15 | 5;

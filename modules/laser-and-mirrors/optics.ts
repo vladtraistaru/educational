@@ -1,6 +1,6 @@
-import { type Point, raySegment } from '@/lib/physics/geometry2d';
+import { Point, Ray, Segment } from '@/lib/science/physics';
 
-export type { Point };
+export { Point };
 
 export interface Mirror {
   id: number;
@@ -15,11 +15,11 @@ export interface BeamSegment {
   length: number;
 }
 
-export const DEFAULT_LASER_POS: Point = { x: 90, y: 250 };
+export const DEFAULT_LASER_POS: Point = new Point(90, 250);
 export const DEFAULT_LASER_ANGLE = 0;
 
 export const DEFAULT_MIRRORS: Mirror[] = [
-  { id: 1, pos: { x: 400, y: 250 }, angle: -Math.PI / 4 },
+  { id: 1, pos: new Point(400, 250), angle: -Math.PI / 4 },
 ];
 
 export const LASER_HALF = 30;
@@ -33,8 +33,8 @@ function mirrorEndpoints(m: Mirror): [Point, Point] {
   const c = Math.cos(m.angle);
   const s = Math.sin(m.angle);
   return [
-    { x: m.pos.x - c * hw, y: m.pos.y - s * hw },
-    { x: m.pos.x + c * hw, y: m.pos.y + s * hw },
+    new Point(m.pos.x - c * hw, m.pos.y - s * hw),
+    new Point(m.pos.x + c * hw, m.pos.y + s * hw),
   ];
 }
 
@@ -61,7 +61,7 @@ export function traceBeam(
     for (const m of mirrors) {
       if (m.id === lastHitId) continue;
       const [a, b] = mirrorEndpoints(m);
-      const t = raySegment(ox, oy, dx, dy, a.x, a.y, b.x, b.y);
+      const t = new Ray(new Point(ox, oy), dx, dy).intersectSegment(new Segment(a, b));
       if (t !== null && t < bestT) {
         bestT = t;
         bestMirror = m;
@@ -80,8 +80,8 @@ export function traceBeam(
         if (isFinite(exit)) t = Math.min(t, exit);
       }
       segments.push({
-        from: { x: ox, y: oy },
-        to: { x: ox + dx * t, y: oy + dy * t },
+        from: new Point(ox, oy),
+        to: new Point(ox + dx * t, oy + dy * t),
         length: t,
       });
       break;
@@ -89,8 +89,8 @@ export function traceBeam(
 
     if (bestT >= remaining) {
       segments.push({
-        from: { x: ox, y: oy },
-        to: { x: ox + dx * remaining, y: oy + dy * remaining },
+        from: new Point(ox, oy),
+        to: new Point(ox + dx * remaining, oy + dy * remaining),
         length: remaining,
       });
       break;
@@ -98,7 +98,7 @@ export function traceBeam(
 
     const hx = ox + dx * bestT;
     const hy = oy + dy * bestT;
-    segments.push({ from: { x: ox, y: oy }, to: { x: hx, y: hy }, length: bestT });
+    segments.push({ from: new Point(ox, oy), to: new Point(hx, hy), length: bestT });
     remaining -= bestT;
 
     const ms = Math.sin(bestMirror.angle);

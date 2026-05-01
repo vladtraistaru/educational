@@ -12,6 +12,7 @@ import * as laserAndMirrors from './laser-and-mirrors';
 import * as symmetryPlay from './symmetry-play';
 import * as measureTime from './measure-time';
 import * as measureLengths from './measure-lengths';
+import * as simpleCircuits from './simple-circuits';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -32,6 +33,7 @@ const moduleEntries: ModuleEntry[] = [
   laserAndMirrors,
   measureTime,
   measureLengths,
+  simpleCircuits,
 ];
 
 const modules = moduleEntries

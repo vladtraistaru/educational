@@ -1,4 +1,4 @@
-import { digitalRoot, gcd, lcm } from '@/lib/math/number-theory';
+import { digitalRoot, gcd, lcm } from '@/lib/science/math/number-theory';
 
 export { digitalRoot, gcd, lcm };
 
