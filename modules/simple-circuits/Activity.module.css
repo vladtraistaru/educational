@@ -64,6 +64,71 @@
 .toolbar {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.powerToggle {
+  --w: 110px;
+  --h: 36px;
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  border-radius: 999px;
+  border: 2px solid #b2bec3;
+  background: #dfe6e9;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.powerToggleOn {
+  background: #00b894;
+  border-color: #00875a;
+}
+
+.powerKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(var(--h) - 8px);
+  height: calc(var(--h) - 8px);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #636e72;
+}
+
+.powerToggleOn .powerKnob {
+  transform: translateX(calc(var(--w) - var(--h)));
+  color: #00875a;
+}
+
+.powerToggleText {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  pointer-events: none;
+}
+
+.powerToggleTextOff {
+  right: 12px;
+  color: #636e72;
+}
+
+.powerToggleTextOn {
+  left: 12px;
+  color: #fff;
 }
 
 @media (max-width: 600px) {

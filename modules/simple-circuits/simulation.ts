@@ -15,7 +15,11 @@ import {
 
 const BATTERY_VOLTS = 5;
 
-export function simulate(placed: PlacedComponent[], wires: WireLink[]): SimResult {
+export function simulate(
+  placed: PlacedComponent[],
+  wires: WireLink[],
+  powerOn: boolean = true,
+): SimResult {
   const componentCurrent = new Map<string, number>();
   const wireCurrent = new Map<string, number>();
   const bulbLit = new Map<string, boolean>();
@@ -30,6 +34,8 @@ export function simulate(placed: PlacedComponent[], wires: WireLink[]): SimResul
     wireReversed,
     shortCircuit: false,
   };
+
+  if (!powerOn) return empty;
 
   const battery = placed.find((c) => c.kind === 'battery');
   if (!battery) return empty;

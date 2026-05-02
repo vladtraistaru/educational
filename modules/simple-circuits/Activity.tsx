@@ -30,9 +30,10 @@ export default function SimpleCircuits(_props: ActivityProps) {
   const [wires, setWires] = useState<WireLink[]>([]);
   const [pendingWireStart, setPendingWireStart] = useState<TerminalRef | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [powerOn, setPowerOn] = useState(false);
   const nextId = useRef(1);
 
-  const simResult = useMemo(() => simulate(placed, wires), [placed, wires]);
+  const simResult = useMemo(() => simulate(placed, wires, powerOn), [placed, wires, powerOn]);
 
   const handleAddPlaced = useCallback((kind: 'bulb' | 'switch' | 'resistor', x: number, y: number) => {
     const id = `${kind}-${nextId.current++}`;
@@ -67,6 +68,14 @@ export default function SimpleCircuits(_props: ActivityProps) {
     );
   }, []);
 
+  const handleRemovePlaced = useCallback((id: string) => {
+    setPlaced((prev) => prev.filter((c) => c.id !== id || c.kind === 'battery'));
+    setWires((prev) =>
+      prev.filter((w) => w.from.componentId !== id && w.to.componentId !== id),
+    );
+    setSelectedId((prev) => (prev === id ? null : prev));
+  }, []);
+
   const handleSetOhms = useCallback((id: string, ohms: number) => {
     setPlaced((prev) =>
       prev.map((c) => (c.id === id && c.kind === 'resistor' ? { ...c, ohms } : c)),
@@ -97,8 +106,11 @@ export default function SimpleCircuits(_props: ActivityProps) {
     setWires([]);
     setPendingWireStart(null);
     setSelectedId(null);
+    setPowerOn(false);
     nextId.current = 1;
   }, []);
+
+  const handleTogglePower = useCallback(() => setPowerOn((p) => !p), []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -137,10 +149,26 @@ export default function SimpleCircuits(_props: ActivityProps) {
             onTerminalClick={handleTerminalClick}
             onSwitchToggle={handleSwitchToggle}
             onSetOhms={handleSetOhms}
+            onRemovePlaced={handleRemovePlaced}
             onWireClick={handleWireClick}
             onCanvasClick={handleCanvasClick}
           />
           <div className={styles.toolbar}>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={powerOn}
+              aria-label={t.powerLabel}
+              className={`${styles.powerToggle} ${powerOn ? styles.powerToggleOn : ''}`}
+              onClick={handleTogglePower}
+            >
+              <span
+                className={`${styles.powerToggleText} ${powerOn ? styles.powerToggleTextOn : styles.powerToggleTextOff}`}
+              >
+                {powerOn ? t.powerStateOn : t.powerStateOff}
+              </span>
+              <span className={styles.powerKnob}>⏻</span>
+            </button>
             <button className={`${shared.btn} ${shared.btnSecondary}`} onClick={handleReset}>
               {t.resetButton}
             </button>

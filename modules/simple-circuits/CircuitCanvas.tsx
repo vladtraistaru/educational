@@ -24,6 +24,7 @@ import {
 const VIRTUAL_W = 800;
 const VIRTUAL_H = 500;
 const ELECTRON_SPACING = 30;
+const TERMINAL_HIT_RADIUS = 18;
 
 interface Props {
   placed: PlacedComponent[];
@@ -38,6 +39,7 @@ interface Props {
   onTerminalClick: (ref: TerminalRef) => void;
   onSwitchToggle: (id: string) => void;
   onSetOhms: (id: string, ohms: number) => void;
+  onRemovePlaced: (id: string) => void;
   onWireClick: (id: string) => void;
   onCanvasClick: () => void;
 }
@@ -159,6 +161,9 @@ export default function CircuitCanvas(props: Props) {
             renderRotateButton(props.placed, props.selectedId, props.onRotate, Circle, Text, Group)}
 
           {props.selectedId &&
+            renderRemoveButton(props.placed, props.selectedId, props.onRemovePlaced, Circle, Text, Group)}
+
+          {props.selectedId &&
             renderOhmsPicker(props.placed, props.selectedId, props.onSetOhms, Rect, Text, Group)}
         </Layer>
       </Stage>
@@ -231,24 +236,21 @@ function renderComponent(
     <>
       {(['a', 'b'] as Terminal[]).map((t) => {
         const local = t === 'a' ? -COMPONENT_WIDTH / 2 : COMPONENT_WIDTH / 2;
+        const handle = (e: any) => {
+          e.cancelBubble = true;
+          props.onTerminalClick({ componentId: c.id, terminal: t });
+        };
         return (
-          <Circle
-            key={t}
-            x={local}
-            y={0}
-            radius={TERMINAL_RADIUS}
-            fill="#636e72"
-            stroke="#2d3436"
-            strokeWidth={1.5}
-            onClick={(e: any) => {
-              e.cancelBubble = true;
-              props.onTerminalClick({ componentId: c.id, terminal: t });
-            }}
-            onTap={(e: any) => {
-              e.cancelBubble = true;
-              props.onTerminalClick({ componentId: c.id, terminal: t });
-            }}
-          />
+          <Group key={t} x={local} y={0} onClick={handle} onTap={handle}>
+            <Circle radius={TERMINAL_HIT_RADIUS} fill="rgba(0,0,0,0.001)" />
+            <Circle
+              radius={TERMINAL_RADIUS}
+              fill="#636e72"
+              stroke="#2d3436"
+              strokeWidth={1.5}
+              listening={false}
+            />
+          </Group>
         );
       })}
     </>
@@ -490,6 +492,30 @@ function renderRotateButton(
     <Group x={bx} y={by} onClick={handleClick} onTap={handleClick}>
       <Circle radius={14} fill="#0984e3" stroke="#0652a3" strokeWidth={1.5} shadowBlur={4} shadowOpacity={0.3} />
       <Text x={-6} y={-7} text="↻" fontSize={16} fontStyle="bold" fill="#fff" listening={false} />
+    </Group>
+  );
+}
+
+function renderRemoveButton(
+  placed: PlacedComponent[],
+  selectedId: string,
+  onRemove: (id: string) => void,
+  Circle: any,
+  Text: any,
+  Group: any,
+) {
+  const c = placed.find((p) => p.id === selectedId);
+  if (!c || c.kind === 'battery') return null;
+  const bx = c.x - COMPONENT_WIDTH / 2 - 10;
+  const by = c.y - COMPONENT_HEIGHT / 2 - 10;
+  const handleClick = (e: any) => {
+    e.cancelBubble = true;
+    onRemove(selectedId);
+  };
+  return (
+    <Group x={bx} y={by} onClick={handleClick} onTap={handleClick}>
+      <Circle radius={14} fill="#e17055" stroke="#b94f3a" strokeWidth={1.5} shadowBlur={4} shadowOpacity={0.3} />
+      <Text x={-5} y={-8} text="×" fontSize={20} fontStyle="bold" fill="#fff" listening={false} />
     </Group>
   );
 }
