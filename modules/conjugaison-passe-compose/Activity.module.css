@@ -1,0 +1,222 @@
+/* ---- Progress / prompt ---- */
+
+.progress {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.prompt {
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--pico-muted-color);
+  margin: 0 0 0.5rem;
+}
+
+/* ---- Sentence frame ---- */
+
+.sentence {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 auto 1.25rem;
+  max-width: 560px;
+  min-height: 2.4em;
+  line-height: 1.6;
+}
+
+.framePart {
+  color: var(--pico-muted-color);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.pronoun {
+  font-weight: 700;
+  color: #6c5ce7;
+}
+
+.objectPart {
+  color: inherit;
+  font-weight: 500;
+}
+
+.slotEmpty {
+  display: inline-block;
+  min-width: 3.5rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--pico-muted-border-color);
+  border-bottom: 3px solid var(--pico-muted-border-color);
+  padding: 0 0.4rem;
+}
+
+.slotEmptyActive {
+  color: #6c5ce7;
+  border-bottom-color: #6c5ce7;
+}
+
+.slotEmptyLocked {
+  opacity: 0.45;
+}
+
+.slotFilled {
+  display: inline-block;
+  font-weight: 800;
+  color: #00b894;
+  padding: 0 0.3rem;
+  border-bottom: 3px solid #00b894;
+  animation: slideIn 0.25s ease;
+}
+
+.slotFlash {
+  background: rgba(0, 184, 148, 0.18);
+  border-radius: 4px;
+  animation: flashPulse 0.6s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes flashPulse {
+  0% { background: rgba(0, 184, 148, 0); }
+  40% { background: rgba(0, 184, 148, 0.35); }
+  100% { background: rgba(0, 184, 148, 0.18); }
+}
+
+/* ---- Chip blocks ---- */
+
+.chipBlock {
+  max-width: 480px;
+  margin: 0 auto 0.85rem;
+}
+
+.chipLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.chipLabelLocked {
+  opacity: 0.45;
+}
+
+.chipRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 600px) {
+  .chipRow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.chip {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.6rem 0.75rem;
+  min-height: 52px;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.2s ease;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: #6c5ce7;
+  transform: translateY(-2px);
+}
+
+.chip:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.chip:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.chipLocked {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.chipShake {
+  border-color: #d63031;
+  color: #d63031;
+  animation: chipShake 0.4s ease;
+}
+
+@keyframes chipShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ---- Hint badge ---- */
+
+.hintBadge {
+  margin: 0.5rem auto 0;
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #d63031;
+  background: rgba(214, 48, 49, 0.1);
+  border-radius: 999px;
+  text-align: center;
+  width: fit-content;
+}
+
+.chipBlock > .hintBadge {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---- Aller intro panel ---- */
+
+.allerIntro {
+  max-width: 480px;
+  margin: 1.5rem auto;
+  padding: 1.25rem 1.5rem;
+  background: var(--pico-card-background-color);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.allerBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #6c5ce7;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.allerBody {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  margin: 0;
+}

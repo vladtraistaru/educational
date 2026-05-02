@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { conjugate, VERBS, type Pronoun } from './conjugation';
+import { conjugate, getAuxiliary, getParticipe, VERBS, type Pronoun } from './conjugation';
 
 const ALL_PRONOUNS: Pronoun[] = ['je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles'];
 
@@ -114,5 +114,35 @@ describe('passé composé', () => {
     expect(conjugate(VERBS.avoir, 'passe-compose', 'je')).toBe("j'ai eu");
     expect(conjugate(VERBS.faire, 'passe-compose', 'il')).toBe('il a fait');
     expect(conjugate(VERBS.dire, 'passe-compose', 'nous')).toBe('nous avons dit');
+  });
+});
+
+describe('getAuxiliary', () => {
+  it('defaults to avoir when not specified', () => {
+    expect(getAuxiliary(VERBS.chanter)).toBe('avoir');
+    expect(getAuxiliary(VERBS.finir)).toBe('avoir');
+    expect(getAuxiliary(VERBS.être)).toBe('avoir');
+  });
+
+  it('returns the explicit auxiliary for aller', () => {
+    expect(getAuxiliary(VERBS.aller)).toBe('etre');
+  });
+});
+
+describe('getParticipe', () => {
+  it('derives -é for group 1', () => {
+    expect(getParticipe(VERBS.chanter)).toBe('chanté');
+  });
+
+  it('derives -i for group 2', () => {
+    expect(getParticipe(VERBS.finir)).toBe('fini');
+  });
+
+  it('returns stored participe for irregular verbs', () => {
+    expect(getParticipe(VERBS.être)).toBe('été');
+    expect(getParticipe(VERBS.avoir)).toBe('eu');
+    expect(getParticipe(VERBS.aller)).toBe('allé');
+    expect(getParticipe(VERBS.faire)).toBe('fait');
+    expect(getParticipe(VERBS.dire)).toBe('dit');
   });
 });

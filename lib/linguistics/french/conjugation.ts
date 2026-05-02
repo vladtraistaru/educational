@@ -60,14 +60,14 @@ function imparfaitStem(verb: Verb): string {
   return nous.replace(/ons$/, '');
 }
 
-function participePasse(verb: Verb): string {
+export function getParticipe(verb: Verb): string {
   if (verb.participePasse) return verb.participePasse;
   if (verb.group === 1) return verb.infinitive.slice(0, -2) + 'é';
   if (verb.group === 2) return verb.infinitive.slice(0, -2) + 'i';
   throw new Error(`Group 3 verb '${verb.infinitive}' requires participePasse`);
 }
 
-function auxiliaryFor(verb: Verb): Auxiliary {
+export function getAuxiliary(verb: Verb): Auxiliary {
   return verb.auxiliary ?? 'avoir';
 }
 
@@ -89,9 +89,9 @@ export function conjugate(verb: Verb, tense: Tense, pronoun: Pronoun): string {
     return elide(pronoun, imparfaitStem(verb) + IMPARFAIT_ENDINGS[slot]);
   }
 
-  const aux = auxiliaryFor(verb);
+  const aux = getAuxiliary(verb);
   const auxForm = auxPresentForm(aux, slot);
-  return `${elide(pronoun, auxForm)} ${participePasse(verb)}`;
+  return `${elide(pronoun, auxForm)} ${getParticipe(verb)}`;
 }
 
 export const VERBS: Record<string, Verb> = {

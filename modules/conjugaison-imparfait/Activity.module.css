@@ -1,0 +1,232 @@
+/* ---- Progress ---- */
+
+.progress {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* ---- Présent rule (top row) ---- */
+
+.ruleBlock {
+  max-width: 460px;
+  margin: 0 auto 1.25rem;
+  padding: 0.85rem 1rem;
+  background: var(--pico-card-background-color);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.ruleLabel {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+  margin-bottom: 0.4rem;
+}
+
+.ruleLine {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.ruleLineMuted {
+  font-size: 1.5rem;
+  font-weight: 700;
+  opacity: 0.55;
+}
+
+.rulePronoun {
+  color: var(--pico-muted-color);
+  font-weight: 600;
+}
+
+.ruleStem {
+  text-decoration: underline;
+  text-decoration-color: #6c5ce7;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.ruleStrike {
+  text-decoration: line-through;
+  text-decoration-color: #e17055;
+  text-decoration-thickness: 3px;
+  color: #e17055;
+}
+
+.etreNote {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e17055;
+  font-style: italic;
+}
+
+/* ---- Prompt + question line ---- */
+
+.prompt {
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--pico-muted-color);
+  margin: 0 0 0.5rem;
+}
+
+.questionLine {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 auto 1.25rem;
+  max-width: 460px;
+  min-height: 2.4em;
+  line-height: 1.4;
+}
+
+.questionPronoun {
+  color: var(--pico-muted-color);
+}
+
+.questionStem {
+  text-decoration: underline;
+  text-decoration-color: #6c5ce7;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.blank {
+  letter-spacing: 0.1em;
+  color: var(--pico-muted-border-color);
+}
+
+.questionMark {
+  color: var(--pico-muted-color);
+  font-weight: 700;
+}
+
+.endingFlash {
+  font-weight: 800;
+  color: #00b894;
+  background: rgba(0, 184, 148, 0.18);
+  padding: 0 0.25rem;
+  border-radius: 4px;
+  animation: flashPulse 0.6s ease;
+}
+
+.fullForm {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #00b894;
+}
+
+@keyframes flashPulse {
+  0% { background: rgba(0, 184, 148, 0); }
+  40% { background: rgba(0, 184, 148, 0.35); }
+  100% { background: rgba(0, 184, 148, 0.18); }
+}
+
+/* ---- Ending chips ---- */
+
+.chipRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+  .chipRow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.endingChip {
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 0.75rem 1rem;
+  min-height: 56px;
+  border-radius: 12px;
+  border: 3px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.2s ease;
+}
+
+.endingChip:hover:not(:disabled) {
+  border-color: #6c5ce7;
+  transform: translateY(-2px);
+}
+
+.endingChip:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.endingChip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.chipShake {
+  border-color: #d63031;
+  color: #d63031;
+  animation: chipShake 0.4s ease;
+}
+
+@keyframes chipShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ---- End-of-verb reveal table ---- */
+
+.revealTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--pico-card-background-color);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  max-width: 460px;
+  margin: 0 auto;
+  animation: revealFade 0.3s ease;
+}
+
+@keyframes revealFade {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.revealRow {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.4rem 0.5rem;
+  font-size: 1.2rem;
+}
+
+.revealPronoun {
+  font-weight: 700;
+  color: var(--pico-muted-color);
+}
+
+.revealStem {
+  color: #6c5ce7;
+  font-weight: 800;
+}
+
+.revealEnding {
+  color: #00b894;
+  font-weight: 800;
+}

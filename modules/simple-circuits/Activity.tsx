@@ -10,6 +10,7 @@ import Palette from './Palette';
 import CircuitCanvas from './CircuitCanvas';
 import { simulate } from './simulation';
 import {
+  DEFAULT_RESISTOR_OHMS,
   PlacedComponent,
   Rotation,
   TerminalRef,
@@ -33,12 +34,15 @@ export default function SimpleCircuits(_props: ActivityProps) {
 
   const simResult = useMemo(() => simulate(placed, wires), [placed, wires]);
 
-  const handleAddPlaced = useCallback((kind: 'bulb' | 'switch', x: number, y: number) => {
+  const handleAddPlaced = useCallback((kind: 'bulb' | 'switch' | 'resistor', x: number, y: number) => {
     const id = `${kind}-${nextId.current++}`;
-    setPlaced((prev) => [
-      ...prev,
-      { id, kind, x, y, rotation: 0, ...(kind === 'switch' ? { closed: false } : {}) },
-    ]);
+    const extras =
+      kind === 'switch'
+        ? { closed: false }
+        : kind === 'resistor'
+        ? { ohms: DEFAULT_RESISTOR_OHMS }
+        : {};
+    setPlaced((prev) => [...prev, { id, kind, x, y, rotation: 0, ...extras }]);
   }, []);
 
   const handleSelect = useCallback((id: string | null) => {
@@ -60,6 +64,12 @@ export default function SimpleCircuits(_props: ActivityProps) {
   const handleSwitchToggle = useCallback((id: string) => {
     setPlaced((prev) =>
       prev.map((c) => (c.id === id && c.kind === 'switch' ? { ...c, closed: !c.closed } : c)),
+    );
+  }, []);
+
+  const handleSetOhms = useCallback((id: string, ohms: number) => {
+    setPlaced((prev) =>
+      prev.map((c) => (c.id === id && c.kind === 'resistor' ? { ...c, ohms } : c)),
     );
   }, []);
 
@@ -106,7 +116,12 @@ export default function SimpleCircuits(_props: ActivityProps) {
       <p className={styles.tip}>{t.tip}</p>
       <div className={styles.workspace}>
         <Palette
-          labels={{ paletteTitle: t.paletteTitle, bulb: t.bulb, switchLabel: t.switchLabel }}
+          labels={{
+            paletteTitle: t.paletteTitle,
+            bulb: t.bulb,
+            switchLabel: t.switchLabel,
+            resistor: t.resistor,
+          }}
         />
         <div className={styles.canvasWrap}>
           <CircuitCanvas
@@ -121,6 +136,7 @@ export default function SimpleCircuits(_props: ActivityProps) {
             onRotate={handleRotate}
             onTerminalClick={handleTerminalClick}
             onSwitchToggle={handleSwitchToggle}
+            onSetOhms={handleSetOhms}
             onWireClick={handleWireClick}
             onCanvasClick={handleCanvasClick}
           />

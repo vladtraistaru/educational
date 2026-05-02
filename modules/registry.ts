@@ -14,6 +14,8 @@ import * as measureTime from './measure-time';
 import * as measureLengths from './measure-lengths';
 import * as simpleCircuits from './simple-circuits';
 import * as conjugaisonPresent from './conjugaison-present';
+import * as conjugaisonImparfait from './conjugaison-imparfait';
+import * as conjugaisonPasseCompose from './conjugaison-passe-compose';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -36,6 +38,8 @@ const moduleEntries: ModuleEntry[] = [
   measureLengths,
   simpleCircuits,
   conjugaisonPresent,
+  conjugaisonImparfait,
+  conjugaisonPasseCompose,
 ];
 
 const modules = moduleEntries

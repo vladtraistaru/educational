@@ -3,11 +3,11 @@
 import styles from './Activity.module.css';
 
 interface PaletteProps {
-  labels: { paletteTitle: string; bulb: string; switchLabel: string };
+  labels: { paletteTitle: string; bulb: string; switchLabel: string; resistor: string };
 }
 
 export default function Palette({ labels }: PaletteProps) {
-  const handleDragStart = (kind: 'bulb' | 'switch') => (e: React.DragEvent) => {
+  const handleDragStart = (kind: 'bulb' | 'switch' | 'resistor') => (e: React.DragEvent) => {
     e.dataTransfer.setData('application/x-circuit-component', kind);
     e.dataTransfer.effectAllowed = 'copy';
   };
@@ -40,6 +40,25 @@ export default function Palette({ labels }: PaletteProps) {
           <line x1="14" y1="30" x2="40" y2="14" stroke="#2d3436" strokeWidth="3" strokeLinecap="round" />
         </svg>
         <span>{labels.switchLabel}</span>
+      </div>
+
+      <div
+        className={styles.paletteItem}
+        draggable
+        onDragStart={handleDragStart('resistor')}
+      >
+        <svg viewBox="0 0 60 60" width="48" height="48" aria-hidden="true">
+          <line x1="6" y1="30" x2="14" y2="30" stroke="#2d3436" strokeWidth="2" />
+          <polyline
+            points="14,30 18,22 24,38 30,22 36,38 42,22 46,30"
+            fill="none"
+            stroke="#2d3436"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+          <line x1="46" y1="30" x2="54" y2="30" stroke="#2d3436" strokeWidth="2" />
+        </svg>
+        <span>{labels.resistor}</span>
       </div>
     </aside>
   );
