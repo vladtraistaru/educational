@@ -7,6 +7,7 @@ interface SimpleCircuitsStrings {
   bulb: string;
   switchLabel: string;
   resistor: string;
+  capacitor: string;
   tip: string;
   resetButton: string;
   powerLabel: string;
@@ -23,7 +24,8 @@ const translations: Record<Language, SimpleCircuitsStrings> = {
     bulb: 'Bulb',
     switchLabel: 'Switch',
     resistor: 'Resistor',
-    tip: 'Drag parts onto the board. Click two terminals to connect them with a wire. Add a resistor to control how brightly the bulb shines.',
+    capacitor: 'Capacitor',
+    tip: 'Drag parts onto the board. Click two terminals to connect them with a wire. A resistor controls bulb brightness; a capacitor stores charge and lets the bulb flash, then fade.',
     resetButton: 'Reset',
     powerLabel: 'Power',
     powerStateOn: 'ON',
@@ -37,7 +39,8 @@ const translations: Record<Language, SimpleCircuitsStrings> = {
     bulb: 'Ampoule',
     switchLabel: 'Interrupteur',
     resistor: 'Résistance',
-    tip: "Fais glisser les pièces sur le plateau. Clique sur deux bornes pour les relier par un fil. Ajoute une résistance pour régler la brillance de l'ampoule.",
+    capacitor: 'Condensateur',
+    tip: "Fais glisser les pièces sur le plateau. Clique sur deux bornes pour les relier par un fil. La résistance règle la brillance de l'ampoule ; le condensateur stocke de la charge et fait clignoter l'ampoule avant qu'elle s'éteigne.",
     resetButton: 'Réinitialiser',
     powerLabel: 'Alim.',
     powerStateOn: 'MARCHE',

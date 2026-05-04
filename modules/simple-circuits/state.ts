@@ -1,4 +1,4 @@
-export type ComponentKind = 'battery' | 'bulb' | 'switch' | 'resistor';
+export type ComponentKind = 'battery' | 'bulb' | 'switch' | 'resistor' | 'capacitor';
 export type Terminal = 'a' | 'b';
 export type Rotation = 0 | 90 | 180 | 270;
 
@@ -10,10 +10,14 @@ export interface PlacedComponent {
   rotation: Rotation;
   closed?: boolean;
   ohms?: number;
+  microFarads?: number;
 }
 
 export const RESISTOR_OHMS_OPTIONS = [10, 50, 100, 250, 500] as const;
 export const DEFAULT_RESISTOR_OHMS = 100;
+
+export const CAPACITOR_UF_OPTIONS = [100, 470, 1000, 4700, 10000] as const;
+export const DEFAULT_CAPACITOR_UF = 1000;
 
 export interface TerminalRef {
   componentId: string;
@@ -32,6 +36,7 @@ export interface SimResult {
   bulbLit: Map<string, boolean>;
   bulbBurnt: Map<string, boolean>;
   wireReversed: Map<string, boolean>;
+  capacitorCharge: Map<string, number>;
   shortCircuit: boolean;
 }
 

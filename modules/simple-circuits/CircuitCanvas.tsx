@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
+  CAPACITOR_UF_OPTIONS,
   COMPONENT_HEIGHT,
   COMPONENT_WIDTH,
+  DEFAULT_CAPACITOR_UF,
   DEFAULT_RESISTOR_OHMS,
   PlacedComponent,
   Pt,
@@ -32,13 +34,14 @@ interface Props {
   pendingWireStart: TerminalRef | null;
   selectedId: string | null;
   simResult: SimResult;
-  onAddPlaced: (kind: 'bulb' | 'switch' | 'resistor', x: number, y: number) => void;
+  onAddPlaced: (kind: 'bulb' | 'switch' | 'resistor' | 'capacitor', x: number, y: number) => void;
   onMovePlaced: (id: string, x: number, y: number) => void;
   onSelect: (id: string | null) => void;
   onRotate: (id: string) => void;
   onTerminalClick: (ref: TerminalRef) => void;
   onSwitchToggle: (id: string) => void;
   onSetOhms: (id: string, ohms: number) => void;
+  onSetMicroFarads: (id: string, microFarads: number) => void;
   onRemovePlaced: (id: string) => void;
   onWireClick: (id: string) => void;
   onCanvasClick: () => void;
@@ -83,8 +86,9 @@ export default function CircuitCanvas(props: Props) {
     const kind = e.dataTransfer.getData('application/x-circuit-component') as
       | 'bulb'
       | 'switch'
-      | 'resistor';
-    if (kind !== 'bulb' && kind !== 'switch' && kind !== 'resistor') return;
+      | 'resistor'
+      | 'capacitor';
+    if (kind !== 'bulb' && kind !== 'switch' && kind !== 'resistor' && kind !== 'capacitor') return;
     const rect = containerRef.current!.getBoundingClientRect();
     const scale = stageWidth / VIRTUAL_W;
     const x = (e.clientX - rect.left) / scale;
@@ -165,6 +169,16 @@ export default function CircuitCanvas(props: Props) {
 
           {props.selectedId &&
             renderOhmsPicker(props.placed, props.selectedId, props.onSetOhms, Rect, Text, Group)}
+
+          {props.selectedId &&
+            renderMicroFaradsPicker(
+              props.placed,
+              props.selectedId,
+              props.onSetMicroFarads,
+              Rect,
+              Text,
+              Group,
+            )}
         </Layer>
       </Stage>
     </div>
@@ -272,7 +286,6 @@ function renderComponent(
   ) : null;
 
   const groupCommon = {
-    key: c.id,
     x: c.x,
     y: c.y,
     rotation: c.rotation,
@@ -292,7 +305,7 @@ function renderComponent(
 
   if (c.kind === 'battery') {
     return (
-      <Group {...groupCommon}>
+      <Group key={c.id} {...groupCommon}>
         {selectionRing}
         <Rect
           width={COMPONENT_WIDTH}
@@ -327,7 +340,7 @@ function renderComponent(
     const milliamps = Math.round(current * 1000);
     const radius = COMPONENT_HEIGHT / 2 - 4;
     return (
-      <Group {...groupCommon}>
+      <Group key={c.id} {...groupCommon}>
         {selectionRing}
         <Line
           points={[-COMPONENT_WIDTH / 2, 0, -COMPONENT_HEIGHT / 2 + 5, 0]}
@@ -371,11 +384,67 @@ function renderComponent(
     );
   }
 
+  if (c.kind === 'capacitor') {
+    const microFarads = c.microFarads ?? DEFAULT_CAPACITOR_UF;
+    const charge = props.simResult.capacitorCharge.get(c.id) ?? 0;
+    const plateGap = 8;
+    const plateHalfHeight = 14;
+    return (
+      <Group key={c.id} {...groupCommon}>
+        {selectionRing}
+        <Line
+          points={[-COMPONENT_WIDTH / 2, 0, -plateGap, 0]}
+          stroke="#2d3436"
+          strokeWidth={3}
+        />
+        <Line
+          points={[plateGap, 0, COMPONENT_WIDTH / 2, 0]}
+          stroke="#2d3436"
+          strokeWidth={3}
+        />
+        <Line
+          points={[-plateGap, -plateHalfHeight, -plateGap, plateHalfHeight]}
+          stroke="#2d3436"
+          strokeWidth={3.5}
+          lineCap="round"
+        />
+        <Line
+          points={[plateGap, -plateHalfHeight, plateGap, plateHalfHeight]}
+          stroke="#2d3436"
+          strokeWidth={3.5}
+          lineCap="round"
+        />
+        {charge > 0.01 && (
+          <Rect
+            x={-plateGap + 2}
+            y={-plateHalfHeight + 2}
+            width={(plateGap * 2 - 4) * charge}
+            height={plateHalfHeight * 2 - 4}
+            fill="#0984e3"
+            opacity={0.55}
+            listening={false}
+          />
+        )}
+        <Text
+          x={-COMPONENT_WIDTH / 2}
+          y={-plateHalfHeight - 16}
+          width={COMPONENT_WIDTH}
+          align="center"
+          text={formatMicroFarads(microFarads)}
+          fontSize={12}
+          fontStyle="bold"
+          fill="#2d3436"
+        />
+        {terminalCircles}
+      </Group>
+    );
+  }
+
   if (c.kind === 'resistor') {
     const ohms = c.ohms ?? DEFAULT_RESISTOR_OHMS;
     const zigPoints = buildZigzag(-COMPONENT_WIDTH / 2 + 14, COMPONENT_WIDTH / 2 - 14, 6, 7);
     return (
-      <Group {...groupCommon}>
+      <Group key={c.id} {...groupCommon}>
         {selectionRing}
         <Line
           points={[-COMPONENT_WIDTH / 2, 0, -COMPONENT_WIDTH / 2 + 14, 0]}
@@ -411,7 +480,7 @@ function renderComponent(
 
   const closed = c.closed ?? false;
   return (
-    <Group {...groupCommon}>
+    <Group key={c.id} {...groupCommon}>
       {selectionRing}
       <Rect
         width={COMPONENT_WIDTH}
@@ -574,4 +643,69 @@ function renderOhmsPicker(
       })}
     </Group>
   );
+}
+
+function renderMicroFaradsPicker(
+  placed: PlacedComponent[],
+  selectedId: string,
+  onSetMicroFarads: (id: string, microFarads: number) => void,
+  Rect: any,
+  Text: any,
+  Group: any,
+) {
+  const c = placed.find((p) => p.id === selectedId);
+  if (!c || c.kind !== 'capacitor') return null;
+  const current = c.microFarads ?? DEFAULT_CAPACITOR_UF;
+  const chipW = 56;
+  const chipH = 24;
+  const gap = 4;
+  const totalW = CAPACITOR_UF_OPTIONS.length * chipW + (CAPACITOR_UF_OPTIONS.length - 1) * gap;
+  const startX = c.x - totalW / 2;
+  const y = c.y - COMPONENT_HEIGHT / 2 - chipH - 32;
+  return (
+    <Group>
+      {CAPACITOR_UF_OPTIONS.map((microFarads, i) => {
+        const x = startX + i * (chipW + gap);
+        const selected = microFarads === current;
+        const handleClick = (e: any) => {
+          e.cancelBubble = true;
+          onSetMicroFarads(selectedId, microFarads);
+        };
+        return (
+          <Group key={microFarads} x={x} y={y} onClick={handleClick} onTap={handleClick}>
+            <Rect
+              width={chipW}
+              height={chipH}
+              fill={selected ? '#0984e3' : '#ffffff'}
+              stroke={selected ? '#0652a3' : '#b2bec3'}
+              strokeWidth={1.5}
+              cornerRadius={6}
+              shadowBlur={2}
+              shadowOpacity={0.25}
+            />
+            <Text
+              x={0}
+              y={5}
+              width={chipW}
+              align="center"
+              text={formatMicroFarads(microFarads)}
+              fontSize={12}
+              fontStyle="bold"
+              fill={selected ? '#ffffff' : '#2d3436'}
+              listening={false}
+            />
+          </Group>
+        );
+      })}
+    </Group>
+  );
+}
+
+function formatMicroFarads(microFarads: number): string {
+  if (microFarads >= 1000) {
+    const mF = microFarads / 1000;
+    const text = Number.isInteger(mF) ? `${mF}` : mF.toFixed(1);
+    return `${text} mF`;
+  }
+  return `${microFarads} µF`;
 }
