@@ -9,6 +9,7 @@ import * as shapeExplorer3d from './3d-shape-explorer';
 import * as multiplicationPatterns from './multiplication-patterns';
 import * as timesTableChallenge from './times-table-challenge';
 import * as laserAndMirrors from './laser-and-mirrors';
+import * as lensesAndMirrors from './lenses-and-mirrors';
 import * as symmetryPlay from './symmetry-play';
 import * as measureTime from './measure-time';
 import * as measureLengths from './measure-lengths';
@@ -34,6 +35,7 @@ const moduleEntries: ModuleEntry[] = [
   timesTableChallenge,
   symmetryPlay,
   laserAndMirrors,
+  lensesAndMirrors,
   measureTime,
   measureLengths,
   simpleCircuits,

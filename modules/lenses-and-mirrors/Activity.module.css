@@ -1,0 +1,55 @@
+.buttonRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.slider {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.slider input[type="range"] {
+  width: 120px;
+  height: 6px;
+  cursor: pointer;
+}
+
+.iconBtn {
+  padding: 0.3rem 0.5rem;
+  min-height: 40px;
+  min-width: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBtn svg {
+  display: block;
+}
+
+.toggleBtn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.canvas {
+  background: var(--pico-card-background-color);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+@media (max-width: 480px) {
+  .canvas {
+    border-radius: 12px;
+  }
+}
