@@ -4,13 +4,13 @@ import { MAX_DISTANCE } from './levels';
 import styles from './Activity.module.css';
 
 const PIVOT_X = 400;
-const PIVOT_Y = 190;
+const PIVOT_Y = 165;
 const NOTCH = 32;
 const BEAM_HALF = MAX_DISTANCE * NOTCH + 16;
 const BEAM_TOP = PIVOT_Y - 8;
 const BLOCK_W = 28;
 const BLOCK_H = 26;
-const GROUND_Y = 320;
+const GROUND_Y = 300;
 
 const notchX = (side: Side, distance: number) =>
   side === 'left' ? PIVOT_X - distance * NOTCH : PIVOT_X + distance * NOTCH;
@@ -44,7 +44,7 @@ export default function BeamStage({
   return (
     <svg
       className={styles.stage}
-      viewBox="0 0 800 400"
+      viewBox="0 0 800 370"
       role="img"
       aria-label="Balance beam"
     >

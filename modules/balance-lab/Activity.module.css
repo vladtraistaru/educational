@@ -143,7 +143,7 @@
 
 .notchLabel {
   fill: var(--pico-muted-color);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-anchor: middle;
 }
@@ -352,14 +352,20 @@
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .predictBtn:hover {
   border-color: #0984e3;
 }
 
+/* Pico styles bare <button> from its own custom properties, so setting only
+   background/color here loses to it — the token overrides are what stick. */
 .predictBtnActive {
+  --pico-background-color: #0984e3;
+  --pico-border-color: #0984e3;
+  --pico-color: #fff;
   background: #0984e3;
   border-color: #0984e3;
   color: #fff;
@@ -475,6 +481,16 @@
 @media (max-width: 560px) {
   .stage {
     max-height: 34vh;
+  }
+
+  /* The SVG scales down ~2.5x at phone width; scale the in-beam text back up
+     so the notch distances stay readable. */
+  .notchLabel {
+    font-size: 22px;
+  }
+
+  .weightLabel {
+    font-size: 17px;
   }
 
   .goal {

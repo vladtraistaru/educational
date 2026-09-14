@@ -148,7 +148,7 @@ export default function ChallengeScreen({
             disabled={false}
             onSelect={(id) => setSelectedId(id === selectedId ? null : id)}
           />
-          <p className={styles.hint}>{t.placeHint}</p>
+          {trayBlocks.length > 0 && <p className={styles.hint}>{t.placeHint}</p>}
         </>
       )}
 
