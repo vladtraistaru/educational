@@ -222,6 +222,9 @@ Reusable pure logic (no React, no UI) lives in `/lib/science/` under subject-spe
   math/
     number-theory.ts    — digitalRoot, gcd, lcm
     random.ts           — randInt, shuffle
+  mechanics/
+    torque.ts           — Load/Side/Tilt types, netTorque, tilt, isBalanced,
+                          beamAngle, mechanicalAdvantage, solveBalance
   electricity/
     component.ts        — abstract Component base class
     node.ts             — Node (junction)
