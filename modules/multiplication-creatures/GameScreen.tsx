@@ -10,18 +10,38 @@ import {
   POINTS_PER_QUESTION,
   STARTING_LIVES,
 } from './questions';
-import { getSpecies, getStageIndex, getStageProgress, type SpeciesId } from './monsters';
-import Monster, { type Mood } from './Monster';
+import {
+  getSpecies,
+  getStageIndex,
+  getStageProgress,
+  rollQuirk,
+  STAGE_THRESHOLDS,
+  type Quirk,
+  type SpeciesId,
+} from './creatures';
+import Creature, { type Mood } from './Creature';
+import EvolutionOverlay from './EvolutionOverlay';
 import styles from './Activity.module.css';
 
 interface GameScreenProps {
   speciesId: SpeciesId;
-  onFinish: (score: number, correctCount: number, bestStreak: number) => void;
+  onFinish: (
+    score: number,
+    correctCount: number,
+    bestStreak: number,
+    quirks: Quirk[],
+  ) => void;
 }
 
 interface Feedback {
   chosenIndex: number;
   wasCorrect: boolean;
+}
+
+interface Evolution {
+  fromStageIndex: number;
+  toStageIndex: number;
+  quirk: Quirk | null;
 }
 
 function factorKey(a: number, b: number): string {
@@ -41,30 +61,32 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
   const [lives, setLives] = useState(STARTING_LIVES);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [mood, setMood] = useState<Mood>('idle');
-  const [justEvolved, setJustEvolved] = useState(false);
+  const [quirks, setQuirks] = useState<Quirk[]>([]);
+  const [evolution, setEvolution] = useState<Evolution | null>(null);
 
   const multiplier = getStreakMultiplier(streak);
   const stageIndex = getStageIndex(correctCount);
-  const { progress } = getStageProgress(correctCount);
-  const monsterEmoji = species.stages[stageIndex];
+  const { progress, remaining } = getStageProgress(correctCount);
+  const stage = species.stages[stageIndex];
+  const isMaxStage = stageIndex >= STAGE_THRESHOLDS.length - 1;
 
   const advance = useCallback(() => {
     if (lives <= 0) {
-      onFinish(score, correctCount, bestStreak);
+      onFinish(score, correctCount, bestStreak, quirks);
       return;
     }
     setQuestion(generateQuestion(factorKey(question.factorA, question.factorB)));
     setFeedback(null);
     setMood('idle');
-    setJustEvolved(false);
-  }, [lives, score, correctCount, bestStreak, question, onFinish]);
+    setEvolution(null);
+  }, [lives, score, correctCount, bestStreak, quirks, question, onFinish]);
 
   useEffect(() => {
     if (!feedback) return;
-    const delay = justEvolved ? 1400 : 900;
+    const delay = evolution ? 3000 : 900;
     const timer = setTimeout(advance, delay);
     return () => clearTimeout(timer);
-  }, [feedback, advance, justEvolved]);
+  }, [feedback, advance, evolution]);
 
   const handleAnswer = useCallback(
     (chosenIndex: number) => {
@@ -76,15 +98,22 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
       if (wasCorrect) {
         const points = POINTS_PER_QUESTION * multiplier;
         const newCorrect = correctCount + 1;
-        const evolved = getStageIndex(newCorrect) > getStageIndex(correctCount);
+        const fromStageIndex = getStageIndex(correctCount);
+        const toStageIndex = getStageIndex(newCorrect);
+        const grew = toStageIndex > fromStageIndex;
         const newStreak = streak + 1;
 
         setScore((s) => s + points);
         setStreak(newStreak);
         setBestStreak((b) => Math.max(b, newStreak));
         setCorrectCount(newCorrect);
-        setMood(evolved ? 'evolve' : 'happy');
-        setJustEvolved(evolved);
+        setMood(grew ? 'evolve' : 'happy');
+
+        if (grew) {
+          const quirk = rollQuirk(quirks);
+          if (quirk) setQuirks((q) => [...q, quirk]);
+          setEvolution({ fromStageIndex, toStageIndex, quirk });
+        }
       } else {
         setLives((l) => l - 1);
         setStreak(0);
@@ -93,7 +122,7 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
 
       setFeedback({ chosenIndex, wasCorrect });
     },
-    [feedback, question, multiplier, correctCount, streak],
+    [feedback, question, multiplier, correctCount, streak, quirks],
   );
 
   const getOptionClass = (index: number): string => {
@@ -131,13 +160,45 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
         </div>
       </div>
 
-      <Monster emoji={monsterEmoji} mood={mood} />
+      <div className={styles.creatureArena}>
+        <Creature
+          stage={evolution ? species.stages[evolution.fromStageIndex] : stage}
+          mood={mood}
+          quirks={evolution?.quirk ? quirks.slice(0, -1) : quirks}
+        />
 
-      <div className={styles.xpBarTrack}>
-        <div className={styles.xpBarFill} style={{ width: `${progress * 100}%` }} />
+        {evolution && (
+          <EvolutionOverlay
+            fromStage={species.stages[evolution.fromStageIndex]}
+            toStage={species.stages[evolution.toStageIndex]}
+            headline={t.grewUp}
+            stageName={t.stageNames[speciesId][evolution.toStageIndex]}
+            quirk={evolution.quirk}
+            quirkLine={evolution.quirk ? t.quirkLines[evolution.quirk] : null}
+          />
+        )}
       </div>
 
-      {justEvolved && <div className={styles.evolvedBanner}>{t.evolved}</div>}
+      <div className={styles.growthRow}>
+        <span className={styles.growthStageName}>
+          {evolution ? '' : t.stageNames[speciesId][stageIndex]}
+        </span>
+
+        <div className={styles.xpBarTrack}>
+          <div className={styles.xpBarFill} style={{ width: `${progress * 100}%` }} />
+        </div>
+
+        {isMaxStage ? (
+          <span className={styles.growthNext}>{t.maxStage}</span>
+        ) : (
+          <span className={styles.growthNext}>
+            <span className={styles.nextSilhouette} aria-hidden="true">
+              {species.stages[stageIndex + 1].emoji}
+            </span>
+            {t.growthHint.replace('{n}', String(remaining))}
+          </span>
+        )}
+      </div>
 
       <div className={styles.questionArea}>
         <span className={styles.questionText}>
@@ -145,7 +206,7 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
         </span>
       </div>
 
-      {feedback && !justEvolved && (
+      {feedback && !evolution && (
         <div
           className={
             feedback.wasCorrect

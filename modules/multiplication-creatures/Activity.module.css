@@ -18,7 +18,7 @@
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
 }
 
 .menuTitle {
@@ -52,7 +52,11 @@
   padding: 1.25rem 1rem;
   border-radius: 16px;
   border: 3px solid var(--pico-muted-border-color);
+  --pico-background-color: var(--pico-card-background-color);
+  --pico-border-color: var(--pico-muted-border-color);
+  --pico-color: inherit;
   background: var(--pico-card-background-color);
+  color: inherit;
   cursor: pointer;
   flex: 1 1 130px;
   max-width: 160px;
@@ -81,13 +85,28 @@
 
 .speciesName {
   font-weight: 800;
-  color: var(--pico-color);
+  color: inherit;
 }
 
+/* Growth teaser: unknown shapes getting bigger */
+
 .speciesPreview {
-  font-size: 1.1rem;
-  opacity: 0.7;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.15rem;
+  height: 1.8rem;
 }
+
+.previewSilhouette {
+  filter: brightness(0) saturate(0);
+  opacity: 0.28;
+  line-height: 1;
+}
+
+.previewSilhouette:nth-child(1) { font-size: 0.7rem; }
+.previewSilhouette:nth-child(2) { font-size: 0.95rem; }
+.previewSilhouette:nth-child(3) { font-size: 1.2rem; }
+.previewSilhouette:nth-child(4) { font-size: 1.5rem; }
 
 /* ---- Game Screen ---- */
 
@@ -160,51 +179,79 @@
   font-size: 1.2rem;
 }
 
-/* Monster */
+/* ---- Creature ---- */
 
-.monsterStage {
+.creatureArena {
   position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.creatureStage {
+  position: relative;
+  font-size: 4rem;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 110px;
 }
 
-.monsterEmoji {
-  font-size: 5rem;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
+.creatureGlow {
+  position: absolute;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  opacity: 0.4;
+  filter: blur(30px);
+  transition: transform 0.6s cubic-bezier(0.2, 1.4, 0.4, 1), background 0.6s ease;
+}
+
+.creatureOrbit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.creatureEmoji {
   display: inline-block;
+  line-height: 1;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.22));
+  transition: font-size 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
-.monsterIdle {
-  animation: monsterBreathe 2.6s ease-in-out infinite;
+.creatureIdle {
+  animation: creatureBreathe 2.6s ease-in-out infinite;
 }
 
-.monsterHappy {
-  animation: monsterHappy 0.5s ease;
+.creatureHappy {
+  animation: creatureHappy 0.5s ease;
 }
 
-.monsterSad {
-  animation: monsterSad 0.4s ease;
+.creatureSad {
+  animation: creatureSad 0.4s ease;
 }
 
-.monsterEvolve {
-  animation: monsterEvolve 1.2s ease;
+.creatureEvolve {
+  animation: creatureVanish 0.5s ease forwards;
 }
 
-@keyframes monsterBreathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+@keyframes creatureBreathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.04) translateY(-4px); }
 }
 
-@keyframes monsterHappy {
+@keyframes creatureHappy {
   0% { transform: scale(1) rotate(0deg); }
-  30% { transform: scale(1.25) rotate(-8deg); }
-  60% { transform: scale(1.15) rotate(8deg); }
+  30% { transform: scale(1.22) rotate(-8deg); }
+  60% { transform: scale(1.12) rotate(8deg); }
   100% { transform: scale(1) rotate(0deg); }
 }
 
-@keyframes monsterSad {
+@keyframes creatureSad {
   0%, 100% { transform: translateX(0) rotate(0deg); }
   20% { transform: translateX(-8px) rotate(-6deg); }
   40% { transform: translateX(8px) rotate(6deg); }
@@ -212,32 +259,214 @@
   80% { transform: translateX(5px) rotate(3deg); }
 }
 
-@keyframes monsterEvolve {
-  0% { transform: scale(1); filter: brightness(1); }
-  40% { transform: scale(0.6) rotate(10deg); filter: brightness(2); }
-  70% { transform: scale(1.4) rotate(-8deg); filter: brightness(1.6); }
-  100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+@keyframes creatureVanish {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.2); opacity: 0; }
 }
 
-.evolveBurst {
+/* Orbiting charms and collected quirks */
+
+.charm,
+.quirk {
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  font-size: 2rem;
-  animation: sparkleSpin 1.2s ease;
+  left: 50%;
+  top: 50%;
+  width: 1em;
+  height: 1em;
+  margin: -0.5em 0 0 -0.5em;
+  line-height: 1;
+  text-align: center;
+  transform: var(--ring);
 }
 
-@keyframes sparkleSpin {
-  0% { transform: scale(0) rotate(0deg); opacity: 0; }
-  40% { transform: scale(1.4) rotate(90deg); opacity: 1; }
-  100% { transform: scale(0.6) rotate(200deg); opacity: 0; }
+.charm {
+  font-size: 0.4em;
+  animation: charmFloat 2.8s ease-in-out infinite;
 }
 
-/* XP bar */
+.quirk {
+  font-size: 0.48em;
+  animation: quirkWiggle 3.4s ease-in-out infinite;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes charmFloat {
+  0%, 100% { transform: var(--ring) translateY(0) scale(1); opacity: 0.85; }
+  50% { transform: var(--ring) translateY(-7px) scale(1.14); opacity: 1; }
+}
+
+@keyframes quirkWiggle {
+  0%, 100% { transform: var(--ring) rotate(-10deg); }
+  50% { transform: var(--ring) rotate(10deg); }
+}
+
+.creatureShadow {
+  position: absolute;
+  bottom: 16px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.18);
+  filter: blur(5px);
+  transition: width 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+/* ---- Evolution moment ---- */
+
+.evolveOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 0.25rem;
+}
+
+.evolveParticles {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 0;
+  height: 0;
+}
+
+.particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1em;
+  height: 1em;
+  margin: -0.5em 0 0 -0.5em;
+  font-size: 1.5rem;
+  line-height: 1;
+  text-align: center;
+  animation: particleFly 1.3s ease-out both;
+}
+
+@keyframes particleFly {
+  0% { transform: var(--spin) translateY(0) scale(0.2); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: var(--spin) translateY(-160px) scale(1.15); opacity: 0; }
+}
+
+.evolveFlash {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, rgba(255, 255, 255, 0) 70%);
+  animation: flashOut 0.85s ease-out 0.3s both;
+}
+
+@keyframes flashOut {
+  0% { transform: scale(0); opacity: 0.95; }
+  100% { transform: scale(24); opacity: 0; }
+}
+
+.evolveSwap {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
+
+.evolveOld {
+  position: absolute;
+  line-height: 1;
+  animation: oldShrink 0.55s ease-in forwards;
+}
+
+.evolveNew {
+  line-height: 1;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+  animation: newBurst 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) 0.4s both;
+}
+
+@keyframes oldShrink {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(0.08) rotate(540deg); opacity: 0; }
+}
+
+@keyframes newBurst {
+  0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+  55% { transform: scale(1.35) rotate(8deg); opacity: 1; }
+  78% { transform: scale(0.92) rotate(-4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.evolveText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.evolveHeadline {
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #6c5ce7;
+  animation: popIn 0.35s ease 0.55s both;
+}
+
+.evolveStageName {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--pico-color);
+  animation: popIn 0.4s ease 0.85s both;
+}
+
+.evolveQuirk {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  max-width: 320px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--pico-muted-color);
+  animation: popIn 0.4s ease 1.6s both;
+}
+
+.evolveQuirkIcon {
+  font-size: 1.3rem;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---- Growth meter ---- */
+
+.growthRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.growthStageName {
+  min-height: 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--pico-color);
+}
 
 .xpBarTrack {
   width: 100%;
-  max-width: 320px;
   height: 12px;
   border-radius: 8px;
   background: var(--pico-muted-border-color);
@@ -251,20 +480,25 @@
   transition: width 0.4s ease;
 }
 
-.evolvedBanner {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #6c5ce7;
-  background: rgba(108, 92, 231, 0.12);
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  animation: badgePop 0.25s ease;
+.growthNext {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--pico-muted-color);
+}
+
+.nextSilhouette {
+  font-size: 1.1rem;
+  filter: brightness(0) saturate(0);
+  opacity: 0.32;
 }
 
 /* Question */
 
 .questionArea {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 1rem;
   text-align: center;
 }
 
@@ -388,30 +622,23 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  max-width: 360px;
+  max-width: 380px;
 }
 
-.resultMonsterEmoji {
-  font-size: 4.5rem;
-  animation: starBounce 0.5s ease both;
-  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
+.resultContainer .creatureStage {
+  height: 240px;
+  margin-top: 0.75rem;
 }
 
-.resultMonsterLabel {
+.resultCreatureLabel {
   font-size: 0.95rem;
   color: var(--pico-muted-color);
   text-align: center;
   margin: 0 0 0.5rem;
 }
 
-.resultMonsterLabel strong {
+.resultCreatureLabel strong {
   color: var(--pico-color);
-}
-
-@keyframes starBounce {
-  0% { transform: scale(0); }
-  60% { transform: scale(1.25); }
-  100% { transform: scale(1); }
 }
 
 .finalScore {
@@ -461,6 +688,33 @@
   letter-spacing: 0.04em;
 }
 
+.quirkCollection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.quirkCollectionRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.quirkBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.3rem;
+  border-radius: 50%;
+  background: var(--pico-card-background-color);
+  border: 2px solid var(--pico-muted-border-color);
+}
+
 .playAgainBtn {
   composes: btnPrimary from '@/modules/activity.module.css';
   font-size: 1.1rem;
@@ -475,8 +729,26 @@
     font-size: 2rem;
   }
 
-  .monsterEmoji {
-    font-size: 3.8rem;
+  .creatureArena {
+    height: 230px;
+  }
+
+  .creatureStage,
+  .evolveSwap {
+    font-size: 2.5rem;
+  }
+
+  .evolveStageName {
+    font-size: 1.15rem;
+  }
+
+  .evolveQuirk {
+    font-size: 0.72rem;
+    max-width: 260px;
+  }
+
+  .particle {
+    font-size: 1.1rem;
   }
 
   .optionBtn {
@@ -488,12 +760,12 @@
     gap: 0.5rem;
   }
 
-  .resultMonsterEmoji {
-    font-size: 3.5rem;
-  }
-
   .finalScoreValue {
     font-size: 2.2rem;
+  }
+
+  .resultContainer .creatureStage {
+    height: 180px;
   }
 
   .speciesCard {

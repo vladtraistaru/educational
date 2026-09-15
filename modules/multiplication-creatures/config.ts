@@ -1,10 +1,10 @@
 import { ModuleConfig } from '@/lib/types';
 
 export const config: ModuleConfig = {
-  slug: 'multiplication-monsters',
-  title: 'Multiplication Monsters',
+  slug: 'multiplication-creatures',
+  title: 'Multiplication Creatures',
   description:
-    'Feed your pet monster by answering multiplication facts from 1 to 12! Grow it from an egg to a legendary beast before you run out of lives',
+    'Hatch a fantasy creature and feed it multiplication facts from 1 to 12! Every right answer makes it bigger, wilder and stranger — how huge can it get before you run out of lives?',
   subject: 'mathematics',
   difficulty: 5,
   estimatedMinutes: 8,

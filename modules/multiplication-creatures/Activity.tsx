@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { ActivityProps } from '@/lib/types';
-import type { SpeciesId } from './monsters';
+import type { Quirk, SpeciesId } from './creatures';
 import MenuScreen from './MenuScreen';
 import GameScreen from './GameScreen';
 import ResultScreen from './ResultScreen';
@@ -14,11 +14,12 @@ interface RoundResult {
   score: number;
   correctCount: number;
   bestStreak: number;
+  quirks: Quirk[];
 }
 
 export default function Activity({}: ActivityProps) {
   const [screen, setScreen] = useState<Screen>('menu');
-  const [speciesId, setSpeciesId] = useState<SpeciesId>('dragon');
+  const [speciesId, setSpeciesId] = useState<SpeciesId>('unicorn');
   const [result, setResult] = useState<RoundResult | null>(null);
 
   const handleStart = (chosen: SpeciesId) => {
@@ -26,8 +27,13 @@ export default function Activity({}: ActivityProps) {
     setScreen('playing');
   };
 
-  const handleFinish = (score: number, correctCount: number, bestStreak: number) => {
-    setResult({ score, correctCount, bestStreak });
+  const handleFinish = (
+    score: number,
+    correctCount: number,
+    bestStreak: number,
+    quirks: Quirk[],
+  ) => {
+    setResult({ score, correctCount, bestStreak, quirks });
     setScreen('results');
   };
 
@@ -48,6 +54,7 @@ export default function Activity({}: ActivityProps) {
           score={result.score}
           correctCount={result.correctCount}
           bestStreak={result.bestStreak}
+          quirks={result.quirks}
           onPlayAgain={handlePlayAgain}
         />
       )}

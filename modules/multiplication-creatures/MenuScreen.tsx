@@ -1,6 +1,6 @@
 import { useLanguage } from '@/lib/language';
 import translations from './translations';
-import { MONSTER_SPECIES, type SpeciesId } from './monsters';
+import { CREATURE_SPECIES, type SpeciesId } from './creatures';
 import styles from './Activity.module.css';
 
 interface MenuScreenProps {
@@ -13,20 +13,24 @@ export default function MenuScreen({ onStart }: MenuScreenProps) {
 
   return (
     <div className={styles.menuContainer}>
-      <h3 className={styles.menuTitle}>{t.chooseMonster}</h3>
-      <p className={styles.menuHint}>{t.chooseMonsterHint}</p>
+      <h3 className={styles.menuTitle}>{t.chooseCreature}</h3>
+      <p className={styles.menuHint}>{t.chooseCreatureHint}</p>
 
       <div className={styles.speciesCards}>
-        {MONSTER_SPECIES.map((species) => (
+        {CREATURE_SPECIES.map((species) => (
           <button
             key={species.id}
             className={styles.speciesCard}
             onClick={() => onStart(species.id)}
           >
-            <span className={styles.speciesEgg}>{species.stages[0]}</span>
+            <span className={styles.speciesEgg}>{species.stages[0].emoji}</span>
             <span className={styles.speciesName}>{t.species[species.id]}</span>
-            <span className={styles.speciesPreview}>
-              {species.stages.slice(1).join(' ')}
+            <span className={styles.speciesPreview} aria-hidden="true">
+              {species.stages.slice(1).map((s, i) => (
+                <span key={i} className={styles.previewSilhouette}>
+                  {s.emoji}
+                </span>
+              ))}
             </span>
           </button>
         ))}
