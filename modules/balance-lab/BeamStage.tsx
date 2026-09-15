@@ -12,6 +12,12 @@ const BLOCK_W = 28;
 const BLOCK_H = 26;
 const GROUND_Y = 300;
 
+/* The hit area spans the whole notch column — the space the block will occupy,
+   the beam itself, and the number below it. Anything less and a mouse aimed at
+   the number misses, though a fingertip still overlaps. */
+const TARGET_TOP = BEAM_TOP - BLOCK_H - 10;
+const TARGET_H = PIVOT_Y + 46 - TARGET_TOP;
+
 const notchX = (side: Side, distance: number) =>
   side === 'left' ? PIVOT_X - distance * NOTCH : PIVOT_X + distance * NOTCH;
 
@@ -25,6 +31,7 @@ interface BeamStageProps {
   placed: PlacedWeight[];
   angle: number;
   interactive: boolean;
+  armed: boolean;
   onNotchClick: (side: Side, distance: number) => void;
   onPlacedClick: (id: string) => void;
 }
@@ -34,6 +41,7 @@ export default function BeamStage({
   placed,
   angle,
   interactive,
+  armed,
   onNotchClick,
   onPlacedClick,
 }: BeamStageProps) {
@@ -87,10 +95,10 @@ export default function BeamStage({
                 {interactive && !occupied.has(`${side}:${distance}`) && (
                   <rect
                     x={x - NOTCH / 2}
-                    y={BEAM_TOP - BLOCK_H - 6}
+                    y={TARGET_TOP}
                     width={NOTCH}
-                    height={BLOCK_H + 28}
-                    className={styles.notchTarget}
+                    height={TARGET_H}
+                    className={`${styles.notchTarget} ${armed ? styles.notchTargetArmed : ''}`}
                     onClick={() => onNotchClick(side, distance)}
                   />
                 )}

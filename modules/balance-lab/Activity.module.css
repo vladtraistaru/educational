@@ -139,6 +139,7 @@
 .notchTick {
   stroke: rgba(255, 255, 255, 0.45);
   stroke-width: 2;
+  pointer-events: none;
 }
 
 .notchLabel {
@@ -146,16 +147,23 @@
   font-size: 13px;
   font-weight: 700;
   text-anchor: middle;
+  pointer-events: none;
 }
 
 .notchTarget {
   fill: transparent;
   cursor: pointer;
+  rx: 6px;
+  transition: fill 0.12s ease;
+}
+
+/* A block is selected — show where it can go. */
+.notchTargetArmed {
+  fill: rgba(9, 132, 227, 0.12);
 }
 
 .notchTarget:hover {
-  fill: rgba(9, 132, 227, 0.18);
-  rx: 6px;
+  fill: rgba(9, 132, 227, 0.28);
 }
 
 .crate {

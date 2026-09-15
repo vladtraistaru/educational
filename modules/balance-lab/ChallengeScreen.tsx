@@ -107,6 +107,7 @@ export default function ChallengeScreen({
         placed={placed}
         angle={angle}
         interactive={!released}
+        armed={selectedId !== null}
         onNotchClick={handleNotchClick}
         onPlacedClick={handlePlacedClick}
       />
