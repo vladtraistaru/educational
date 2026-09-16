@@ -1,6 +1,7 @@
 export type Subject =
   | 'mathematics'
   | 'science'
+  | 'chemistry'
   | 'literacy'
   | 'geography'
   | 'history'
@@ -34,6 +35,7 @@ export function getDifficultyBand(difficulty: number): DifficultyBand {
 export const SUBJECT_META: Record<Subject, { icon: string; hue: number }> = {
   mathematics: { icon: '🔢', hue: 255 },
   science: { icon: '🔬', hue: 152 },
+  chemistry: { icon: '🧪', hue: 285 },
   literacy: { icon: '📖', hue: 28 },
   geography: { icon: '🌍', hue: 199 },
   history: { icon: '🏛️', hue: 35 },
@@ -46,6 +48,7 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
   en: {
     mathematics: 'Mathematics',
     science: 'Science',
+    chemistry: 'Chemistry',
     literacy: 'Literacy',
     geography: 'Geography',
     history: 'History',
@@ -56,6 +59,7 @@ export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
   fr: {
     mathematics: 'Mathématiques',
     science: 'Sciences',
+    chemistry: 'Chimie',
     literacy: 'Lecture',
     geography: 'Géographie',
     history: 'Histoire',

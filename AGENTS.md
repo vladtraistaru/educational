@@ -114,7 +114,7 @@ export const config: ModuleConfig = {
 };
 ```
 
-`subject` must be one of: `'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'optics' | 'electricity-and-magnetism'`.
+`subject` must be one of: `'mathematics' | 'science' | 'chemistry' | 'literacy' | 'geography' | 'history' | 'art' | 'optics' | 'electricity-and-magnetism'`.
 
 `difficulty` is 1 (easiest) to 10 (hardest). It controls sort order on the homepage.
 
@@ -234,6 +234,9 @@ Reusable pure logic (no React, no UI) lives in `/lib/science/` under subject-spe
     source.ts           — VoltageSource
     circuit.ts          — Circuit (graph + solve())
     solver.ts           — DC series/parallel reduction solver
+  chemistry/
+    elements.ts         — ElementSymbol, ELEMENTS (colour, "hands"/valence, radius)
+    formula.ts          — parseFormula, countAtoms, sameComposition, compositionDiff
 ```
 
 **Convention**: when a function is useful across multiple modules, extract it to `/lib/science/{subject}/`. When it's specific to one activity, keep it in the module. Modules can import from `/lib/science/` and re-export symbols so their consumers don't need to know about the shared layer.
@@ -253,7 +256,7 @@ Shared subject logic in `/lib/physics/` and `/lib/math/` has unit tests. When ad
 From `/lib/types.ts`:
 
 ```typescript
-type Subject = 'mathematics' | 'science' | 'literacy' | 'geography' | 'history' | 'art' | 'optics' | 'electricity-and-magnetism';
+type Subject = 'mathematics' | 'science' | 'chemistry' | 'literacy' | 'geography' | 'history' | 'art' | 'optics' | 'electricity-and-magnetism';
 
 interface ModuleConfig {
   slug: string;
@@ -273,6 +276,8 @@ From `/lib/language-config.ts`:
 ```typescript
 type Language = 'en' | 'fr';
 ```
+
+Adding a subject means updating `Subject`, `SUBJECT_META` (icon + hue) and `SUBJECT_LABELS` in `/lib/types.ts`, plus `SUBJECT_ORDER` in `/modules/registry.ts`.
 
 Label maps: `SUBJECT_LABELS` (per-language subject names) and `UI_LABELS` (per-language UI strings) are in `/lib/types.ts`.
 

@@ -19,6 +19,7 @@ import * as simpleCircuits from './simple-circuits';
 import * as conjugaisonPresent from './conjugaison-present';
 import * as conjugaisonImparfait from './conjugaison-imparfait';
 import * as conjugaisonPasseCompose from './conjugaison-passe-compose';
+import * as moleculeLab from './molecule-lab';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -46,6 +47,7 @@ const moduleEntries: ModuleEntry[] = [
   conjugaisonPresent,
   conjugaisonImparfait,
   conjugaisonPasseCompose,
+  moleculeLab,
 ];
 
 const modules = moduleEntries
@@ -57,6 +59,7 @@ const modules = moduleEntries
 const SUBJECT_ORDER = [
   'mathematics',
   'science',
+  'chemistry',
   'optics',
   'electricity-and-magnetism',
   'literacy',
