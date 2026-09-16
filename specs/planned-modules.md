@@ -12,7 +12,6 @@ Product plan aligned with the Romandie PER sketch in `docs/curriculum/romandie.m
 | `measure-time` | mathematics | Read analog and digital clocks; durations and “before / after” in a day. |
 | `symmetry-play` | mathematics | Complete a figure across a mirror line; spot symmetrical or not in grids or photos. |
 | `add-subtract-playground` | mathematics | Mental and small-number written +/−; multiple strategies; complements existing multiplication modules. |
-| `grid-coordinates` | mathematics | Locate cells on a grid; simple “map” or treasure-hunt wording; optional first-quadrant pairs later. |
 
 ---
 
@@ -20,7 +19,6 @@ Product plan aligned with the Romandie PER sketch in `docs/curriculum/romandie.m
 
 | Slug (proposed) | Subject | Short description |
 |-----------------|---------|-------------------|
-| `division-sharing` | mathematics | Division as fair sharing and grouping; ties arrays from multiplication to “how many groups”. |
 | `solid-views` | mathematics | Match 3D shapes to top / front / side views; extends `3d-shape-explorer`. |
 | `perimeter-intro` | mathematics | Perimeter on a grid or with known side lengths; rectangles first. |
 | `area-intro` | mathematics | Count unit squares; compare areas; rectangles on a grid after perimeter is comfortable. |
@@ -62,6 +60,8 @@ Aligned with PER **L1** axes (see `docs/curriculum/romandie.md` §4.1). Cycle 1 
 | `number-scale-explorer` | Number line / parts — Nombres (partial). |
 | `shape-explorer`, `3d-shape-explorer`, `euclidean-postulates` | Espace — geometry. |
 | `multiplication-patterns`, `times-table-challenge` | Opérations — multiplication. |
+| `division-sharing` | Opérations — division as fair sharing and grouping, linked back to multiplication. |
+| `grid-coordinates` | Espace — repérage dans le plan: name and find grid cells (C4), follow moves on a treasure map. |
 | `laser-and-mirrors` | Physics / light — not MER “vivant & matière” but valuable for sciences tools. |
 
 ---

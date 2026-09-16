@@ -13,6 +13,8 @@ import * as balanceLab from './balance-lab';
 import * as laserAndMirrors from './laser-and-mirrors';
 import * as lensesAndMirrors from './lenses-and-mirrors';
 import * as symmetryPlay from './symmetry-play';
+import * as divisionSharing from './division-sharing';
+import * as gridCoordinates from './grid-coordinates';
 import * as measureTime from './measure-time';
 import * as measureLengths from './measure-lengths';
 import * as simpleCircuits from './simple-circuits';
@@ -38,6 +40,8 @@ const moduleEntries: ModuleEntry[] = [
   timesTableChallenge,
   multiplicationCreatures,
   symmetryPlay,
+  divisionSharing,
+  gridCoordinates,
   balanceLab,
   laserAndMirrors,
   lensesAndMirrors,

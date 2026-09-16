@@ -13,6 +13,8 @@ All code in this project is AI-driven — written entirely through AI coding too
 | Shape Explorer | Discover 2D shapes, count their sides and corners, and see where they appear in the real world | 2 |
 | Number Scale Explorer | Drag markers on a number line to explore how numbers split into parts | 3 |
 | Multiplication Patterns | Build arrays, explore the times table grid, and discover hidden patterns | 3 |
+| Division Sharing | Share things fairly and make equal groups to discover division | 3 |
+| Grid Coordinates | Find cells like C4 on a treasure map and follow a pirate’s moves | 3 |
 | 3D Shape Explorer | Spin and explore 3D shapes — learn about faces, edges and vertices | 4 |
 | Times Table Challenge | Test your times tables with timed quizzes and streak-based scoring | 4 |
 | Geometry Rules | Discover the 5 basic rules that all shapes and lines follow | 6 |
