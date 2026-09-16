@@ -52,6 +52,19 @@ const modules = moduleEntries
   .map((e) => e.config)
   .sort((a, b) => a.difficulty - b.difficulty);
 
+// Fixed display order for subject sections — independent of module registration
+// order or difficulty, so adding modules never reshuffles the page layout.
+const SUBJECT_ORDER = [
+  'mathematics',
+  'science',
+  'optics',
+  'electricity-and-magnetism',
+  'literacy',
+  'geography',
+  'history',
+  'art',
+] as const;
+
 export function getAllModules(): ModuleConfig[] {
   return modules;
 }
@@ -61,7 +74,22 @@ export function getModulesBySubject(subject: string): ModuleConfig[] {
 }
 
 export function getAllSubjects(): string[] {
-  return [...new Set(modules.map((m) => m.subject))];
+  const present = new Set(modules.map((m) => m.subject));
+  return SUBJECT_ORDER.filter((s) => present.has(s));
+}
+
+export function getSubjectCounts(): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const m of modules) {
+    counts[m.subject] = (counts[m.subject] ?? 0) + 1;
+  }
+  return counts;
+}
+
+export function getRecentModules(limit = 4): ModuleConfig[] {
+  return [...modules]
+    .sort((a, b) => (b.addedOn ?? '').localeCompare(a.addedOn ?? ''))
+    .slice(0, limit);
 }
 
 export function getModuleBySlug(slug: string): ModuleConfig | undefined {
@@ -84,4 +112,20 @@ export function getModuleMetadata(
     title: entry.translations[lang]?.title ?? entry.config.title,
     description: entry.translations[lang]?.description ?? entry.config.description,
   };
+}
+
+export interface ResolvedModule extends ModuleConfig {
+  title: string;
+  description: string;
+}
+
+export function getAllModuleMetadata(lang: Language): ResolvedModule[] {
+  return modules.map((mod) => {
+    const meta = getModuleMetadata(mod.slug, lang);
+    return {
+      ...mod,
+      title: meta?.title ?? mod.title,
+      description: meta?.description ?? mod.description,
+    };
+  });
 }

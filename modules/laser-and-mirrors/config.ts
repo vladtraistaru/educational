@@ -6,4 +6,6 @@ export const config: ModuleConfig = {
   description: 'An introduction to light, reflection and refraction',
   subject: 'optics',
   difficulty: 3,
+  icon: '🔦',
+  addedOn: '2026-03-15',
 };

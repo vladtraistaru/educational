@@ -34,10 +34,9 @@ export default function Header() {
               </ul>
             </nav>
           ) : (
-            <div className={styles.title}>
-              <strong>{ui.platformTitle}</strong>
-              <span>{ui.exploreBySubject}</span>
-            </div>
+            <Link href="/" className={styles.wordmark}>
+              {ui.platformTitle}
+            </Link>
           )}
           <div className={styles.spacer} />
           <LanguageSelector />

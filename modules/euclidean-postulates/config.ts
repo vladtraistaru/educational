@@ -6,4 +6,6 @@ export const config: ModuleConfig = {
   description: 'Discover the 5 basic rules that all shapes and lines follow',
   subject: 'mathematics',
   difficulty: 6,
+  icon: '📐',
+  addedOn: '2026-02-14',
 };

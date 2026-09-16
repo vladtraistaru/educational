@@ -7,4 +7,6 @@ export const config: ModuleConfig = {
     'Complete a picture across a mirror line and spot shapes that are symmetrical',
   subject: 'mathematics',
   difficulty: 4,
+  icon: '🦋',
+  addedOn: '2026-03-30',
 };

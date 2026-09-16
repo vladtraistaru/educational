@@ -7,4 +7,6 @@ export const config: ModuleConfig = {
     'Discover 2D shapes, count their sides and corners, and see where they appear in the real world',
   subject: 'mathematics',
   difficulty: 2,
+  icon: '🔷',
+  addedOn: '2026-02-14',
 };

@@ -8,4 +8,6 @@ export const config: ModuleConfig = {
   subject: 'mathematics',
   difficulty: 4,
   estimatedMinutes: 5,
+  icon: '🏆',
+  addedOn: '2026-03-12',
 };

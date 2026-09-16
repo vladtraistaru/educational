@@ -1,0 +1,62 @@
+.nav {
+  margin-bottom: var(--space-6);
+}
+
+.heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-3);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+  scrollbar-width: thin;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: hsl(var(--tile-hue) 70% 55% / 0.1);
+  border: 1px solid hsl(var(--tile-hue) 70% 55% / 0.25);
+  color: var(--text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.tile:hover,
+.tile:focus-visible {
+  background: hsl(var(--tile-hue) 70% 55% / 0.18);
+  outline: none;
+}
+
+.tile:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.tileIcon {
+  font-size: 1.1rem;
+}
+
+.tileLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.tileCount {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--surface-card);
+  border-radius: var(--radius-pill);
+  padding: 0.05rem 0.4rem;
+}

@@ -1,0 +1,115 @@
+.browser {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-bg);
+  padding: var(--space-3) 0;
+}
+
+.search {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-card);
+  color: var(--text-primary);
+}
+
+.search:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.chipRow {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.chip,
+.chipActive {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.chip:hover {
+  background: var(--surface-raised);
+  border-color: var(--accent-purple);
+}
+
+.chipActive {
+  background: var(--accent-purple);
+  border-color: var(--accent-purple);
+  color: #fff;
+  font-weight: 600;
+}
+
+.chip:focus-visible,
+.chipActive:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.section {
+  scroll-margin-top: var(--space-4);
+}
+
+.sectionHeading {
+  font-size: 1.1rem;
+  margin: 0 0 var(--space-3);
+  color: var(--text-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  color: var(--text-secondary);
+}
+
+.clearButton {
+  margin-top: var(--space-3);
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--accent-purple);
+  background: transparent;
+  color: var(--accent-purple);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  background: var(--accent-purple);
+  color: #fff;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}

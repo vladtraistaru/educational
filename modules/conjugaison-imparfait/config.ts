@@ -6,4 +6,6 @@ export const config: ModuleConfig = {
   description: "Construire l'imparfait à partir du présent.",
   subject: 'literacy',
   difficulty: 4,
+  icon: '📝',
+  addedOn: '2026-05-02',
 };

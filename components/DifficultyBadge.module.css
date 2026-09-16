@@ -1,0 +1,56 @@
+.badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+[data-band='easy'] .pill {
+  color: var(--diff-easy);
+  background: var(--diff-easy-bg);
+}
+
+[data-band='medium'] .pill {
+  color: var(--diff-medium);
+  background: var(--diff-medium-bg);
+}
+
+[data-band='hard'] .pill {
+  color: var(--diff-hard);
+  background: var(--diff-hard-bg);
+}
+
+.bar {
+  display: flex;
+  gap: 3px;
+}
+
+.segmentFilled,
+.segmentEmpty {
+  width: 14px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+}
+
+[data-band='easy'] .segmentFilled {
+  background: var(--diff-easy);
+}
+
+[data-band='medium'] .segmentFilled {
+  background: var(--diff-medium);
+}
+
+[data-band='hard'] .segmentFilled {
+  background: var(--diff-hard);
+}
+
+.segmentEmpty {
+  background: var(--border-strong);
+}

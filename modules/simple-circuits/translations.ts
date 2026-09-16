@@ -19,7 +19,8 @@ interface SimpleCircuitsStrings {
 const translations: Record<Language, SimpleCircuitsStrings> = {
   en: {
     title: 'Simple Circuits',
-    description: '',
+    description:
+      'Build a simple circuit with a battery, wires and a bulb, and discover what makes it light up',
     paletteTitle: 'Parts',
     bulb: 'Bulb',
     switchLabel: 'Switch',
@@ -34,7 +35,8 @@ const translations: Record<Language, SimpleCircuitsStrings> = {
   },
   fr: {
     title: 'Circuits simples',
-    description: '',
+    description:
+      'Construis un circuit simple avec une pile, des fils et une ampoule, et découvre ce qui la fait briller',
     paletteTitle: 'Pièces',
     bulb: 'Ampoule',
     switchLabel: 'Interrupteur',

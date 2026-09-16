@@ -6,4 +6,6 @@ export const config: ModuleConfig = {
   description: 'Drag markers on a number line to explore how numbers split into parts',
   subject: 'mathematics',
   difficulty: 3,
+  icon: '🔢',
+  addedOn: '2026-02-14',
 };

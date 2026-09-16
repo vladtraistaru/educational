@@ -14,13 +14,33 @@ export interface ModuleConfig {
   description: string;
   subject: Subject;
   difficulty: number; // 1 (easiest) to 10 (hardest)
-  icon?: string;
+  icon?: string; // emoji shown on the module card
   estimatedMinutes?: number;
+  addedOn?: string; // 'YYYY-MM-DD', used to surface "New" modules
 }
 
 export interface ActivityProps {}
 
 import type { Language } from './language-config';
+
+export type DifficultyBand = 'easy' | 'medium' | 'hard';
+
+export function getDifficultyBand(difficulty: number): DifficultyBand {
+  if (difficulty <= 3) return 'easy';
+  if (difficulty <= 6) return 'medium';
+  return 'hard';
+}
+
+export const SUBJECT_META: Record<Subject, { icon: string; hue: number }> = {
+  mathematics: { icon: '🔢', hue: 255 },
+  science: { icon: '🔬', hue: 152 },
+  literacy: { icon: '📖', hue: 28 },
+  geography: { icon: '🌍', hue: 199 },
+  history: { icon: '🏛️', hue: 35 },
+  art: { icon: '🎨', hue: 330 },
+  optics: { icon: '🔭', hue: 187 },
+  'electricity-and-magnetism': { icon: '⚡', hue: 48 },
+};
 
 export const SUBJECT_LABELS: Record<Language, Record<Subject, string>> = {
   en: {
@@ -66,6 +86,21 @@ export const UI_LABELS: Record<Language, Record<string, string>> = {
     feedbackSend: 'Send',
     feedbackThanks: 'Thanks for your feedback!',
     feedbackError: 'Something went wrong. Please try again.',
+    heroTitle: 'Educational Platform',
+    heroSubtitle: 'Fun, hands-on activities for curious minds',
+    activityCount: '{count} activities across {subjects} subjects',
+    searchPlaceholder: 'Search activities…',
+    allSubjects: 'All',
+    newlyAdded: 'Newly added',
+    browseBySubject: 'Browse by subject',
+    allActivities: 'All activities',
+    noResults: 'No activities match your search.',
+    clearFilters: 'Clear filters',
+    easy: 'Easy',
+    medium: 'Medium',
+    hard: 'Hard',
+    minutes: 'min',
+    new: 'New',
   },
   fr: {
     home: 'Accueil',
@@ -87,5 +122,20 @@ export const UI_LABELS: Record<Language, Record<string, string>> = {
     feedbackSend: 'Envoyer',
     feedbackThanks: 'Merci pour votre commentaire !',
     feedbackError: 'Une erreur est survenue. Veuillez réessayer.',
+    heroTitle: 'Plateforme Éducative',
+    heroSubtitle: 'Des activités ludiques pour les esprits curieux',
+    activityCount: '{count} activités dans {subjects} matières',
+    searchPlaceholder: 'Rechercher une activité…',
+    allSubjects: 'Toutes',
+    newlyAdded: 'Nouveautés',
+    browseBySubject: 'Parcourir par matière',
+    allActivities: 'Toutes les activités',
+    noResults: 'Aucune activité ne correspond à votre recherche.',
+    clearFilters: 'Effacer les filtres',
+    easy: 'Facile',
+    medium: 'Moyen',
+    hard: 'Difficile',
+    minutes: 'min',
+    new: 'Nouveau',
   },
 };

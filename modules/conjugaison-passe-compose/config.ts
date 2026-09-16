@@ -6,4 +6,6 @@ export const config: ModuleConfig = {
   description: 'Construire le passé composé : auxiliaire + participe.',
   subject: 'literacy',
   difficulty: 5,
+  icon: '📝',
+  addedOn: '2026-05-02',
 };

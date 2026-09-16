@@ -6,4 +6,6 @@ export const config: ModuleConfig = {
   description: 'Compléter les tables de conjugaison au présent.',
   subject: 'literacy',
   difficulty: 3,
+  icon: '📝',
+  addedOn: '2026-05-02',
 };

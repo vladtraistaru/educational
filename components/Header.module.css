@@ -11,7 +11,9 @@
 .row {
   display: flex;
   align-items: center;
-  height: 1rem;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
 }
 
 .row select {
@@ -41,13 +43,9 @@
   padding-left: 0.75rem;
 }
 
-.title {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  font-size: 0.85rem;
-}
-
-.title span {
-  color: var(--pico-muted-color);
+.wordmark {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
 }

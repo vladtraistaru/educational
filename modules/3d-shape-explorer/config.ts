@@ -7,4 +7,6 @@ export const config: ModuleConfig = {
     'Spin and explore 3D shapes — learn about faces, edges and vertices',
   subject: 'mathematics',
   difficulty: 4,
+  icon: '🧊',
+  addedOn: '2026-03-11',
 };

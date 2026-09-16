@@ -7,4 +7,6 @@ export const config: ModuleConfig = {
     'See how converging and diverging lenses and curved mirrors focus parallel rays of light',
   subject: 'optics',
   difficulty: 5,
+  icon: '🔍',
+  addedOn: '2026-05-16',
 };
