@@ -38,6 +38,68 @@
   scrollbar-width: thin;
 }
 
+.subjectRow {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-1);
+  scrollbar-width: thin;
+}
+
+.subjectTile,
+.subjectTileActive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.subjectTile {
+  background: hsl(var(--tile-hue, 220) 70% 55% / 0.1);
+  border: 1px solid hsl(var(--tile-hue, 220) 70% 55% / 0.25);
+  color: var(--text-primary);
+}
+
+.subjectTile:hover {
+  background: hsl(var(--tile-hue, 220) 70% 55% / 0.18);
+}
+
+.subjectTileActive {
+  background: var(--accent-purple);
+  border: 1px solid var(--accent-purple);
+  color: #fff;
+}
+
+.subjectTile:focus-visible,
+.subjectTileActive:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.subjectIcon {
+  font-size: 1.05rem;
+}
+
+.subjectCount {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-card);
+  border-radius: var(--radius-pill);
+  padding: 0.05rem 0.4rem;
+}
+
+.subjectTileActive .subjectCount {
+  color: var(--accent-purple);
+}
+
 .chip,
 .chipActive {
   flex: 0 0 auto;

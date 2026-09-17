@@ -77,6 +77,17 @@
   border-radius: var(--radius-pill);
 }
 
+.historyBadge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-bg);
+  border: 1px solid var(--border-subtle);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
 .body {
   min-width: 0;
 }

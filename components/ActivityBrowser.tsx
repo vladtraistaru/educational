@@ -2,7 +2,14 @@
 
 import { useMemo, useState } from 'react';
 import type { ResolvedModule } from '@/modules/registry';
-import { DifficultyBand, SUBJECT_LABELS, Subject, UI_LABELS, getDifficultyBand } from '@/lib/types';
+import {
+  DifficultyBand,
+  SUBJECT_LABELS,
+  SUBJECT_META,
+  Subject,
+  UI_LABELS,
+  getDifficultyBand,
+} from '@/lib/types';
 import type { Language } from '@/lib/language-config';
 import ModuleCard from './ModuleCard';
 import styles from './ActivityBrowser.module.css';
@@ -11,6 +18,7 @@ interface Props {
   lang: Language;
   modules: ResolvedModule[];
   subjects: string[];
+  counts: Record<string, number>;
 }
 
 function normalize(value: string): string {
@@ -22,7 +30,7 @@ function normalize(value: string): string {
 
 const DIFFICULTY_BANDS: DifficultyBand[] = ['easy', 'medium', 'hard'];
 
-export default function ActivityBrowser({ lang, modules, subjects }: Props) {
+export default function ActivityBrowser({ lang, modules, subjects, counts }: Props) {
   const ui = UI_LABELS[lang];
   const [query, setQuery] = useState('');
   const [subjectFilter, setSubjectFilter] = useState<string | null>(null);
@@ -73,24 +81,32 @@ export default function ActivityBrowser({ lang, modules, subjects }: Props) {
           onChange={(e) => setQuery(e.target.value)}
         />
 
-        <div className={styles.chipRow} role="group" aria-label={ui.browseBySubject}>
+        <div className={styles.subjectRow} role="group" aria-label={ui.browseBySubject}>
           <button
             type="button"
-            className={subjectFilter === null ? styles.chipActive : styles.chip}
+            className={subjectFilter === null ? styles.subjectTileActive : styles.subjectTile}
             onClick={() => setSubjectFilter(null)}
           >
             {ui.allSubjects}
           </button>
-          {subjects.map((subject) => (
-            <button
-              key={subject}
-              type="button"
-              className={subjectFilter === subject ? styles.chipActive : styles.chip}
-              onClick={() => setSubjectFilter(subject === subjectFilter ? null : subject)}
-            >
-              {SUBJECT_LABELS[lang][subject as Subject] ?? subject}
-            </button>
-          ))}
+          {subjects.map((subject) => {
+            const meta = SUBJECT_META[subject as Subject];
+            return (
+              <button
+                key={subject}
+                type="button"
+                className={subjectFilter === subject ? styles.subjectTileActive : styles.subjectTile}
+                style={{ ['--tile-hue' as string]: String(meta.hue) }}
+                onClick={() => setSubjectFilter(subject === subjectFilter ? null : subject)}
+              >
+                <span className={styles.subjectIcon} aria-hidden="true">
+                  {meta.icon}
+                </span>
+                {SUBJECT_LABELS[lang][subject as Subject] ?? subject}
+                <span className={styles.subjectCount}>{counts[subject] ?? 0}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className={styles.chipRow} role="group" aria-label={ui.difficulty}>
