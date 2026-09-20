@@ -31,7 +31,7 @@ All code in this project is AI-driven — written entirely through AI coding too
 - **Styling**: Pico CSS + CSS Modules
 - **Canvas**: react-konva, React Three Fiber
 - **Testing**: Vitest
-- **Hosting**: Vercel
+- **Hosting**: self-hosted Docker at [educational.traistaru.net](https://educational.traistaru.net)
 
 ## Getting Started
 
