@@ -2,6 +2,7 @@ name: build
 on:
   push:
     branches: [main]
+concurrency: deploy-${{ github.ref }}
 
 jobs:
   build:
@@ -26,3 +27,32 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # --- deploy ------------------------------------------------------------
+      # compose runs ON the server, next to /opt/apps/educational/.env, so the
+      # app's secrets stay on the box and never reach this runner.
+      - name: Set up SSH
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: Deploy
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          scp compose.yml deploy@"$HOST":/opt/apps/educational/compose.yml
+          ssh deploy@"$HOST" 'cd /opt/apps/educational \
+            && docker compose pull -q \
+            && docker compose up -d --remove-orphans \
+            && docker compose ps'
+
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 10); do
+            code=$(curl -so /dev/null -w '%{http_code}' https://educational.traistaru.net || true)
+            [ "$code" = "200" ] && { echo "up (200)"; exit 0; }
+            echo "attempt $i: $code"; sleep 6
+          done
+          echo "site did not return 200 after deploy"; exit 1
