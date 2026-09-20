@@ -16,8 +16,7 @@ export default function Hero({ lang, moduleCount, subjectCount }: Props) {
 
   return (
     <section className={styles.hero}>
-      <h1 className={styles.title}>{ui.heroTitle}</h1>
-      <p className={styles.subtitle}>{ui.heroSubtitle}</p>
+      <h1 className={styles.title}>{ui.heroSubtitle}</h1>
       <p className={styles.count}>{countText}</p>
     </section>
   );

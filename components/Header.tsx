@@ -35,6 +35,7 @@ export default function Header() {
             </nav>
           ) : (
             <Link href="/" className={styles.wordmark}>
+              <span className={styles.mark} aria-hidden="true" />
               {ui.platformTitle}
             </Link>
           )}

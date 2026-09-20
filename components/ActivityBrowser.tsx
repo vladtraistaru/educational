@@ -2,14 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { ResolvedModule } from '@/modules/registry';
-import {
-  DifficultyBand,
-  SUBJECT_LABELS,
-  SUBJECT_META,
-  Subject,
-  UI_LABELS,
-  getDifficultyBand,
-} from '@/lib/types';
+import { SUBJECT_LABELS, SUBJECT_META, Subject, UI_LABELS } from '@/lib/types';
 import type { Language } from '@/lib/language-config';
 import ModuleCard from './ModuleCard';
 import styles from './ActivityBrowser.module.css';
@@ -28,47 +21,84 @@ function normalize(value: string): string {
     .toLowerCase();
 }
 
-const DIFFICULTY_BANDS: DifficultyBand[] = ['easy', 'medium', 'hard'];
-
 export default function ActivityBrowser({ lang, modules, subjects, counts }: Props) {
   const ui = UI_LABELS[lang];
   const [query, setQuery] = useState('');
   const [subjectFilter, setSubjectFilter] = useState<string | null>(null);
-  const [bandFilter, setBandFilter] = useState<DifficultyBand | null>(null);
+  const [railOpen, setRailOpen] = useState(false);
 
   const normalizedQuery = normalize(query.trim());
-  const isFiltering = normalizedQuery !== '' || subjectFilter !== null || bandFilter !== null;
+  const labelOf = (subject: string) => SUBJECT_LABELS[lang][subject as Subject] ?? subject;
 
-  const filtered = useMemo(() => {
-    return modules.filter((mod) => {
-      if (subjectFilter && mod.subject !== subjectFilter) return false;
-      if (bandFilter && getDifficultyBand(mod.difficulty) !== bandFilter) return false;
-      if (normalizedQuery) {
-        const haystack = normalize(`${mod.title} ${mod.description}`);
-        if (!haystack.includes(normalizedQuery)) return false;
-      }
-      return true;
-    });
-  }, [modules, subjectFilter, bandFilter, normalizedQuery]);
+  const groups = useMemo(() => {
+    return subjects
+      .filter((subject) => !subjectFilter || subject === subjectFilter)
+      .map((subject) => ({
+        subject,
+        modules: modules.filter(
+          (mod) =>
+            mod.subject === subject &&
+            (!normalizedQuery ||
+              normalize(`${mod.title} ${mod.description}`).includes(normalizedQuery)),
+        ),
+      }))
+      .filter((group) => group.modules.length > 0);
+  }, [modules, subjects, subjectFilter, normalizedQuery]);
 
-  const grouped = useMemo(() => {
-    const bySubject = new Map<string, ResolvedModule[]>();
-    for (const subject of subjects) bySubject.set(subject, []);
-    for (const mod of modules) {
-      bySubject.get(mod.subject)?.push(mod);
-    }
-    return bySubject;
-  }, [modules, subjects]);
+  const select = (subject: string | null) => {
+    setSubjectFilter(subject);
+    setRailOpen(false);
+  };
 
   const clearFilters = () => {
     setQuery('');
     setSubjectFilter(null);
-    setBandFilter(null);
+  };
+
+  const railItem = (subject: string | null) => {
+    const meta = subject ? SUBJECT_META[subject as Subject] : null;
+    const active = subjectFilter === subject;
+    return (
+      <button
+        key={subject ?? 'all'}
+        type="button"
+        className={active ? styles.railItemActive : styles.railItem}
+        style={{ ['--tile-hue' as string]: String(meta?.hue ?? 255) }}
+        aria-current={active}
+        onClick={() => select(subject)}
+      >
+        <span className={styles.railIcon} aria-hidden="true">
+          {meta?.icon ?? '📚'}
+        </span>
+        {subject ? labelOf(subject) : ui.allActivities}
+        <span className={styles.railCount}>{subject ? (counts[subject] ?? 0) : modules.length}</span>
+      </button>
+    );
   };
 
   return (
     <div className={styles.browser}>
-      <div className={styles.controls}>
+      <div className={styles.railWrap}>
+        <button
+          type="button"
+          className={styles.railToggle}
+          aria-expanded={railOpen}
+          onClick={() => setRailOpen(!railOpen)}
+        >
+          {subjectFilter ? labelOf(subjectFilter) : ui.browseBySubject}
+          <span aria-hidden="true">▾</span>
+        </button>
+        <nav
+          className={railOpen ? styles.railOpen : styles.rail}
+          aria-label={ui.browseBySubject}
+        >
+          <h2 className={styles.railHeading}>{ui.browseBySubject}</h2>
+          {railItem(null)}
+          {subjects.map((subject) => railItem(subject))}
+        </nav>
+      </div>
+
+      <div className={styles.content}>
         <label className="visually-hidden" htmlFor="activity-search">
           {ui.searchPlaceholder}
         </label>
@@ -81,92 +111,26 @@ export default function ActivityBrowser({ lang, modules, subjects, counts }: Pro
           onChange={(e) => setQuery(e.target.value)}
         />
 
-        <div className={styles.subjectRow} role="group" aria-label={ui.browseBySubject}>
-          <button
-            type="button"
-            className={subjectFilter === null ? styles.subjectTileActive : styles.subjectTile}
-            onClick={() => setSubjectFilter(null)}
-          >
-            {ui.allSubjects}
-          </button>
-          {subjects.map((subject) => {
-            const meta = SUBJECT_META[subject as Subject];
-            return (
-              <button
-                key={subject}
-                type="button"
-                className={subjectFilter === subject ? styles.subjectTileActive : styles.subjectTile}
-                style={{ ['--tile-hue' as string]: String(meta.hue) }}
-                onClick={() => setSubjectFilter(subject === subjectFilter ? null : subject)}
-              >
-                <span className={styles.subjectIcon} aria-hidden="true">
-                  {meta.icon}
-                </span>
-                {SUBJECT_LABELS[lang][subject as Subject] ?? subject}
-                <span className={styles.subjectCount}>{counts[subject] ?? 0}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className={styles.chipRow} role="group" aria-label={ui.difficulty}>
-          <button
-            type="button"
-            className={bandFilter === null ? styles.chipActive : styles.chip}
-            onClick={() => setBandFilter(null)}
-          >
-            {ui.allSubjects}
-          </button>
-          {DIFFICULTY_BANDS.map((band) => (
-            <button
-              key={band}
-              type="button"
-              className={bandFilter === band ? styles.chipActive : styles.chip}
-              onClick={() => setBandFilter(band === bandFilter ? null : band)}
-            >
-              {ui[band]}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {isFiltering ? (
-        filtered.length > 0 ? (
-          <section>
-            <h2 className={styles.sectionHeading}>
-              {ui.allActivities} ({filtered.length})
-            </h2>
-            <div className={styles.grid}>
-              {filtered.map((mod) => (
-                <ModuleCard
-                  key={mod.slug}
-                  module={mod}
-                  lang={lang}
-                  title={mod.title}
-                  description={mod.description}
-                />
-              ))}
-            </div>
-          </section>
-        ) : (
+        {groups.length === 0 ? (
           <div className={styles.empty}>
             <p>{ui.noResults}</p>
             <button type="button" className={styles.clearButton} onClick={clearFilters}>
               {ui.clearFilters}
             </button>
           </div>
-        )
-      ) : (
-        subjects.map((subject) => {
-          const subjectModules = grouped.get(subject) ?? [];
-          if (subjectModules.length === 0) return null;
-          return (
-            <section key={subject} id={`subject-${subject}`} className={styles.section}>
+        ) : (
+          groups.map(({ subject, modules: list }) => (
+            <section key={subject} className={styles.section}>
               <h2 className={styles.sectionHeading}>
-                {SUBJECT_LABELS[lang][subject as Subject] ?? subject}
+                <span
+                  className={styles.dot}
+                  style={{ ['--tile-hue' as string]: String(SUBJECT_META[subject as Subject].hue) }}
+                />
+                {labelOf(subject)}
+                <span className={styles.sectionCount}>{list.length}</span>
               </h2>
               <div className={styles.grid}>
-                {subjectModules.map((mod) => (
+                {list.map((mod) => (
                   <ModuleCard
                     key={mod.slug}
                     module={mod}
@@ -177,9 +141,9 @@ export default function ActivityBrowser({ lang, modules, subjects, counts }: Pro
                 ))}
               </div>
             </section>
-          );
-        })
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }
