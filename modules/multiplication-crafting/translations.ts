@@ -33,18 +33,19 @@ export interface CraftingTranslations {
   finalScore: string;
   totalCorrect: string;
   bestStreak: string;
-  recipeWas: string;
   discoveries: string;
   noDiscoveries: string;
   playAgain: string;
   pts: string;
+  yourAnswer: string;
+  check: string;
 }
 
 const translations: Record<Language, CraftingTranslations> = {
   en: {
     title: 'Multiplication Crafting',
     description:
-      'Discover mystery Minecraft-style recipes! Answer multiplication facts from 1 to 12 to fill the crafting table row by row and find out what you are making — with a new multiplication secret at every step.',
+      'Discover mystery Minecraft-style recipes! Answer multiplication facts from 2 to 12 to fill the crafting table row by row and find out what you are making — with a new multiplication secret at every step.',
     chooseRecipe: 'Pick a mystery recipe',
     chooseRecipeHint: 'Nobody knows what it makes. Answer right to fill the table and find out!',
     mysteryRecipe: 'Mystery recipe',
@@ -94,16 +95,17 @@ const translations: Record<Language, CraftingTranslations> = {
     finalScore: 'Final Score',
     totalCorrect: 'Correct Answers',
     bestStreak: 'Best Streak',
-    recipeWas: 'The mystery recipe was',
     discoveries: 'Your discoveries',
     noDiscoveries: 'Nothing discovered yet — try again!',
     playAgain: 'Play Again',
     pts: 'pts',
+    yourAnswer: 'Your answer',
+    check: 'Check',
   },
   fr: {
     title: 'Multiplication Artisanale',
     description:
-      'Découvre des recettes mystères dans le style de Minecraft ! Réponds à des multiplications de 1 à 12 pour remplir la table de fabrication rangée par rangée et deviner ce que tu fabriques — avec un nouveau secret de multiplication à chaque étape.',
+      'Découvre des recettes mystères dans le style de Minecraft ! Réponds à des multiplications de 2 à 12 pour remplir la table de fabrication rangée par rangée et deviner ce que tu fabriques — avec un nouveau secret de multiplication à chaque étape.',
     chooseRecipe: 'Choisis une recette mystère',
     chooseRecipeHint:
       'Personne ne sait ce qu’elle fabrique. Réponds juste pour remplir la table et le découvrir !',
@@ -160,11 +162,12 @@ const translations: Record<Language, CraftingTranslations> = {
     finalScore: 'Score Final',
     totalCorrect: 'Bonnes réponses',
     bestStreak: 'Meilleure série',
-    recipeWas: 'La recette mystère était',
     discoveries: 'Tes découvertes',
     noDiscoveries: 'Rien découvert pour l’instant — réessaie !',
     playAgain: 'Rejouer',
     pts: 'pts',
+    yourAnswer: 'Ta réponse',
+    check: 'Valider',
   },
 };
 

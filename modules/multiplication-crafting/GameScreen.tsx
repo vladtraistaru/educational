@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, type FormEvent } from 'react';
 import { useLanguage } from '@/lib/language';
 import translations from './translations';
 import {
@@ -24,6 +24,7 @@ import PixelIcon from './PixelIcon';
 import styles from './Activity.module.css';
 
 const FEEDBACK_MS = 900;
+const WRONG_MS = 2200;
 const DISCOVERY_MS = 4500;
 
 interface GameScreenProps {
@@ -32,7 +33,6 @@ interface GameScreenProps {
 }
 
 interface Feedback {
-  chosenIndex: number;
   wasCorrect: boolean;
 }
 
@@ -57,6 +57,7 @@ export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
   const [bestStreak, setBestStreak] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [lives, setLives] = useState(STARTING_LIVES);
+  const [answer, setAnswer] = useState('');
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [mood, setMood] = useState<Mood>('idle');
   const [discovery, setDiscovery] = useState<Discovery | null>(null);
@@ -66,6 +67,7 @@ export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
   const { progress, remaining } = getStageProgress(correctCount);
   const isCrafted = stageIndex >= CRAFTED_STAGE;
   const nextIcons = getNextIcons(recipe, stageIndex);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const advance = useCallback(() => {
     if (lives <= 0) {
@@ -73,6 +75,7 @@ export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
       return;
     }
     setQuestion(generateQuestion(factorKey(question.factorA, question.factorB)));
+    setAnswer('');
     setFeedback(null);
     setMood('idle');
     setDiscovery(null);
@@ -80,15 +83,21 @@ export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
 
   useEffect(() => {
     if (!feedback) return;
-    const timer = setTimeout(advance, discovery ? DISCOVERY_MS : FEEDBACK_MS);
+    const delay = discovery ? DISCOVERY_MS : feedback.wasCorrect ? FEEDBACK_MS : WRONG_MS;
+    const timer = setTimeout(advance, delay);
     return () => clearTimeout(timer);
   }, [feedback, advance, discovery]);
 
-  const handleAnswer = useCallback(
-    (chosenIndex: number) => {
-      if (feedback) return;
+  useEffect(() => {
+    if (!feedback) inputRef.current?.focus();
+  }, [feedback, question]);
 
-      const wasCorrect = question.options[chosenIndex] === question.correctAnswer;
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+      if (feedback || answer === '') return;
+
+      const wasCorrect = Number(answer) === question.correctAnswer;
 
       if (wasCorrect) {
         const newCorrect = correctCount + 1;
@@ -113,21 +122,10 @@ export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
         setMood('sad');
       }
 
-      setFeedback({ chosenIndex, wasCorrect });
+      setFeedback({ wasCorrect });
     },
-    [feedback, question, multiplier, correctCount, streak],
+    [feedback, answer, question, multiplier, correctCount, streak],
   );
-
-  const getOptionClass = (index: number): string => {
-    if (!feedback) return styles.optionBtn;
-
-    const isChosen = index === feedback.chosenIndex;
-    const isCorrect = question.options[index] === question.correctAnswer;
-
-    if (isCorrect) return `${styles.optionBtn} ${styles.optionCorrect}`;
-    if (isChosen && !feedback.wasCorrect) return `${styles.optionBtn} ${styles.optionWrong}`;
-    return `${styles.optionBtn} ${styles.optionDimmed}`;
-  };
 
   return (
     <div className={styles.gameContainer}>
@@ -213,21 +211,39 @@ export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
               +{POINTS_PER_QUESTION * multiplier} {t.pts}
             </span>
           )}
+          {!feedback.wasCorrect && (
+            <span className={styles.bonusText}>
+              {question.factorA} × {question.factorB} = {question.correctAnswer}
+            </span>
+          )}
         </div>
       )}
 
-      <div className={styles.optionsGrid}>
-        {question.options.map((option, i) => (
-          <button
-            key={`${question.factorA}-${question.factorB}-${i}`}
-            tabIndex={feedback ? -1 : 0}
-            className={getOptionClass(i)}
-            onClick={() => handleAnswer(i)}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
+      <form className={styles.answerForm} onSubmit={handleSubmit}>
+        <input
+          ref={inputRef}
+          className={`${styles.answerInput} ${
+            feedback ? (feedback.wasCorrect ? styles.answerCorrect : styles.answerWrong) : ''
+          }`}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={3}
+          autoComplete="off"
+          aria-label={t.yourAnswer}
+          placeholder="?"
+          value={answer}
+          readOnly={feedback !== null}
+          onChange={(e) => setAnswer(e.target.value.replace(/\D/g, ''))}
+        />
+        <button
+          type="submit"
+          className={styles.answerSubmit}
+          disabled={feedback !== null || answer === ''}
+        >
+          {t.check}
+        </button>
+      </form>
     </div>
   );
 }

@@ -527,61 +527,63 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-/* Answer options */
+/* Answer box */
 
-.optionsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.optionBtn {
+.answerForm {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  --pico-background-color: var(--pico-card-background-color);
-  --pico-border-color: var(--pico-muted-border-color);
-  --pico-color: inherit;
-  background: var(--pico-card-background-color);
-  color: inherit;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.answerForm .answerInput {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  height: 56px;
   border: 3px solid var(--pico-muted-border-color);
-  font-size: 1.4rem;
-  font-weight: 800;
-  min-height: 64px;
   border-radius: 14px;
-  cursor: pointer;
-  padding: 0.6rem 1.25rem;
-  transition: transform 0.12s ease, background-color 0.2s ease,
-    border-color 0.2s ease, color 0.2s ease;
+  background: var(--pico-card-background-color);
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--pico-color);
 }
 
-.optionBtn:active {
-  transform: scale(0.95);
-}
-
-.optionBtn:hover {
+.answerInput:focus {
   border-color: var(--pico-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.25);
 }
 
-.optionCorrect {
+.answerCorrect,
+.answerCorrect:focus {
   background: #00b894;
   border-color: #00b894;
   color: #fff;
   animation: correctPop 0.3s ease;
 }
 
-.optionWrong {
+.answerWrong,
+.answerWrong:focus {
   background: #d63031;
   border-color: #d63031;
   color: #fff;
   animation: shake 0.35s ease;
 }
 
-.optionDimmed {
-  opacity: 0.4;
+.answerSubmit {
+  composes: btnPrimary from '@/modules/activity.module.css';
+}
+
+/* Compound selector: beats Pico's full-width submit button and the shared mobile .btn rules. */
+.answerForm .answerSubmit {
+  flex: 0 0 auto;
+  width: auto;
+  justify-content: center;
+  height: 56px;
+  margin: 0;
+  padding: 0 1.25rem;
 }
 
 @keyframes correctPop {
@@ -618,16 +620,7 @@
   --slot: 3rem;
 }
 
-.resultRecipeLabel {
-  font-size: 0.95rem;
-  color: var(--pico-muted-color);
-  text-align: center;
-  margin: 0 0 0.5rem;
-}
 
-.resultRecipeLabel strong {
-  color: var(--pico-color);
-}
 
 .finalScore {
   display: flex;
@@ -756,13 +749,8 @@
     font-size: 1.1rem;
   }
 
-  .optionBtn {
-    font-size: 1.1rem;
-    min-height: 56px;
-  }
-
-  .optionsGrid {
-    gap: 0.5rem;
+  .answerInput {
+    font-size: 1.5rem;
   }
 
   .finalScoreValue {

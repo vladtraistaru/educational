@@ -22,9 +22,8 @@ export default function ResultScreen({
   const { language } = useLanguage();
   const t = translations[language];
   const recipe = getRecipe(recipeId);
-  const text = t.recipes[recipeId];
   const stageIndex = getStageIndex(correctCount);
-  const found = text.facts.slice(0, stageIndex);
+  const found = t.recipes[recipeId].facts.slice(0, stageIndex);
 
   return (
     <div className={styles.resultContainer}>
@@ -33,10 +32,6 @@ export default function ResultScreen({
       <div className={styles.resultTable}>
         <CraftingTable recipe={recipe} stageIndex={stageIndex} mood="idle" />
       </div>
-
-      <p className={styles.resultRecipeLabel}>
-        {t.recipeWas} <strong>{text.name}</strong>
-      </p>
 
       <div className={styles.finalScore}>
         <span className={styles.finalScoreLabel}>{t.finalScore}</span>
