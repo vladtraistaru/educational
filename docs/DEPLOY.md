@@ -1,7 +1,7 @@
 # Deploy
 
 The app runs as a Docker container on the Hetzner server (`traistaru.net`) at
-**https://educational.traistaru.net**.
+**https://educational.traistaru.net** and **https://ecole.traistaru.net** (two proxy hosts, same container).
 
 Deploys are **pull-based**: pushing to `main` runs `.github/workflows/build.yml`,
 which builds the image and pushes `ghcr.io/vladtraistaru/educational:latest`.
@@ -62,6 +62,7 @@ Then once, in `~/dev/traistaru.net`:
 
 ```sh
 scripts/npm-proxy.sh educational.traistaru.net educational 3000
+scripts/npm-proxy.sh ecole.traistaru.net educational 3000
 ```
 
 and add a row for the app to the inventory in that repo's `docs/SERVER.md`, plus a

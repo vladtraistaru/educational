@@ -13,7 +13,7 @@ Open-source educational platform for primary school children and beyond. Interac
 - **Framework**: Next.js (App Router)
 - **Language**: TypeScript
 - **Styling**: Pico CSS (base) + CSS Modules (component overrides) — no Tailwind, no CSS-in-JS
-- **Hosting**: self-hosted Docker on the Hetzner server at `educational.traistaru.net` — push to `main` builds an image and Watchtower restarts the container (see `docs/DEPLOY.md`)
+- **Hosting**: self-hosted Docker on the Hetzner server at `educational.traistaru.net` and `ecole.traistaru.net` (both proxy to the same container) — push to `main` builds an image and Watchtower restarts the container (see `docs/DEPLOY.md`)
 - **Testing**: Vitest — run `npm test` (single run) or `npm run test:watch` (watch mode)
 - **Backend**: Supabase is planned but not yet implemented — no Supabase client or env vars exist in the codebase
 
