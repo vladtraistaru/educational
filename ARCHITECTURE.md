@@ -33,7 +33,7 @@ Activity URLs are flat (`/activity/number-scale-explorer`) so they stay stable r
 
 ## How an Activity Loads
 
-1. `/app/activity/[slug]/page.tsx` — server component. Looks up the module config by slug, resolves translated metadata, renders breadcrumb + title + `<ActivityLoader>`.
+1. `/app/activity/[slug]/page.tsx` — server component. Looks up the module config by slug, resolves translated metadata, renders `<ActivityLoader>`.
 2. `ActivityLoader.tsx` — client component. Calls `getActivityComponent(slug)` which returns the `dynamic()` import. Wraps the component in `<ActivityShell>` (consistent layout, description).
 3. The module's `Activity.tsx` renders. It manages its own state and UI.
 

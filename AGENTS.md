@@ -288,9 +288,8 @@ In `/components`:
 | Component | Role |
 |-----------|------|
 | `ActivityShell` | Wraps every activity with description + consistent layout. Applied automatically by `ActivityLoader` — modules do not use it directly. |
-| `Header` | Top bar: breadcrumbs + language selector |
+| `Header` | Top bar: wordmark (or breadcrumbs on activity pages, derived from the URL) + language selector |
 | `Footer` | Footer: open-source note, GitHub link, feedback dialog |
-| `Breadcrumb` | Syncs breadcrumb state from route |
 | `ModuleCard` | Card linking to an activity (title, description, difficulty) |
 | `LanguageSelector` | Dropdown to switch language |
 
@@ -298,14 +297,13 @@ In `/components`:
 
 The root layout (`/app/layout.tsx`) provides:
 - `<LanguageProvider>` — wraps everything with language context
-- `<BreadcrumbProvider>` — breadcrumb state
 - `<Header>` and `<Footer>` — consistent chrome
 - `<main className="container">` — Pico CSS container around page content
 
 ## How an Activity Loads
 
 1. User navigates to `/activity/[slug]`
-2. `page.tsx` (server component) looks up the module config and translated metadata, renders breadcrumb + title + `<ActivityLoader>`
+2. `page.tsx` (server component) looks up the module config and translated metadata, renders `<ActivityLoader>`
 3. `ActivityLoader.tsx` (client component) calls `getActivityComponent(slug)` to get the dynamically imported component, wraps it in `<ActivityShell>`
 4. The module's `Activity.tsx` renders with its own state and UI
 

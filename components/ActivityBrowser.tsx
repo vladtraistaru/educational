@@ -85,14 +85,13 @@ export default function ActivityBrowser({ lang, modules, subjects, counts }: Pro
           aria-expanded={railOpen}
           onClick={() => setRailOpen(!railOpen)}
         >
-          {subjectFilter ? labelOf(subjectFilter) : ui.browseBySubject}
+          {subjectFilter ? labelOf(subjectFilter) : ui.allActivities}
           <span aria-hidden="true">▾</span>
         </button>
         <nav
           className={railOpen ? styles.railOpen : styles.rail}
           aria-label={ui.browseBySubject}
         >
-          <h2 className={styles.railHeading}>{ui.browseBySubject}</h2>
           {railItem(null)}
           {subjects.map((subject) => railItem(subject))}
         </nav>

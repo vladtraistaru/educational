@@ -1,21 +1,12 @@
 .hero {
-  padding: var(--space-4) 0 var(--space-3);
+  padding: var(--space-2) 0 var(--space-2);
   margin: 0;
 }
 
 .title {
-  margin: 0 0 var(--space-2);
+  margin: 0;
   font-size: clamp(1.25rem, 2.6vw, 1.6rem);
   line-height: 1.2;
   text-wrap: balance;
   color: var(--text-primary);
-}
-
-.count {
-  margin: 0;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }

@@ -21,16 +21,6 @@
   gap: 2px;
 }
 
-.railHeading {
-  margin: 0 0 var(--space-2);
-  padding: 0 var(--space-3);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
 .railItem,
 .railItemActive {
   display: flex;
@@ -192,11 +182,7 @@
     background: var(--surface-card);
   }
 
-  .railHeading {
-    display: none;
-  }
-
-  .grid {
+    .grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }

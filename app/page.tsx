@@ -11,7 +11,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero lang={lang} moduleCount={allModules.length} subjectCount={subjects.length} />
+      <Hero lang={lang} />
       <ActivityBrowser lang={lang} modules={allModules} subjects={subjects} counts={counts} />
     </>
   );

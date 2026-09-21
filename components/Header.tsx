@@ -1,16 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import { useBreadcrumbs } from '@/lib/breadcrumb';
+import { usePathname } from 'next/navigation';
+import { getModuleBySlug, getModuleMetadata } from '@/modules/registry';
 import { useLanguage } from '@/lib/language';
-import { UI_LABELS } from '@/lib/types';
+import { SUBJECT_LABELS, UI_LABELS } from '@/lib/types';
 import LanguageSelector from './LanguageSelector';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { crumbs } = useBreadcrumbs();
   const { language } = useLanguage();
   const ui = UI_LABELS[language];
+  const slug = usePathname().match(/^\/activity\/([^/]+)/)?.[1];
+  const mod = slug ? getModuleBySlug(slug) : undefined;
+  const crumbs = mod
+    ? [
+        { label: ui.home, href: '/' },
+        { label: SUBJECT_LABELS[language][mod.subject] },
+        { label: getModuleMetadata(mod.slug, language)?.title ?? mod.title },
+      ]
+    : [];
 
   return (
     <header className={styles.header}>

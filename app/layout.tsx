@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { LanguageProvider } from '@/lib/language';
-import { BreadcrumbProvider } from '@/lib/breadcrumb';
 import { getLanguage } from '@/lib/language-server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -23,11 +22,9 @@ export default async function RootLayout({
     <html lang={lang} data-theme="light">
       <body>
         <LanguageProvider initialLanguage={lang}>
-          <BreadcrumbProvider>
-            <Header />
-            <main className="container">{children}</main>
-            <Footer />
-          </BreadcrumbProvider>
+          <Header />
+          <main className="container">{children}</main>
+          <Footer />
         </LanguageProvider>
       </body>
     </html>
