@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Builds **division** from two concrete meanings — **fair sharing** ("12 cookies shared between 3 friends: how many each?") and **grouping** ("12 cookies in bags of 3: how many bags?") — then links each result back to multiplication. Aligns with MER *Opérations* (~8–10 years). Complements `multiplication-patterns`, `multiplication-creatures`, `times-table-challenge`.
+Builds **division** from two concrete meanings — **fair sharing** ("12 cookies shared between 3 friends: how many each?") and **grouping** ("12 cookies in bags of 3: how many bags?") — then links each result back to multiplication. Aligns with MER *Opérations* (~8–10 years). Complements `multiplication-patterns`, `multiplication-crafting`, `times-table-challenge`.
 
 ## User Experience
 

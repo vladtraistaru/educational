@@ -11,26 +11,24 @@ import {
   STARTING_LIVES,
 } from './questions';
 import {
-  getSpecies,
+  CRAFTED_STAGE,
+  getNextIcons,
+  getRecipe,
   getStageIndex,
   getStageProgress,
-  rollQuirk,
-  STAGE_THRESHOLDS,
-  type Quirk,
-  type SpeciesId,
-} from './creatures';
-import Creature, { type Mood } from './Creature';
-import EvolutionOverlay from './EvolutionOverlay';
+  type RecipeId,
+} from './recipes';
+import CraftingTable, { type Mood } from './CraftingTable';
+import DiscoveryOverlay from './DiscoveryOverlay';
+import PixelIcon from './PixelIcon';
 import styles from './Activity.module.css';
 
+const FEEDBACK_MS = 900;
+const DISCOVERY_MS = 4500;
+
 interface GameScreenProps {
-  speciesId: SpeciesId;
-  onFinish: (
-    score: number,
-    correctCount: number,
-    bestStreak: number,
-    quirks: Quirk[],
-  ) => void;
+  recipeId: RecipeId;
+  onFinish: (score: number, correctCount: number, bestStreak: number) => void;
 }
 
 interface Feedback {
@@ -38,20 +36,20 @@ interface Feedback {
   wasCorrect: boolean;
 }
 
-interface Evolution {
+interface Discovery {
   fromStageIndex: number;
   toStageIndex: number;
-  quirk: Quirk | null;
 }
 
 function factorKey(a: number, b: number): string {
   return `${Math.min(a, b)}-${Math.max(a, b)}`;
 }
 
-export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
+export default function GameScreen({ recipeId, onFinish }: GameScreenProps) {
   const { language } = useLanguage();
   const t = translations[language];
-  const species = getSpecies(speciesId);
+  const recipe = getRecipe(recipeId);
+  const text = t.recipes[recipeId];
 
   const [question, setQuestion] = useState<Question>(() => generateQuestion());
   const [score, setScore] = useState(0);
@@ -61,58 +59,53 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
   const [lives, setLives] = useState(STARTING_LIVES);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [mood, setMood] = useState<Mood>('idle');
-  const [quirks, setQuirks] = useState<Quirk[]>([]);
-  const [evolution, setEvolution] = useState<Evolution | null>(null);
+  const [discovery, setDiscovery] = useState<Discovery | null>(null);
 
   const multiplier = getStreakMultiplier(streak);
   const stageIndex = getStageIndex(correctCount);
   const { progress, remaining } = getStageProgress(correctCount);
-  const stage = species.stages[stageIndex];
-  const isMaxStage = stageIndex >= STAGE_THRESHOLDS.length - 1;
+  const isCrafted = stageIndex >= CRAFTED_STAGE;
+  const nextIcons = getNextIcons(recipe, stageIndex);
 
   const advance = useCallback(() => {
     if (lives <= 0) {
-      onFinish(score, correctCount, bestStreak, quirks);
+      onFinish(score, correctCount, bestStreak);
       return;
     }
     setQuestion(generateQuestion(factorKey(question.factorA, question.factorB)));
     setFeedback(null);
     setMood('idle');
-    setEvolution(null);
-  }, [lives, score, correctCount, bestStreak, quirks, question, onFinish]);
+    setDiscovery(null);
+  }, [lives, score, correctCount, bestStreak, question, onFinish]);
 
   useEffect(() => {
     if (!feedback) return;
-    const delay = evolution ? 3000 : 900;
-    const timer = setTimeout(advance, delay);
+    const timer = setTimeout(advance, discovery ? DISCOVERY_MS : FEEDBACK_MS);
     return () => clearTimeout(timer);
-  }, [feedback, advance, evolution]);
+  }, [feedback, advance, discovery]);
 
   const handleAnswer = useCallback(
     (chosenIndex: number) => {
       if (feedback) return;
 
-      const chosen = question.options[chosenIndex];
-      const wasCorrect = chosen === question.correctAnswer;
+      const wasCorrect = question.options[chosenIndex] === question.correctAnswer;
 
       if (wasCorrect) {
-        const points = POINTS_PER_QUESTION * multiplier;
         const newCorrect = correctCount + 1;
         const fromStageIndex = getStageIndex(correctCount);
         const toStageIndex = getStageIndex(newCorrect);
-        const grew = toStageIndex > fromStageIndex;
         const newStreak = streak + 1;
 
-        setScore((s) => s + points);
+        setScore((s) => s + POINTS_PER_QUESTION * multiplier);
         setStreak(newStreak);
         setBestStreak((b) => Math.max(b, newStreak));
         setCorrectCount(newCorrect);
-        setMood(grew ? 'evolve' : 'happy');
 
-        if (grew) {
-          const quirk = rollQuirk(quirks);
-          if (quirk) setQuirks((q) => [...q, quirk]);
-          setEvolution({ fromStageIndex, toStageIndex, quirk });
+        if (toStageIndex > fromStageIndex) {
+          setMood('evolve');
+          setDiscovery({ fromStageIndex, toStageIndex });
+        } else {
+          setMood('happy');
         }
       } else {
         setLives((l) => l - 1);
@@ -122,7 +115,7 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
 
       setFeedback({ chosenIndex, wasCorrect });
     },
-    [feedback, question, multiplier, correctCount, streak, quirks],
+    [feedback, question, multiplier, correctCount, streak],
   );
 
   const getOptionClass = (index: number): string => {
@@ -132,8 +125,7 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
     const isCorrect = question.options[index] === question.correctAnswer;
 
     if (isCorrect) return `${styles.optionBtn} ${styles.optionCorrect}`;
-    if (isChosen && !feedback.wasCorrect)
-      return `${styles.optionBtn} ${styles.optionWrong}`;
+    if (isChosen && !feedback.wasCorrect) return `${styles.optionBtn} ${styles.optionWrong}`;
     return `${styles.optionBtn} ${styles.optionDimmed}`;
   };
 
@@ -160,40 +152,45 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
         </div>
       </div>
 
-      <div className={styles.creatureArena}>
-        <Creature
-          stage={evolution ? species.stages[evolution.fromStageIndex] : stage}
+      <div className={styles.tableArena}>
+        <CraftingTable
+          recipe={recipe}
+          stageIndex={discovery ? discovery.fromStageIndex : stageIndex}
           mood={mood}
-          quirks={evolution?.quirk ? quirks.slice(0, -1) : quirks}
         />
 
-        {evolution && (
-          <EvolutionOverlay
-            fromStage={species.stages[evolution.fromStageIndex]}
-            toStage={species.stages[evolution.toStageIndex]}
-            headline={t.grewUp}
-            stageName={t.stageNames[speciesId][evolution.toStageIndex]}
-            quirk={evolution.quirk}
-            quirkLine={evolution.quirk ? t.quirkLines[evolution.quirk] : null}
+        {discovery && (
+          <DiscoveryOverlay
+            recipe={recipe}
+            stageIndex={discovery.toStageIndex}
+            headline={discovery.toStageIndex >= CRAFTED_STAGE ? t.crafted : t.discovered}
+            stageName={
+              discovery.toStageIndex >= CRAFTED_STAGE
+                ? text.name
+                : t.stageNames[discovery.toStageIndex]
+            }
+            fact={text.facts[discovery.toStageIndex - 1]}
           />
         )}
       </div>
 
       <div className={styles.growthRow}>
         <span className={styles.growthStageName}>
-          {evolution ? '' : t.stageNames[speciesId][stageIndex]}
+          {discovery ? '' : t.stageNames[stageIndex]}
         </span>
 
         <div className={styles.xpBarTrack}>
           <div className={styles.xpBarFill} style={{ width: `${progress * 100}%` }} />
         </div>
 
-        {isMaxStage ? (
+        {isCrafted ? (
           <span className={styles.growthNext}>{t.maxStage}</span>
         ) : (
           <span className={styles.growthNext}>
-            <span className={styles.nextSilhouette} aria-hidden="true">
-              {species.stages[stageIndex + 1].emoji}
+            <span className={styles.nextSilhouettes} aria-hidden="true">
+              {nextIcons.map((icon, i) => (
+                <PixelIcon key={i} id={icon} className={styles.nextSilhouette} />
+              ))}
             </span>
             {t.growthHint.replace('{n}', String(remaining))}
           </span>
@@ -206,13 +203,9 @@ export default function GameScreen({ speciesId, onFinish }: GameScreenProps) {
         </span>
       </div>
 
-      {feedback && !evolution && (
+      {feedback && !discovery && (
         <div
-          className={
-            feedback.wasCorrect
-              ? styles.feedbackBadgeCorrect
-              : styles.feedbackBadgeWrong
-          }
+          className={feedback.wasCorrect ? styles.feedbackBadgeCorrect : styles.feedbackBadgeWrong}
         >
           {feedback.wasCorrect ? t.correct : t.wrong}
           {feedback.wasCorrect && multiplier > 1 && (

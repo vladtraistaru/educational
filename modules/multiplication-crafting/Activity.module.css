@@ -10,6 +10,15 @@
   background: linear-gradient(160deg, rgba(108, 92, 231, 0.06), rgba(0, 184, 148, 0.06));
 }
 
+.disclaimer {
+  margin: 1rem 0 0;
+  max-width: 420px;
+  font-size: 0.6rem;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--pico-muted-color);
+}
+
 /* ---- Menu Screen ---- */
 
 .menuContainer {
@@ -36,7 +45,7 @@
   margin: 0 0 1rem;
 }
 
-.speciesCards {
+.recipeCards {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -44,11 +53,11 @@
   width: 100%;
 }
 
-.speciesCard {
+.recipeCard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   padding: 1.25rem 1rem;
   border-radius: 16px;
   border: 3px solid var(--pico-muted-border-color);
@@ -59,54 +68,58 @@
   color: inherit;
   cursor: pointer;
   flex: 1 1 130px;
-  max-width: 160px;
+  max-width: 170px;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.speciesCard:hover {
+.recipeCard:hover {
   transform: translateY(-3px);
   border-color: #6c5ce7;
   box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2);
 }
 
-.speciesCard:active {
+.recipeCard:active {
   transform: scale(0.96);
 }
 
-.speciesEgg {
-  font-size: 3rem;
-  animation: eggWobble 2.4s ease-in-out infinite;
+.mysteryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1.6rem);
+  gap: 3px;
+  padding: 6px;
+  border-radius: 6px;
+  background: #c6c6c6;
 }
 
-@keyframes eggWobble {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(4deg); }
+.mysterySlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: #8b8b8b;
+  box-shadow: inset 2px 2px 0 #373737, inset -2px -2px 0 #fff;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #fff;
+  animation: mysteryBlink 2.4s ease-in-out infinite;
 }
 
-.speciesName {
+@keyframes mysteryBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+
+.recipeCardName {
   font-weight: 800;
   color: inherit;
 }
 
-/* Growth teaser: unknown shapes getting bigger */
-
-.speciesPreview {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.15rem;
-  height: 1.8rem;
+.recipeCardHint {
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+  text-align: center;
 }
-
-.previewSilhouette {
-  filter: brightness(0) saturate(0);
-  opacity: 0.28;
-  line-height: 1;
-}
-
-.previewSilhouette:nth-child(1) { font-size: 0.7rem; }
-.previewSilhouette:nth-child(2) { font-size: 0.95rem; }
-.previewSilhouette:nth-child(3) { font-size: 1.2rem; }
-.previewSilhouette:nth-child(4) { font-size: 1.5rem; }
 
 /* ---- Game Screen ---- */
 
@@ -179,17 +192,17 @@
   font-size: 1.2rem;
 }
 
-/* ---- Creature ---- */
+/* ---- Crafting table ---- */
 
-.creatureArena {
+.tableArena {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 340px;
 }
 
-.creatureStage {
+.tableStage {
+  --slot: 3.4rem;
   position: relative;
-  font-size: 4rem;
   width: 100%;
   height: 100%;
   display: flex;
@@ -197,120 +210,118 @@
   justify-content: center;
 }
 
-.creatureGlow {
+.tableGlow {
   position: absolute;
-  width: 1.9em;
-  height: 1.9em;
+  width: 15rem;
+  height: 15rem;
   border-radius: 50%;
-  opacity: 0.4;
-  filter: blur(30px);
-  transition: transform 0.6s cubic-bezier(0.2, 1.4, 0.4, 1), background 0.6s ease;
+  filter: blur(40px);
+  transition: opacity 0.6s ease, background 0.6s ease;
 }
 
-.creatureOrbit {
+.tableBoard {
   position: relative;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 8px;
+  background: #c6c6c6;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22), inset 0 0 0 3px #fff, inset -3px -3px 0 3px #555;
+}
+
+.craftGrid {
+  display: grid;
+  grid-template-columns: repeat(3, var(--slot));
+  gap: 3px;
+}
+
+.slot {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: var(--slot);
+  height: var(--slot);
+  padding: 4px;
+  background: #8b8b8b;
+  box-shadow: inset 3px 3px 0 #373737, inset -3px -3px 0 #fff;
 }
 
-.creatureEmoji {
-  display: inline-block;
+.resultSlot {
+  --slot: 4.4rem;
+  padding: 8px;
+}
+
+.craftArrow {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #555;
   line-height: 1;
-  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.22));
-  transition: font-size 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
-.creatureIdle {
-  animation: creatureBreathe 2.6s ease-in-out infinite;
+.icon,
+.iconNew {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
 }
 
-.creatureHappy {
-  animation: creatureHappy 0.5s ease;
+.iconNew {
+  animation: iconPop 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) 0.5s both;
 }
 
-.creatureSad {
-  animation: creatureSad 0.4s ease;
-}
+.craftGrid .slot:nth-child(3n + 2) .iconNew { animation-delay: 0.65s; }
+.craftGrid .slot:nth-child(3n) .iconNew { animation-delay: 0.8s; }
 
-.creatureEvolve {
-  animation: creatureVanish 0.5s ease forwards;
-}
-
-@keyframes creatureBreathe {
-  0%, 100% { transform: scale(1) translateY(0); }
-  50% { transform: scale(1.04) translateY(-4px); }
-}
-
-@keyframes creatureHappy {
-  0% { transform: scale(1) rotate(0deg); }
-  30% { transform: scale(1.22) rotate(-8deg); }
-  60% { transform: scale(1.12) rotate(8deg); }
+@keyframes iconPop {
+  0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+  55% { transform: scale(1.4) rotate(8deg); opacity: 1; }
+  78% { transform: scale(0.92) rotate(-4deg); }
   100% { transform: scale(1) rotate(0deg); }
 }
 
-@keyframes creatureSad {
-  0%, 100% { transform: translateX(0) rotate(0deg); }
-  20% { transform: translateX(-8px) rotate(-6deg); }
-  40% { transform: translateX(8px) rotate(6deg); }
-  60% { transform: translateX(-5px) rotate(-3deg); }
-  80% { transform: translateX(5px) rotate(3deg); }
+.tableIdle {
+  animation: tableBreathe 2.6s ease-in-out infinite;
 }
 
-@keyframes creatureVanish {
+.tableHappy {
+  animation: tableHappy 0.5s ease;
+}
+
+.tableSad {
+  animation: tableSad 0.4s ease;
+}
+
+.tableVanish {
+  animation: tableVanish 0.4s ease forwards;
+}
+
+@keyframes tableBreathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes tableHappy {
+  0% { transform: scale(1) rotate(0deg); }
+  30% { transform: scale(1.06) rotate(-2deg); }
+  60% { transform: scale(1.03) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes tableSad {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+@keyframes tableVanish {
   0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.2); opacity: 0; }
+  100% { transform: scale(0.9); opacity: 0; }
 }
 
-/* Orbiting charms and collected quirks */
-
-.charm,
-.quirk {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1em;
-  height: 1em;
-  margin: -0.5em 0 0 -0.5em;
-  line-height: 1;
-  text-align: center;
-  transform: var(--ring);
-}
-
-.charm {
-  font-size: 0.4em;
-  animation: charmFloat 2.8s ease-in-out infinite;
-}
-
-.quirk {
-  font-size: 0.48em;
-  animation: quirkWiggle 3.4s ease-in-out infinite;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
-}
-
-@keyframes charmFloat {
-  0%, 100% { transform: var(--ring) translateY(0) scale(1); opacity: 0.85; }
-  50% { transform: var(--ring) translateY(-7px) scale(1.14); opacity: 1; }
-}
-
-@keyframes quirkWiggle {
-  0%, 100% { transform: var(--ring) rotate(-10deg); }
-  50% { transform: var(--ring) rotate(10deg); }
-}
-
-.creatureShadow {
-  position: absolute;
-  bottom: 16px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.18);
-  filter: blur(5px);
-  transition: width 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
-}
-
-/* ---- Evolution moment ---- */
+/* ---- Discovery moment ---- */
 
 .evolveOverlay {
   position: absolute;
@@ -326,7 +337,7 @@
 .evolveParticles {
   position: absolute;
   left: 50%;
-  top: 45%;
+  top: 40%;
   width: 0;
   height: 0;
 }
@@ -353,7 +364,7 @@
 .evolveFlash {
   position: absolute;
   left: 50%;
-  top: 45%;
+  top: 40%;
   width: 20px;
   height: 20px;
   margin: -10px 0 0 -10px;
@@ -371,34 +382,7 @@
   position: relative;
   flex: 1;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
-}
-
-.evolveOld {
-  position: absolute;
-  line-height: 1;
-  animation: oldShrink 0.55s ease-in forwards;
-}
-
-.evolveNew {
-  line-height: 1;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
-  animation: newBurst 0.9s cubic-bezier(0.2, 1.6, 0.4, 1) 0.4s both;
-}
-
-@keyframes oldShrink {
-  0% { transform: scale(1) rotate(0deg); opacity: 1; }
-  100% { transform: scale(0.08) rotate(540deg); opacity: 0; }
-}
-
-@keyframes newBurst {
-  0% { transform: scale(0) rotate(-25deg); opacity: 0; }
-  55% { transform: scale(1.35) rotate(8deg); opacity: 1; }
-  78% { transform: scale(0.92) rotate(-4deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  min-height: 0;
 }
 
 .evolveText {
@@ -419,27 +403,20 @@
 }
 
 .evolveStageName {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 900;
   color: var(--pico-color);
   animation: popIn 0.4s ease 0.85s both;
 }
 
-.evolveQuirk {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  max-width: 320px;
-  font-size: 0.8rem;
+.evolveFact {
+  max-width: 360px;
+  min-height: 3.6em;
+  font-size: 0.85rem;
   font-weight: 600;
-  line-height: 1.25;
-  color: var(--pico-muted-color);
-  animation: popIn 0.4s ease 1.6s both;
-}
-
-.evolveQuirkIcon {
-  font-size: 1.3rem;
+  line-height: 1.3;
+  color: var(--pico-color);
+  animation: popIn 0.4s ease 1.4s both;
 }
 
 @keyframes popIn {
@@ -489,8 +466,14 @@
   color: var(--pico-muted-color);
 }
 
+.nextSilhouettes {
+  display: flex;
+  gap: 2px;
+}
+
 .nextSilhouette {
-  font-size: 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
   filter: brightness(0) saturate(0);
   opacity: 0.32;
 }
@@ -622,22 +605,27 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  max-width: 380px;
+  max-width: 400px;
 }
 
-.resultContainer .creatureStage {
-  height: 240px;
-  margin-top: 0.75rem;
+.resultTable {
+  width: 100%;
+  height: 230px;
+  margin-top: 0.5rem;
 }
 
-.resultCreatureLabel {
+.resultTable .tableStage {
+  --slot: 3rem;
+}
+
+.resultRecipeLabel {
   font-size: 0.95rem;
   color: var(--pico-muted-color);
   text-align: center;
   margin: 0 0 0.5rem;
 }
 
-.resultCreatureLabel strong {
+.resultRecipeLabel strong {
   color: var(--pico-color);
 }
 
@@ -688,31 +676,37 @@
   letter-spacing: 0.04em;
 }
 
-.quirkCollection {
+.discoveryList {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
   margin-top: 0.75rem;
+  width: 100%;
 }
 
-.quirkCollectionRow {
+.discoveryList ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.4rem;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-.quirkBadge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.2rem;
-  height: 2.2rem;
-  font-size: 1.3rem;
-  border-radius: 50%;
-  background: var(--pico-card-background-color);
+.discoveryList li {
+  list-style: none;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
   border: 2px solid var(--pico-muted-border-color);
+  background: var(--pico-card-background-color);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.discoveryEmpty {
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
 }
 
 .playAgainBtn {
@@ -729,22 +723,33 @@
     font-size: 2rem;
   }
 
-  .creatureArena {
-    height: 230px;
+  .tableArena {
+    height: 320px;
   }
 
-  .creatureStage,
-  .evolveSwap {
-    font-size: 2.5rem;
+  .tableStage {
+    --slot: 2.7rem;
+  }
+
+  .resultSlot {
+    --slot: 3.4rem;
+  }
+
+  .resultTable {
+    height: 200px;
+  }
+
+  .resultTable .tableStage {
+    --slot: 2.4rem;
   }
 
   .evolveStageName {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
 
-  .evolveQuirk {
-    font-size: 0.72rem;
-    max-width: 260px;
+  .evolveFact {
+    font-size: 0.75rem;
+    max-width: 290px;
   }
 
   .particle {
@@ -764,16 +769,8 @@
     font-size: 2.2rem;
   }
 
-  .resultContainer .creatureStage {
-    height: 180px;
-  }
-
-  .speciesCard {
+  .recipeCard {
     flex: 1 1 100px;
     padding: 1rem 0.75rem;
-  }
-
-  .speciesEgg {
-    font-size: 2.4rem;
   }
 }

@@ -1,27 +1,26 @@
 import type { CSSProperties } from 'react';
-import type { CreatureStage, Quirk } from './creatures';
+import type { Recipe } from './recipes';
+import CraftingTable from './CraftingTable';
 import styles from './Activity.module.css';
 
 const CONFETTI = ['✨', '⭐', '💫', '🎉', '🌟', '💥'];
 const PARTICLE_COUNT = 16;
 
-interface EvolutionOverlayProps {
-  fromStage: CreatureStage;
-  toStage: CreatureStage;
+interface DiscoveryOverlayProps {
+  recipe: Recipe;
+  stageIndex: number;
   headline: string;
   stageName: string;
-  quirk: Quirk | null;
-  quirkLine: string | null;
+  fact: string;
 }
 
-export default function EvolutionOverlay({
-  fromStage,
-  toStage,
+export default function DiscoveryOverlay({
+  recipe,
+  stageIndex,
   headline,
   stageName,
-  quirk,
-  quirkLine,
-}: EvolutionOverlayProps) {
+  fact,
+}: DiscoveryOverlayProps) {
   return (
     <div className={styles.evolveOverlay}>
       <div className={styles.evolveParticles} aria-hidden="true">
@@ -44,27 +43,13 @@ export default function EvolutionOverlay({
       <div className={styles.evolveFlash} aria-hidden="true" />
 
       <div className={styles.evolveSwap}>
-        <span
-          className={styles.evolveOld}
-          style={{ fontSize: `${fromStage.scale}em` }}
-          aria-hidden="true"
-        >
-          {fromStage.emoji}
-        </span>
-        <span className={styles.evolveNew} style={{ fontSize: `${toStage.scale}em` }}>
-          {toStage.emoji}
-        </span>
+        <CraftingTable recipe={recipe} stageIndex={stageIndex} mood="idle" isNew />
       </div>
 
       <div className={styles.evolveText}>
         <span className={styles.evolveHeadline}>{headline}</span>
         <span className={styles.evolveStageName}>{stageName}</span>
-        {quirk && quirkLine && (
-          <span className={styles.evolveQuirk}>
-            <span className={styles.evolveQuirkIcon}>{quirk}</span>
-            {quirkLine}
-          </span>
-        )}
+        <span className={styles.evolveFact}>{fact}</span>
       </div>
     </div>
   );

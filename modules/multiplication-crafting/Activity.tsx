@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { ActivityProps } from '@/lib/types';
-import type { Quirk, SpeciesId } from './creatures';
+import type { RecipeId } from './recipes';
 import MenuScreen from './MenuScreen';
 import GameScreen from './GameScreen';
 import ResultScreen from './ResultScreen';
@@ -14,26 +14,20 @@ interface RoundResult {
   score: number;
   correctCount: number;
   bestStreak: number;
-  quirks: Quirk[];
 }
 
 export default function Activity({}: ActivityProps) {
   const [screen, setScreen] = useState<Screen>('menu');
-  const [speciesId, setSpeciesId] = useState<SpeciesId>('unicorn');
+  const [recipeId, setRecipeId] = useState<RecipeId>('cake');
   const [result, setResult] = useState<RoundResult | null>(null);
 
-  const handleStart = (chosen: SpeciesId) => {
-    setSpeciesId(chosen);
+  const handleStart = (chosen: RecipeId) => {
+    setRecipeId(chosen);
     setScreen('playing');
   };
 
-  const handleFinish = (
-    score: number,
-    correctCount: number,
-    bestStreak: number,
-    quirks: Quirk[],
-  ) => {
-    setResult({ score, correctCount, bestStreak, quirks });
+  const handleFinish = (score: number, correctCount: number, bestStreak: number) => {
+    setResult({ score, correctCount, bestStreak });
     setScreen('results');
   };
 
@@ -45,19 +39,19 @@ export default function Activity({}: ActivityProps) {
   return (
     <div className={styles.wrapper}>
       {screen === 'menu' && <MenuScreen onStart={handleStart} />}
-      {screen === 'playing' && (
-        <GameScreen speciesId={speciesId} onFinish={handleFinish} />
-      )}
+      {screen === 'playing' && <GameScreen recipeId={recipeId} onFinish={handleFinish} />}
       {screen === 'results' && result && (
         <ResultScreen
-          speciesId={speciesId}
+          recipeId={recipeId}
           score={result.score}
           correctCount={result.correctCount}
           bestStreak={result.bestStreak}
-          quirks={result.quirks}
           onPlayAgain={handlePlayAgain}
         />
       )}
+      <p className={styles.disclaimer}>
+        NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.
+      </p>
     </div>
   );
 }
