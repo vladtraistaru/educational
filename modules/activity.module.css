@@ -1,8 +1,8 @@
 /* Shared design tokens and reusable classes for all activity modules */
 
 .activityArea {
-  min-height: 60vh;
-  padding: 1.5rem;
+  min-height: 50vh;
+  padding: 1.25rem;
   border-radius: 16px;
   background: var(--pico-card-background-color);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
@@ -14,11 +14,11 @@
   gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   background: var(--pico-card-background-color);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .controlGroup {
@@ -51,7 +51,7 @@
 .btn {
   font-size: 1rem;
   font-weight: 700;
-  padding: 0.6rem 1.25rem;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -60,8 +60,8 @@
   gap: 0.5rem;
   transition: all 0.2s ease;
   color: white;
-  min-height: 48px;
-  min-width: 48px;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .btn:active {

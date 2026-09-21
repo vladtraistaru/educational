@@ -37,6 +37,16 @@
   --diff-hard-bg: rgba(231, 76, 60, 0.12);
 }
 
+/* Compact scale: Pico grows the root font to 20px on wide screens; keep it at 16px and tighten spacing. */
+:root {
+  --pico-font-size: 100%;
+  --pico-line-height: 1.4;
+  --pico-spacing: 0.75rem;
+  --pico-typography-spacing-vertical: 0.75rem;
+  --pico-form-element-spacing-vertical: 0.55rem;
+  --pico-form-element-spacing-horizontal: 0.85rem;
+}
+
 body {
   min-height: 100vh;
   background: var(--surface-bg);
@@ -46,7 +56,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1rem;
 }
 
 .visually-hidden {
