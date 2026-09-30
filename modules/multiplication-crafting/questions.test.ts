@@ -2,12 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { generateQuestion, getStreakMultiplier } from './questions';
 
 describe('generateQuestion', () => {
-  it('never uses 1 as a factor and stays within 2-12', () => {
+  it('never uses 1, 2 or 10 as a factor and stays within 2-12', () => {
     for (let i = 0; i < 1000; i++) {
       const { factorA, factorB } = generateQuestion();
       for (const f of [factorA, factorB]) {
         expect(f).toBeGreaterThanOrEqual(2);
         expect(f).toBeLessThanOrEqual(12);
+        expect([1, 2, 10]).not.toContain(f);
       }
     }
   });
