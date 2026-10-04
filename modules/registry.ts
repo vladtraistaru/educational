@@ -6,7 +6,6 @@ import * as numberScaleExplorer from './number-scale-explorer';
 import * as euclideanPostulates from './euclidean-postulates';
 import * as shapeExplorer from './shape-explorer';
 import * as shapeExplorer3d from './3d-shape-explorer';
-import * as multiplicationPatterns from './multiplication-patterns';
 import * as timesTableChallenge from './times-table-challenge';
 import * as multiplicationCrafting from './multiplication-crafting';
 import * as balanceLab from './balance-lab';
@@ -36,7 +35,6 @@ const moduleEntries: ModuleEntry[] = [
   euclideanPostulates,
   shapeExplorer,
   shapeExplorer3d,
-  multiplicationPatterns,
   timesTableChallenge,
   multiplicationCrafting,
   symmetryPlay,

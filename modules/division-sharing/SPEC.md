@@ -1,68 +1,50 @@
-# Division Sharing
+# Division Crafting
+
+Slug: `division-sharing` (kept from the earlier fair-sharing version so existing links still work).
 
 ## Purpose
 
-Builds **division** from two concrete meanings — **fair sharing** ("12 cookies shared between 3 friends: how many each?") and **grouping** ("12 cookies in bags of 3: how many bags?") — then links each result back to multiplication. Aligns with MER *Opérations* (~8–10 years). Complements `multiplication-patterns`, `multiplication-crafting`, `times-table-challenge`.
+An arcade-style survival game that drills **division facts**, the reverse of the times tables. It is the companion to `multiplication-crafting` and uses the same game loop and look. Every question is `dividend ÷ divisor = ?`, built from a times-table fact, so it never has a remainder. The divisor and the answer are both between 3 and 12, and never 10 (dividing by 1, 2 or 10 is too easy). Aligns with MER *Opérations* (~8–10 years).
+
+The learner picks one of three **mystery recipes** and fills a 3×3 crafting table by answering. Every few correct answers a new row appears and a **discovery card** reveals a division fact hidden in that recipe ("one log gives 4 planks, so 12 planks ÷ 4 = 3 logs"). A wrong answer costs a life; the game ends when all lives are lost.
+
+## Recipes
+
+Every fact was checked against the Minecraft Wiki.
+
+| Recipe | Grid (rows) | Division hooks |
+|--------|-------------|----------------|
+| Chest | 3 planks / plank + empty + plank / 3 planks | log → 4 planks (12 ÷ 4, 8 ÷ 4), 8 planks per chest (24 ÷ 8), 27 slots in rows of 9, double chest 54 ÷ 9 |
+| Block of Iron | 9 iron ingots | 9 nuggets per ingot (27 ÷ 9), coal smelts 8 items (24 ÷ 8), 45 ÷ 9 blocks, iron golem = 4 blocks (12 ÷ 4) |
+| Bookshelf | 3 planks / 3 books / 3 planks | 6 planks per shelf (24 ÷ 6), 3 paper per book (12 ÷ 3), 15 shelves for max enchanting (45 ÷ 3) |
+
+Recipe grids may contain empty slots (`null`), like the middle of the chest.
 
 ## User Experience
 
-The activity has two mode tabs (same tab pattern as `symmetry-play`) and a difficulty toggle.
+Same as `multiplication-crafting` (see its SPEC): five stages (thresholds 0 / 3 / 8 / 15 / 25 correct answers), discovery overlay, silhouette teaser of the next row, 3 lives, typed answers (no multiple choice), streak multipliers x2 / x3 / x4 at 3 / 6 / 10, results screen with the facts discovered. On a wrong answer the correct division is shown.
 
-### Mode 1 — Share (partitive division)
+## Graphics
 
-1. Prompt: "Share **12** 🍪 fairly between **3** plates." A pile of N tokens (emoji) sits above P plates.
-2. Each plate is a 🍽️ button with its tokens stacked above it. **Tap a plate** → one token moves from the pile onto that plate. **Tap a token on a plate** → it returns to the pile. A **"Deal one each"** button places one token on every plate at once (only if the pile has at least P tokens left) — this models the classic dealing strategy.
-3. Each plate shows its count underneath.
-4. **Check** button:
-   - Correct when every plate holds the same count **and** fewer than P tokens remain in the pile (remaining tokens are the remainder).
-   - Wrong feedback is specific: "The plates don't have the same number" or "You can still give one more to every plate".
-5. On success, the **equation strip** appears: `12 ÷ 3 = 4`, then `4 × 3 = 12`. With a remainder: `14 ÷ 3 = 4 remainder 2` and `4 × 3 + 2 = 14`. Leftover tokens stay visible in the pile, highlighted, labelled "remainder / reste".
-6. **Next** button loads the next scenario.
-
-### Mode 2 — Group (quotitive division)
-
-1. Prompt: "Put **12** 🍎 into bags of **3**. How many bags?" N tokens are laid out in a loose grid.
-2. **Tap tokens** to select them into the *current group* (highlighted). When the selection reaches k tokens it automatically closes into a bag (visually outlined, coloured, numbered). Tapping a selected (not yet closed) token deselects it. Tapping a closed bag opens it and returns its tokens.
-3. A running counter shows "Bags: 3".
-4. **Check**: correct when no more full groups can be made (loose tokens < k). Feedback on wrong: "You can still make another bag".
-5. On success the equation strip shows `12 ÷ 3 = 4` and `4 × 3 = 12` (or remainder form as above).
-6. **Next** loads the next scenario.
-
-### Difficulty
-
-- **Easy**: no remainder. N ≤ 20, divisor 2–5.
-- **Harder**: about half the scenarios have a remainder. N ≤ 30, divisor 2–6.
-
-Scenarios are generated randomly within these bounds (not a fixed list), avoiding divisor 1, quotient 0, and repeating the previous scenario. Each scenario picks an emoji theme (🍪 cookies, 🍎 apples, 🍬 candies, ⚽ balls, 🌸 flowers) with singular/plural EN/FR nouns.
-
-### Score
-
-A small "✓ Correct in a row: N" streak per mode, reset on a wrong Check. No timer. Share and Group each have their own success message ("that is fair!" / "no more bags can be made!").
-
-### Vocabulary (EN / FR)
-
-share / partager · fairly / équitablement · group, bag / groupe, sachet · remainder / reste · divided by / divisé par. Equation strip uses `÷` in both languages; the word "remainder" / "reste" is spelled out.
+Original 8×8 pixel icons in `icons.ts` (planks, iron ingot, book, chest, block of iron, bookshelf), no Mojang textures. Every screen shows the "not an official Minecraft product" disclaimer.
 
 ## Components
 
 | File | Role |
 |------|------|
-| `Activity.tsx` | Mode tabs, difficulty, current scenario, streak, Check/Next, renders the active scene + equation strip. |
-| `ShareScene.tsx` | Pile + plates; tap plate to add, tap token to return, "Deal one each"; reports counts to parent. |
-| `GroupScene.tsx` | Token field; tap to select; auto-close group at k; tap bag to open; reports groups to parent. |
-| `EquationStrip.tsx` | Renders `N ÷ d = q (remainder r)` and the linked multiplication. |
-| `division.ts` | Pure logic: `divide(n, d) → { quotient, remainder }`, `shareProblem(plateCounts, pileLeft) → 'unequal' \| 'giveMore' \| null`, `isFairShare(plateCounts, pileLeft)`, `isGroupingComplete(loose, k)`, `generateScenario(difficulty, previous?)` (uses `randInt`; quotient ≥ 2). |
-| `division.test.ts` | Vitest tests for `division.ts` (remainders, fair-share edge cases, generator bounds and no-repeat). |
-| `themes.ts` | Emoji + EN/FR singular/plural nouns. |
-| `Activity.module.css` | Scoped styles: plates, pile, bag outlines, token pop animation. |
-| `config.ts`, `translations.ts`, `index.ts` | Standard module files. |
-
-Use `randInt` / `shuffle` from `@/lib/science/math/random` for generation. No new dependencies.
+| `Activity.tsx` | Screen flow (`menu` / `playing` / `results`), chosen recipe, final result, disclaimer. |
+| `MenuScreen.tsx` | Mystery recipe cards. |
+| `GameScreen.tsx` | Score, streak, lives, current question, discoveries; calls `onFinish` when lives run out. |
+| `ResultScreen.tsx` | Final table, stats, unlocked facts, play again. |
+| `CraftingTable.tsx` | 3×3 grid + result slot for a stage. |
+| `DiscoveryOverlay.tsx` | The stage-up moment. |
+| `PixelIcon.tsx`, `icons.ts` | Pixel-art rendering and data. |
+| `recipes.ts` | Pure logic: recipes, stage thresholds and progress. |
+| `questions.ts` | `generateQuestion()` builds one exact division; `getStreakMultiplier()`. |
+| `translations.ts` | EN/FR strings, recipe names, clues and four facts per recipe. |
+| `recipes.test.ts`, `questions.test.ts` | Icon data, real ingredient counts, stage logic, question bounds and exactness. |
 
 ## Key State
 
-- `Activity.tsx`: `mode` (`share` \| `group`), `difficulty` (`easy` \| `harder`), `scenario` (`{ n, divisor, theme }`), `status` (`idle` \| `correct` \| `wrong`), `wrongReason`, `streak` per mode.
-- Share state (lifted into `Activity.tsx` so Check can read it): `plates: number[]` (count per plate); pile = `n − sum(plates)`.
-- Group state (lifted): `groups: number[][]` (closed bags as token indices), `selection: number[]` (current open group).
-- The first scenario is fixed (12 🍪 ÷ 3) to avoid a server/client hydration mismatch; later ones are random. Closed bags are shown in a row above the loose-token field.
-- Scene state resets whenever `scenario` or `mode` changes (switching mode keeps the scenario; changing difficulty loads a new one). After a correct Check, scene is read-only until Next.
+- `Activity.tsx`: `screen`, `recipeId`, `result { score, correctCount, bestStreak }`
+- `GameScreen.tsx`: `question { dividend, divisor, correctAnswer }`, `score`, `streak`, `bestStreak`, `correctCount`, `lives`, `answer`, `feedback { wasCorrect }`, `mood`, `discovery { fromStageIndex, toStageIndex }`

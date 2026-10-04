@@ -59,8 +59,8 @@ Aligned with PER **L1** axes (see `docs/curriculum/romandie.md` §4.1). Cycle 1 
 |------|--------|
 | `number-scale-explorer` | Number line / parts — Nombres (partial). |
 | `shape-explorer`, `3d-shape-explorer`, `euclidean-postulates` | Espace — geometry. |
-| `multiplication-patterns`, `times-table-challenge` | Opérations — multiplication. |
-| `division-sharing` | Opérations — division as fair sharing and grouping, linked back to multiplication. |
+| `times-table-challenge` | Opérations — multiplication. |
+| `division-sharing` | Opérations — division facts (inverse of the times tables) as a Minecraft-style crafting game. |
 | `grid-coordinates` | Espace — repérage dans le plan: name and find grid cells (C4), follow moves on a treasure map. |
 | `laser-and-mirrors` | Physics / light — not MER “vivant & matière” but valuable for sciences tools. |
 
