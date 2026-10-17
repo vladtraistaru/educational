@@ -2,6 +2,7 @@ services:
   educational:
     image: ghcr.io/vladtraistaru/educational:latest
     container_name: educational
+    mem_limit: 256m
     restart: unless-stopped
     env_file: .env          # lives on the server at /opt/apps/educational/.env
     networks: [proxy]
