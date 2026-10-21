@@ -21,6 +21,7 @@ import * as conjugaisonPresent from './conjugaison-present';
 import * as conjugaisonImparfait from './conjugaison-imparfait';
 import * as conjugaisonPasseCompose from './conjugaison-passe-compose';
 import * as moleculeLab from './molecule-lab';
+import * as billiards from './billiards';
 
 type MetaTranslations = Record<Language, { title: string; description: string }>;
 
@@ -50,6 +51,7 @@ const moduleEntries: ModuleEntry[] = [
   conjugaisonImparfait,
   conjugaisonPasseCompose,
   moleculeLab,
+  billiards,
 ];
 
 const modules = moduleEntries

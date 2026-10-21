@@ -23,6 +23,7 @@ All code in this project is AI-driven — written entirely through AI coding too
 | Activity | Description | Difficulty |
 |----------|-------------|:----------:|
 | Laser and Mirrors | An introduction to light, reflection and refraction | 3 |
+| Billiards | Play pool to discover collisions, momentum and bank-shot angles, with 10 missions and a free-play table | 4 |
 
 ## Tech
 
