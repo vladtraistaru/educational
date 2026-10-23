@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FRICTION, MAX_SHOT_SPEED, isMoving, step, type Ball, type Vec, type World } from './physics';
+import { MAX_SHOT_SPEED, isMoving, step, type Ball, type Vec, type World } from './physics';
 import { buildWorld, type LevelBall } from './levels';
 import { predictPath } from './aim';
 
@@ -67,16 +67,6 @@ describe('cushions and pockets', () => {
   it('sinks a ball rolled into a corner', () => {
     const w = buildWorld({ x: 100, y: 100 }, [], [], 0);
     expect(shoot(w, { x: -1, y: -1 }, 0.3).map((b) => b.kind)).toEqual(['cue']);
-  });
-
-  it('stops a ball through friction, sooner on sand than on ice', () => {
-    const distance = (friction: number) => {
-      const w = buildWorld({ x: 100, y: 250 }, [], [], friction);
-      shoot(w, { x: 1, y: 0 }, 0.25);
-      return cueOf(w).x;
-    };
-    expect(distance(FRICTION.sand)).toBeLessThan(distance(FRICTION.felt));
-    expect(distance(FRICTION.felt)).toBeLessThan(distance(FRICTION.ice));
   });
 });
 

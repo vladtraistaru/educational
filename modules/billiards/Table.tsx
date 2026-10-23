@@ -14,7 +14,6 @@ interface TableProps {
   cueSpot: Vec;
   guide: boolean;
   locked: boolean;
-  friction?: number;
   label: string;
   onShotEnd: (result: ShotResult) => void;
 }
@@ -32,7 +31,7 @@ function respot(world: World, spot: Vec) {
   Object.assign(cue, { x, y: spot.y, vx: 0, vy: 0, potted: false });
 }
 
-export default function Table({ initial, cueSpot, guide, locked, friction, label, onShotEnd }: TableProps) {
+export default function Table({ initial, cueSpot, guide, locked, label, onShotEnd }: TableProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [world] = useState(() => cloneWorld(initial));
   const aimRef = useRef<Vec | null>(null);
@@ -43,10 +42,6 @@ export default function Table({ initial, cueSpot, guide, locked, friction, label
   useEffect(() => {
     live.current = { guide, locked, cueSpot, onShotEnd };
   });
-
-  useEffect(() => {
-    if (friction !== undefined) world.friction = friction;
-  }, [world, friction]);
 
   useEffect(() => {
     const canvas = canvasRef.current!;

@@ -317,20 +317,6 @@
   gap: 0.6rem 1rem;
 }
 
-.pillGroup {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.pillLabel {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--pico-muted-color);
-}
-
 /* Pico styles bare <button> from its own custom properties; override the tokens. */
 .pill {
   --pico-background-color: var(--pico-card-background-color);

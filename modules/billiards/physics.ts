@@ -40,7 +40,7 @@ export interface World {
 export const TABLE_W = 1000;
 export const TABLE_H = 500;
 export const BALL_R = 13;
-export const MAX_SHOT_SPEED = 1800;
+export const MAX_SHOT_SPEED = 1500;
 
 const CORNER_R = 34;
 const SIDE_R = 28;
@@ -57,10 +57,9 @@ export const POCKETS: Pocket[] = [
 export const BALL_E = 0.95;
 const POST_E = 0.9;
 const CUSHION_E = 0.8;
-const STOP_SPEED = 4;
+const STOP_SPEED = 3;
 
-export const FRICTION = { felt: 320, ice: 70, sand: 900 } as const;
-export type Surface = keyof typeof FRICTION;
+export const FRICTION = 60;
 
 const speedOf = (b: Ball) => Math.hypot(b.vx, b.vy);
 

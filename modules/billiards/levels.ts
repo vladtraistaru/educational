@@ -135,7 +135,7 @@ export function makeBall(id: string, kind: BallKind, at: Vec, index = 0, size: B
   };
 }
 
-export function buildWorld(cue: Vec, balls: LevelBall[], posts: Post[] = [], friction: number = FRICTION.felt): World {
+export function buildWorld(cue: Vec, balls: LevelBall[], posts: Post[] = [], friction: number = FRICTION): World {
   return {
     balls: [
       makeBall('cue', 'cue', cue),

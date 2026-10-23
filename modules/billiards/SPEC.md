@@ -21,7 +21,7 @@ Teaches the physics of collisions and motion on a pool table. Ten missions each 
    - Sinking the bomb ball loses the level. Running out of shots loses the level.
    - A lost level offers **Try again**; a won level shows stars and **Next**. **Restart** is always available.
 6. After the last mission the result screen shows stars and levels solved, with **Play again**.
-7. **Free play**: a rack of ten balls. The learner can switch the table surface (felt / ice / sand) to feel friction, toggle the guide, and rack again. Shots and balls sunk are counted.
+7. **Free play**: a rack of ten balls. The learner can toggle the guide and rack again. Shots and balls sunk are counted.
 
 ### Stars
 
@@ -35,7 +35,7 @@ Top-down 2D, table 1000 × 500 units, ball radius 13. Each frame is split into s
 - **Posts**: fixed round pegs, treated as infinite mass (restitution 0.9).
 - **Cushions**: the normal component flips and the whole velocity is scaled by 0.8, so the angle out equals the angle in exactly.
 - **Pockets**: six (corners and middle of the long sides). A ball is sunk when its centre is inside a pocket circle; cushions have gaps at the pocket mouths.
-- **Friction**: constant deceleration (felt 320, ice 70, sand 900 units/s²); a ball below 4 units/s stops.
+- **Friction**: constant deceleration (60 units/s² — low, so balls keep rolling a long time); a ball below 3 units/s stops.
 - No spin.
 
 ## Components
@@ -45,11 +45,11 @@ Top-down 2D, table 1000 × 500 units, ball radius 13. Each frame is split into s
 | `Activity.tsx` | Screen router (`menu` / `missions` / `results` / `free`) and run totals. |
 | `MenuScreen.tsx` | Big idea, how to shoot, mode buttons. |
 | `MissionScreen.tsx` | One level: shots, sunk count, win/lose rules, feedback, stars. |
-| `FreePlay.tsx` | Ten-ball rack, surface and guide controls, counters. |
+| `FreePlay.tsx` | Ten-ball rack, guide toggle, counters. |
 | `ResultScreen.tsx` | Mission totals and replay. |
 | `Table.tsx` | Canvas, animation loop, pointer aiming, shot lifecycle (scratch re-spot). Owns the mutable world in a ref. |
 | `draw.ts` | Canvas rendering of rails, felt, pockets, posts, trails, guide, balls, cue and power bar. |
-| `physics.ts` | Pure engine: types, table and pockets, `step`, `isMoving`, surfaces. |
+| `physics.ts` | Pure engine: types, table and pockets, `step`, `isMoving`. |
 | `aim.ts` | `aimFromPointer` (pointer → direction + power) and `predictPath` (guide ray cast). |
 | `levels.ts` | Ball presets, the 10-level table, rack builder, `buildWorld`, `starsFor`. |
 | `translations.ts` | EN/FR strings, per-level title and idea. |
@@ -60,6 +60,6 @@ In `Activity.tsx`: `screen`, `levelIndex`, `totals: { stars, solved }`.
 
 In `MissionScreen.tsx`: `attempt` (remounts the table), `shots`, `sunk`, `status: 'playing' | 'won' | 'lost'`, `note` (feedback for the last shot).
 
-In `FreePlay.tsx`: `rack` (remount key), `surface`, `guide`, `shots`, `sunk`.
+In `FreePlay.tsx`: `rack` (remount key), `guide`, `shots`, `sunk`.
 
 In `Table.tsx` (refs, not state — the loop reads them every frame): `world`, `aim` (pointer while pressed), `shot` (balls sunk during the running shot), `trails`. The table reports each finished shot through `onShotEnd({ potted, scratch })`.

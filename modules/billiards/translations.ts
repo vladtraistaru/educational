@@ -1,5 +1,4 @@
 import type { Language } from '@/lib/language-config';
-import type { Surface } from './physics';
 
 export type NoteKey = 'nice' | 'miss' | 'scratch' | 'bomb' | 'outOfShots';
 
@@ -34,8 +33,6 @@ export interface BilliardsTranslations {
   starsEarned: string;
   levelsSolved: string;
   playAgain: string;
-  surface: string;
-  surfaces: Record<Surface, string>;
   guide: string;
   newRack: string;
   shots: string;
@@ -80,8 +77,6 @@ const translations: Record<Language, BilliardsTranslations> = {
     starsEarned: 'Stars',
     levelsSolved: 'Missions solved',
     playAgain: 'Play again',
-    surface: 'Table',
-    surfaces: { felt: 'Felt', ice: 'Ice', sand: 'Sand' },
     guide: 'Guide line',
     newRack: 'New rack',
     shots: 'Shots',
@@ -165,8 +160,6 @@ const translations: Record<Language, BilliardsTranslations> = {
     starsEarned: 'Étoiles',
     levelsSolved: 'Missions réussies',
     playAgain: 'Rejouer',
-    surface: 'Table',
-    surfaces: { felt: 'Tapis', ice: 'Glace', sand: 'Sable' },
     guide: 'Ligne de visée',
     newRack: 'Nouveau triangle',
     shots: 'Coups',
